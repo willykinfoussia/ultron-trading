@@ -11,16 +11,27 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(8px);
 }
 
 .header h1 {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--accent);
+  letter-spacing: -0.5px;
 }
 
 .header h1 span {
   color: var(--text-primary);
+  font-weight: 400;
+}
+
+.header-right {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
 }
 
 .main {
@@ -29,4 +40,30 @@
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.error-banner {
+  background: rgba(192, 0, 0, 0.15);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.5rem;
+  color: var(--danger);
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
 }

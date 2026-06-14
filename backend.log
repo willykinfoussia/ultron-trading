@@ -63,3 +63,133 @@
 2026-06-14 20:26:33 | INFO     | ultron-trading.stocks | Quote requested for NFLX
 2026-06-14 20:26:33 | INFO     | ultron-trading.stocks | Quote for NFLX: $80.34 (-1.14%)
 2026-06-14 20:26:33 | INFO     | ultron-trading | ← GET /api/stocks/NFLX/quote → 200 (281.5ms)
+2026-06-14 21:56:29 | INFO     | ultron-trading | → GET /api/search from 127.0.0.1
+2026-06-14 21:56:29 | INFO     | ultron-trading | ← GET /api/search → 307 (11.7ms)
+2026-06-14 21:56:33 | INFO     | ultron-trading | → GET /api/search from 127.0.0.1
+2026-06-14 21:56:33 | INFO     | ultron-trading | ← GET /api/search → 307 (0.9ms)
+2026-06-14 21:57:00 | INFO     | ultron-trading | → GET /api/stocks/AAPL/quote from 127.0.0.1
+2026-06-14 21:57:00 | INFO     | ultron-trading.stocks | Quote requested for AAPL
+2026-06-14 21:57:01 | INFO     | ultron-trading.stocks | Quote for AAPL: $291.13 (-1.52%)
+2026-06-14 21:57:01 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/quote → 200 (461.2ms)
+2026-06-14 21:57:09 | INFO     | ultron-trading | → GET /api/search from 127.0.0.1
+2026-06-14 21:57:09 | INFO     | ultron-trading | ← GET /api/search → 307 (0.6ms)
+2026-06-14 21:57:30 | INFO     | ultron-trading | → GET /api/search from 127.0.0.1
+2026-06-14 21:57:30 | INFO     | ultron-trading | ← GET /api/search → 307 (0.5ms)
+2026-06-14 21:58:47 | INFO     | ultron-trading | → GET /api/search/ from 127.0.0.1
+2026-06-14 21:58:47 | INFO     | ultron-trading.search | Search request: 'Microsoft'
+2026-06-14 21:58:47 | INFO     | ultron-trading.search | yfinance search returned 5 results for 'Microsoft'
+2026-06-14 21:58:47 | INFO     | ultron-trading | ← GET /api/search/ → 200 (113.1ms)
+2026-06-14 22:35:36 | INFO     | ultron-trading | → GET /api/stocks/AAPL/history from 176.137.127.108
+2026-06-14 22:35:36 | INFO     | ultron-trading.stocks | History requested for AAPL (period=6mo, interval=1d)
+2026-06-14 22:35:36 | INFO     | ultron-trading.stocks | History for AAPL: 124 data points returned
+2026-06-14 22:35:36 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/history → 200 (130.9ms)
+2026-06-14 22:35:36 | INFO     | ultron-trading | → GET /api/stocks/AAPL/quote from 176.137.127.108
+2026-06-14 22:35:36 | INFO     | ultron-trading.stocks | Quote requested for AAPL
+2026-06-14 22:35:36 | INFO     | ultron-trading.stocks | Quote for AAPL: $291.13 (-1.52%)
+2026-06-14 22:35:36 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/quote → 200 (164.6ms)
+2026-06-14 22:35:45 | INFO     | ultron-trading | → GET /api/market/movers from 176.137.127.108
+2026-06-14 22:35:45 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-14 22:35:49 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-14 22:35:49 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-14 22:35:49 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-14 22:35:49 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-14 22:35:49 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (4368.2ms)
+2026-06-14 22:35:49 | INFO     | ultron-trading | → GET /api/market/sectors from 176.137.127.108
+2026-06-14 22:35:49 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-14 22:35:49 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-14 22:35:49 | INFO     | ultron-trading | → GET /api/market/fear-greed from 176.137.127.108
+2026-06-14 22:35:49 | INFO     | ultron-trading | → GET /api/market/indices from 176.137.127.108
+2026-06-14 22:35:49 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (373.0ms)
+2026-06-14 22:35:49 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-14 22:35:50 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-14 22:35:50 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (369.2ms)
+2026-06-14 22:35:50 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (312.8ms)
+2026-06-14 22:36:19 | INFO     | ultron-trading | → GET /api/stocks/DKNG/quote from 176.137.127.108
+2026-06-14 22:36:19 | INFO     | ultron-trading.stocks | Quote requested for DKNG
+2026-06-14 22:36:20 | INFO     | ultron-trading.stocks | Quote for DKNG: $29.00 (-3.40%)
+2026-06-14 22:36:20 | INFO     | ultron-trading | ← GET /api/stocks/DKNG/quote → 200 (523.8ms)
+2026-06-14 22:36:20 | INFO     | ultron-trading | → GET /api/stocks/DKNG/history from 176.137.127.108
+2026-06-14 22:36:20 | INFO     | ultron-trading.stocks | History requested for DKNG (period=6mo, interval=1d)
+2026-06-14 22:36:20 | INFO     | ultron-trading.stocks | History for DKNG: 124 data points returned
+2026-06-14 22:36:20 | INFO     | ultron-trading | ← GET /api/stocks/DKNG/history → 200 (51.6ms)
+2026-06-14 22:36:29 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:36:29 | INFO     | ultron-trading.search | Search request: 's'
+2026-06-14 22:36:29 | INFO     | ultron-trading.search | yfinance search returned 5 results for 's'
+2026-06-14 22:36:29 | INFO     | ultron-trading | ← GET /api/search/ → 200 (120.0ms)
+2026-06-14 22:36:29 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:36:29 | INFO     | ultron-trading.search | Search request: 's'
+2026-06-14 22:36:29 | INFO     | ultron-trading.search | yfinance search returned 5 results for 's'
+2026-06-14 22:36:29 | INFO     | ultron-trading | ← GET /api/search/ → 200 (1.2ms)
+2026-06-14 22:36:30 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:36:30 | INFO     | ultron-trading.search | Search request: 'sp'
+2026-06-14 22:36:30 | INFO     | ultron-trading.search | yfinance search returned 5 results for 'sp'
+2026-06-14 22:36:30 | INFO     | ultron-trading | ← GET /api/search/ → 200 (66.9ms)
+2026-06-14 22:36:30 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:36:30 | INFO     | ultron-trading.search | Search request: 'sp'
+2026-06-14 22:36:30 | INFO     | ultron-trading.search | yfinance search returned 5 results for 'sp'
+2026-06-14 22:36:30 | INFO     | ultron-trading | ← GET /api/search/ → 200 (1.1ms)
+2026-06-14 22:36:31 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:36:31 | INFO     | ultron-trading.search | Search request: 'spa'
+2026-06-14 22:36:31 | INFO     | ultron-trading.search | yfinance search returned 5 results for 'spa'
+2026-06-14 22:36:31 | INFO     | ultron-trading | ← GET /api/search/ → 200 (68.7ms)
+2026-06-14 22:36:31 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:36:31 | INFO     | ultron-trading.search | Search request: 'spa'
+2026-06-14 22:36:31 | INFO     | ultron-trading.search | yfinance search returned 5 results for 'spa'
+2026-06-14 22:36:31 | INFO     | ultron-trading | ← GET /api/search/ → 200 (1.1ms)
+2026-06-14 22:36:34 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:36:34 | INFO     | ultron-trading.search | Search request: 'space'
+2026-06-14 22:36:34 | INFO     | ultron-trading.search | yfinance search returned 5 results for 'space'
+2026-06-14 22:36:34 | INFO     | ultron-trading | ← GET /api/search/ → 200 (67.1ms)
+2026-06-14 22:36:34 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:36:34 | INFO     | ultron-trading.search | Search request: 'space'
+2026-06-14 22:36:34 | INFO     | ultron-trading.search | yfinance search returned 5 results for 'space'
+2026-06-14 22:36:34 | INFO     | ultron-trading | ← GET /api/search/ → 200 (1.1ms)
+2026-06-14 22:36:38 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:36:38 | INFO     | ultron-trading.search | Search request: 'spacex'
+2026-06-14 22:36:38 | INFO     | ultron-trading.search | yfinance search returned 6 results for 'spacex'
+2026-06-14 22:36:38 | INFO     | ultron-trading | ← GET /api/search/ → 200 (82.2ms)
+2026-06-14 22:36:38 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:36:38 | INFO     | ultron-trading.search | Search request: 'spacex'
+2026-06-14 22:36:38 | INFO     | ultron-trading.search | yfinance search returned 6 results for 'spacex'
+2026-06-14 22:36:38 | INFO     | ultron-trading | ← GET /api/search/ → 200 (1.1ms)
+2026-06-14 22:36:47 | INFO     | ultron-trading | → GET /api/stocks/SPACEX-USD/quote from 176.137.127.108
+2026-06-14 22:36:47 | INFO     | ultron-trading.stocks | Quote requested for SPACEX-USD
+2026-06-14 22:36:47 | INFO     | ultron-trading.stocks | Quote for SPACEX-USD: $576.61 (-6.57%)
+2026-06-14 22:36:47 | INFO     | ultron-trading | → GET /api/stocks/SPACEX-USD/history from 176.137.127.108
+2026-06-14 22:36:47 | INFO     | ultron-trading.stocks | History requested for SPACEX-USD (period=6mo, interval=1d)
+2026-06-14 22:36:47 | INFO     | ultron-trading.stocks | History for SPACEX-USD: 183 data points returned
+2026-06-14 22:36:47 | INFO     | ultron-trading | ← GET /api/stocks/SPACEX-USD/quote → 200 (358.9ms)
+2026-06-14 22:36:47 | INFO     | ultron-trading | ← GET /api/stocks/SPACEX-USD/history → 200 (92.0ms)
+2026-06-14 22:37:05 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:37:05 | INFO     | ultron-trading.search | Search request: 'a'
+2026-06-14 22:37:05 | INFO     | ultron-trading.search | yfinance search returned 5 results for 'a'
+2026-06-14 22:37:05 | INFO     | ultron-trading | ← GET /api/search/ → 200 (116.4ms)
+2026-06-14 22:37:05 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:37:05 | INFO     | ultron-trading.search | Search request: 'a'
+2026-06-14 22:37:05 | INFO     | ultron-trading.search | yfinance search returned 5 results for 'a'
+2026-06-14 22:37:05 | INFO     | ultron-trading | ← GET /api/search/ → 200 (1.1ms)
+2026-06-14 22:37:05 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:37:05 | INFO     | ultron-trading.search | Search request: 'am'
+2026-06-14 22:37:05 | INFO     | ultron-trading.search | yfinance search returned 5 results for 'am'
+2026-06-14 22:37:05 | INFO     | ultron-trading | ← GET /api/search/ → 200 (69.9ms)
+2026-06-14 22:37:05 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:37:05 | INFO     | ultron-trading.search | Search request: 'am'
+2026-06-14 22:37:05 | INFO     | ultron-trading.search | yfinance search returned 5 results for 'am'
+2026-06-14 22:37:05 | INFO     | ultron-trading | ← GET /api/search/ → 200 (1.1ms)
+2026-06-14 22:37:09 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:37:09 | INFO     | ultron-trading.search | Search request: 'amd'
+2026-06-14 22:37:09 | INFO     | ultron-trading.search | yfinance search returned 5 results for 'amd'
+2026-06-14 22:37:09 | INFO     | ultron-trading | ← GET /api/search/ → 200 (67.8ms)
+2026-06-14 22:37:09 | INFO     | ultron-trading | → GET /api/search/ from 176.137.127.108
+2026-06-14 22:37:09 | INFO     | ultron-trading.search | Search request: 'amd'
+2026-06-14 22:37:09 | INFO     | ultron-trading.search | yfinance search returned 5 results for 'amd'
+2026-06-14 22:37:09 | INFO     | ultron-trading | ← GET /api/search/ → 200 (1.1ms)
+2026-06-14 22:37:11 | INFO     | ultron-trading | → GET /api/stocks/AMD/quote from 176.137.127.108
+2026-06-14 22:37:11 | INFO     | ultron-trading.stocks | Quote requested for AMD
+2026-06-14 22:37:11 | INFO     | ultron-trading.stocks | Quote for AMD: $511.57 (+4.73%)
+2026-06-14 22:37:11 | INFO     | ultron-trading | → GET /api/stocks/AMD/history from 176.137.127.108
+2026-06-14 22:37:11 | INFO     | ultron-trading.stocks | History requested for AMD (period=6mo, interval=1d)
+2026-06-14 22:37:11 | INFO     | ultron-trading.stocks | History for AMD: 124 data points returned
+2026-06-14 22:37:11 | INFO     | ultron-trading | ← GET /api/stocks/AMD/quote → 200 (332.3ms)
+2026-06-14 22:37:11 | INFO     | ultron-trading | ← GET /api/stocks/AMD/history → 200 (53.5ms)

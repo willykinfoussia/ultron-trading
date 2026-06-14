@@ -4,7 +4,7 @@ import type { SearchResult } from '../api/types'
 
 interface Props {
   onSelect: (symbol: string) => void
-  loading: boolean
+  loading?: boolean
   onSearchChange?: (query: string) => void
 }
 

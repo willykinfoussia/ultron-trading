@@ -1,11 +1,10 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
   --bg-primary: #0a0a1a;
   --bg-secondary: #12122a;
   --bg-card: #1a1a3e;
+  --bg-hover: #222250;
   --text-primary: #e0e0e0;
   --text-secondary: #888;
   --accent: #2E75B6;
@@ -13,6 +12,7 @@
   --success: #70AD47;
   --danger: #C00000;
   --border: #2a2a4a;
+  --radius: 10px;
 }
 
 * {
@@ -26,8 +26,25 @@ body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
 #root {
   min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* Selection */
+::selection { background: var(--accent); color: #fff; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .main { padding: 1rem !important; }
+  .header { padding: 0.75rem 1rem !important; }
+  .header h1 { font-size: 1.2rem !important; }
 }

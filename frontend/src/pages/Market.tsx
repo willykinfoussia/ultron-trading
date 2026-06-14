@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getMarketIndices, getMovers, getSectors, getFearGreed } from '../api/market'
 import type { MarketIndex, MoversData, SectorPerf, FearGreed } from '../api/types'
-import IndexTicker, { FearGreedGauge } from "../components/MarketOverview";
+import IndexTicker, { FearGreedGauge } from '../components/MarketOverview'
 import MoversTabs from '../components/MoversTabs'
 import SectorGrid from '../components/SectorGrid'
 import MarketHeatmap from '../components/MarketHeatmap'
@@ -43,15 +43,32 @@ export default function MarketPage({ onSelectStock }: Props) {
 
   useEffect(() => {
     fetchData()
-    // Auto-refresh every 60s
     const interval = setInterval(fetchData, 60_000)
     return () => clearInterval(interval)
   }, [fetchData])
 
+  if (loading && !indices.length) {
+    return (
+      <div className="loading-spinner">
+        <div>
+          <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>⏳</div>
+          <div>Loading market data...</div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div>
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '1rem',
+        flexWrap: 'wrap',
+        gap: '0.5rem',
+      }}>
         <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>📊 Market Overview</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           {lastUpdate && (
@@ -70,38 +87,28 @@ export default function MarketPage({ onSelectStock }: Props) {
               color: 'var(--text-primary)',
               cursor: loading ? 'not-allowed' : 'pointer',
               fontSize: '0.8rem',
+              opacity: loading ? 0.6 : 1,
+              transition: 'opacity 0.2s',
             }}
           >
-            {loading ? '⟳' : '↻'} Refresh
+            {loading ? '⟳ Loading...' : '↻ Refresh'}
           </button>
         </div>
       </div>
 
-      {error && (
-        <div style={{
-          background: 'rgba(192,0,0,0.15)',
-          border: '1px solid var(--danger)',
-          padding: '1rem',
-          borderRadius: '8px',
-          marginBottom: '1rem',
-          color: 'var(--danger)',
-        }}>
-          ⚠️ {error}
-        </div>
-      )}
+      {error && <div className="error-banner">⚠️ {error}</div>}
 
       {/* Index Ticker */}
       <IndexTicker indices={indices} />
 
-      {/* Main grid */}
+      {/* Main grid — responsive */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 300px',
+        gridTemplateColumns: 'minmax(0, 1fr) 300px',
         gap: '1.5rem',
         marginBottom: '2rem',
       }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          {/* Movers */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', minWidth: 0 }}>
           <MoversTabs
             gainers={movers.gainers}
             losers={movers.losers}
@@ -109,9 +116,7 @@ export default function MarketPage({ onSelectStock }: Props) {
             onSelect={onSelectStock}
           />
         </div>
-
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          {/* Fear & Greed */}
           <FearGreedGauge data={fearGreed} />
         </div>
       </div>
