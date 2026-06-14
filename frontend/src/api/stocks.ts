@@ -2,10 +2,26 @@ import type { StockQuote, StockHistory } from './types'
 
 const API_BASE = '/api'
 
+async function fetchJSON<T>(url: string): Promise<T> {
+  console.log(`[API] GET ${url}`)
+  try {
+    const res = await fetch(url)
+    if (!res.ok) {
+      const body = await res.text()
+      console.error(`[API] ← ${res.status} ${url}: ${body}`)
+      throw new Error(`HTTP ${res.status}: ${body}`)
+    }
+    const data = await res.json()
+    console.log(`[API] ← ${res.status} ${url} ✓`)
+    return data as T
+  } catch (err) {
+    console.error(`[API] ✖ ${url}:`, err)
+    throw err
+  }
+}
+
 export async function getStockQuote(symbol: string): Promise<StockQuote> {
-  const res = await fetch(`${API_BASE}/stocks/${symbol}/quote`)
-  if (!res.ok) throw new Error(`Failed to fetch quote for ${symbol}`)
-  return res.json()
+  return fetchJSON<StockQuote>(`${API_BASE}/stocks/${symbol}/quote`)
 }
 
 export async function getStockHistory(
@@ -13,9 +29,7 @@ export async function getStockHistory(
   period = '1mo',
   interval = '1d'
 ): Promise<StockHistory> {
-  const res = await fetch(
+  return fetchJSON<StockHistory>(
     `${API_BASE}/stocks/${symbol}/history?period=${period}&interval=${interval}`
   )
-  if (!res.ok) throw new Error(`Failed to fetch history for ${symbol}`)
-  return res.json()
 }
