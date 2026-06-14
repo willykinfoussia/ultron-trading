@@ -1,0 +1,15 @@
+[Unit]
+Description=Ultron Trading Backend (FastAPI + uv)
+After=network.target
+
+[Service]
+Type=exec
+User=opc
+WorkingDirectory=/home/opc/ultron-trading/backend
+ExecStart=/home/opc/ultron-trading/backend/.venv/bin/uvicorn main:app --host 0.0.0.0 --port 8080
+Restart=always
+RestartSec=5
+Environment=PATH=/home/opc/ultron-trading/backend/.venv/bin:/usr/bin
+
+[Install]
+WantedBy=multi-user.target

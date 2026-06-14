@@ -1,0 +1,10 @@
+README.md
+pyproject.toml
+app/api/analysis.py
+app/api/charts.py
+app/api/stocks.py
+ultron_trading_backend.egg-info/PKG-INFO
+ultron_trading_backend.egg-info/SOURCES.txt
+ultron_trading_backend.egg-info/dependency_links.txt
+ultron_trading_backend.egg-info/requires.txt
+ultron_trading_backend.egg-info/top_level.txt

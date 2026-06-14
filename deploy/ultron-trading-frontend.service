@@ -1,0 +1,15 @@
+[Unit]
+Description=Ultron Trading Frontend (Static Files)
+After=network.target
+
+[Service]
+Type=exec
+User=opc
+WorkingDirectory=/home/opc/ultron-trading/frontend
+ExecStart=/usr/bin/npx serve -s dist -l 3000
+Restart=always
+RestartSec=5
+Environment=PATH=/usr/bin:/usr/local/bin
+
+[Install]
+WantedBy=multi-user.target
