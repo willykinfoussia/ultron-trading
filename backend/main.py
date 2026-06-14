@@ -5,7 +5,7 @@ import logging
 import time
 import sys
 
-from app.api import stocks, charts, analysis
+from app.api import stocks, charts, analysis, search, market
 
 # ── Logging configuration ──────────────────────────────────────────────
 logging.basicConfig(
@@ -23,7 +23,7 @@ logger = logging.getLogger("ultron-trading")
 app = FastAPI(
     title="Ultron Trading API",
     description="API for stock market analysis and data",
-    version="0.1.0",
+    version="0.2.0",
 )
 
 # CORS
@@ -56,14 +56,16 @@ async def log_requests(request: Request, call_next):
 app.include_router(stocks.router, prefix="/api/stocks", tags=["stocks"])
 app.include_router(charts.router, prefix="/api/charts", tags=["charts"])
 app.include_router(analysis.router, prefix="/api/analysis", tags=["analysis"])
+app.include_router(search.router, prefix="/api/search", tags=["search"])
+app.include_router(market.router, prefix="/api/market", tags=["market"])
 
 # ── Health & root ──────────────────────────────────────────────────────
 @app.get("/")
 async def root():
     logger.info("Root endpoint called")
-    return {"message": "Welcome to Ultron Trading API", "version": "0.1.0"}
+    return {"message": "Welcome to Ultron Trading API", "version": "0.2.0"}
 
 @app.get("/health")
 async def health_check():
     logger.debug("Health check OK")
-    return {"status": "healthy", "version": "0.1.0"}
+    return {"status": "healthy", "version": "0.2.0"}

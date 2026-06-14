@@ -1,0 +1,65 @@
+2026-06-14 20:20:13 | INFO     | ultron-trading | → GET /api/stocks/AAPL/quote from 127.0.0.1
+2026-06-14 20:20:13 | INFO     | ultron-trading.stocks | Quote requested for AAPL
+2026-06-14 20:20:14 | INFO     | ultron-trading.stocks | Quote for AAPL: $291.13 (-1.52%)
+2026-06-14 20:20:14 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/quote → 200 (598.3ms)
+2026-06-14 20:20:14 | INFO     | ultron-trading | → GET /health from 127.0.0.1
+2026-06-14 20:20:14 | INFO     | ultron-trading | ← GET /health → 200 (3.9ms)
+2026-06-14 20:20:15 | INFO     | ultron-trading | → GET /health from 127.0.0.1
+2026-06-14 20:20:15 | INFO     | ultron-trading | ← GET /health → 200 (0.6ms)
+2026-06-14 20:25:16 | INFO     | ultron-trading | → GET /api/stocks/AAPL/quote from 176.137.127.108
+2026-06-14 20:25:16 | INFO     | ultron-trading.stocks | Quote requested for AAPL
+2026-06-14 20:25:16 | INFO     | ultron-trading.stocks | Quote for AAPL: $291.13 (-1.52%)
+2026-06-14 20:25:16 | INFO     | ultron-trading | → GET /api/stocks/AAPL/history from 176.137.127.108
+2026-06-14 20:25:16 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/quote → 200 (211.8ms)
+2026-06-14 20:25:16 | INFO     | ultron-trading.stocks | History requested for AAPL (period=6mo, interval=1d)
+2026-06-14 20:25:16 | INFO     | ultron-trading.stocks | History for AAPL: 124 data points returned
+2026-06-14 20:25:16 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/history → 200 (260.6ms)
+2026-06-14 20:25:22 | INFO     | ultron-trading | → GET /api/stocks/GOOGL/history from 176.137.127.108
+2026-06-14 20:25:22 | INFO     | ultron-trading.stocks | History requested for GOOGL (period=6mo, interval=1d)
+2026-06-14 20:25:22 | INFO     | ultron-trading.stocks | History for GOOGL: 124 data points returned
+2026-06-14 20:25:22 | INFO     | ultron-trading | ← GET /api/stocks/GOOGL/history → 200 (101.8ms)
+2026-06-14 20:25:22 | INFO     | ultron-trading | → GET /api/stocks/GOOGL/quote from 176.137.127.108
+2026-06-14 20:25:22 | INFO     | ultron-trading.stocks | Quote requested for GOOGL
+2026-06-14 20:25:22 | INFO     | ultron-trading.stocks | Quote for GOOGL: $359.68 (+0.53%)
+2026-06-14 20:25:22 | INFO     | ultron-trading | ← GET /api/stocks/GOOGL/quote → 200 (276.9ms)
+2026-06-14 20:25:24 | INFO     | ultron-trading | → GET /api/stocks/MSFT/history from 176.137.127.108
+2026-06-14 20:25:24 | INFO     | ultron-trading.stocks | History requested for MSFT (period=6mo, interval=1d)
+2026-06-14 20:25:24 | INFO     | ultron-trading.stocks | History for MSFT: 124 data points returned
+2026-06-14 20:25:24 | INFO     | ultron-trading | ← GET /api/stocks/MSFT/history → 200 (161.2ms)
+2026-06-14 20:25:24 | INFO     | ultron-trading | → GET /api/stocks/MSFT/quote from 176.137.127.108
+2026-06-14 20:25:24 | INFO     | ultron-trading.stocks | Quote requested for MSFT
+2026-06-14 20:25:24 | INFO     | ultron-trading.stocks | Quote for MSFT: $390.74 (+0.10%)
+2026-06-14 20:25:24 | INFO     | ultron-trading | ← GET /api/stocks/MSFT/quote → 200 (276.6ms)
+2026-06-14 20:25:31 | INFO     | ultron-trading | → GET /api/stocks/META/history from 176.137.127.108
+2026-06-14 20:25:31 | INFO     | ultron-trading.stocks | History requested for META (period=6mo, interval=1d)
+2026-06-14 20:25:31 | INFO     | ultron-trading.stocks | History for META: 124 data points returned
+2026-06-14 20:25:31 | INFO     | ultron-trading | → GET /api/stocks/META/quote from 176.137.127.108
+2026-06-14 20:25:31 | INFO     | ultron-trading.stocks | Quote requested for META
+2026-06-14 20:25:31 | INFO     | ultron-trading.stocks | Quote for META: $566.98 (-0.26%)
+2026-06-14 20:25:31 | INFO     | ultron-trading | ← GET /api/stocks/META/history → 200 (386.1ms)
+2026-06-14 20:25:31 | INFO     | ultron-trading | ← GET /api/stocks/META/quote → 200 (272.6ms)
+2026-06-14 20:25:49 | INFO     | ultron-trading | → GET /api/stocks/AAPL/history from 176.137.127.108
+2026-06-14 20:25:49 | INFO     | ultron-trading.stocks | History requested for AAPL (period=6mo, interval=1d)
+2026-06-14 20:25:49 | INFO     | ultron-trading.stocks | History for AAPL: 124 data points returned
+2026-06-14 20:25:49 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/history → 200 (106.3ms)
+2026-06-14 20:25:49 | INFO     | ultron-trading | → GET /api/stocks/AAPL/quote from 176.137.127.108
+2026-06-14 20:25:49 | INFO     | ultron-trading.stocks | Quote requested for AAPL
+2026-06-14 20:25:49 | INFO     | ultron-trading.stocks | Quote for AAPL: $291.13 (-1.52%)
+2026-06-14 20:25:49 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/quote → 200 (206.3ms)
+2026-06-14 20:26:02 | INFO     | ultron-trading | → GET /api/stocks/NASDAQ/history from 176.137.127.108
+2026-06-14 20:26:02 | INFO     | ultron-trading.stocks | History requested for NASDAQ (period=6mo, interval=1d)
+2026-06-14 20:26:02 | ERROR    | yfinance | $NASDAQ: possibly delisted; no price data found  (period=6mo)
+2026-06-14 20:26:02 | WARNING  | ultron-trading.stocks | No historical data for NASDAQ
+2026-06-14 20:26:02 | INFO     | ultron-trading | → GET /api/stocks/NASDAQ/quote from 176.137.127.108
+2026-06-14 20:26:02 | INFO     | ultron-trading | ← GET /api/stocks/NASDAQ/history → 404 (113.7ms)
+2026-06-14 20:26:02 | INFO     | ultron-trading.stocks | Quote requested for NASDAQ
+2026-06-14 20:26:02 | WARNING  | ultron-trading.stocks | No data returned for NASDAQ
+2026-06-14 20:26:02 | INFO     | ultron-trading | ← GET /api/stocks/NASDAQ/quote → 404 (291.4ms)
+2026-06-14 20:26:33 | INFO     | ultron-trading | → GET /api/stocks/NFLX/history from 176.137.127.108
+2026-06-14 20:26:33 | INFO     | ultron-trading.stocks | History requested for NFLX (period=6mo, interval=1d)
+2026-06-14 20:26:33 | INFO     | ultron-trading.stocks | History for NFLX: 124 data points returned
+2026-06-14 20:26:33 | INFO     | ultron-trading | ← GET /api/stocks/NFLX/history → 200 (94.9ms)
+2026-06-14 20:26:33 | INFO     | ultron-trading | → GET /api/stocks/NFLX/quote from 176.137.127.108
+2026-06-14 20:26:33 | INFO     | ultron-trading.stocks | Quote requested for NFLX
+2026-06-14 20:26:33 | INFO     | ultron-trading.stocks | Quote for NFLX: $80.34 (-1.14%)
+2026-06-14 20:26:33 | INFO     | ultron-trading | ← GET /api/stocks/NFLX/quote → 200 (281.5ms)
