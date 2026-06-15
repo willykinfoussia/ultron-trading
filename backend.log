@@ -443,3 +443,35 @@ ValueError: Out of range float values are not JSON compliant
 2026-06-15 13:39:26 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
 2026-06-15 13:39:26 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (3576.1ms)
 2026-06-15 13:39:26 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (3508.1ms)
+2026-06-15 13:41:46 | INFO     | ultron-trading | → GET /api/market/indices from 127.0.0.1
+2026-06-15 13:41:46 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-15 13:41:47 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-15 13:41:47 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (464.6ms)
+2026-06-15 13:44:49 | INFO     | ultron-trading | → GET /api/stocks/AAPL/quote from 185.249.44.4
+2026-06-15 13:44:49 | INFO     | ultron-trading.stocks | Quote requested for AAPL
+2026-06-15 13:44:49 | INFO     | ultron-trading.stocks | Quote for AAPL: $295.11 (+1.37%)
+2026-06-15 13:44:49 | INFO     | ultron-trading | → GET /api/stocks/AAPL/history from 185.249.44.4
+2026-06-15 13:44:49 | INFO     | ultron-trading.stocks | History requested for AAPL (period=6mo, interval=1d)
+2026-06-15 13:44:49 | INFO     | ultron-trading.stocks | History for AAPL: 125 data points returned
+2026-06-15 13:44:49 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/quote → 200 (449.0ms)
+2026-06-15 13:44:49 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/history → 200 (134.6ms)
+2026-06-15 13:44:51 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-15 13:44:51 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-15 13:44:51 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-15 13:44:51 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-15 13:44:51 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-15 13:44:54 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-15 13:44:54 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-15 13:44:54 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-15 13:44:55 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-15 13:44:55 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-15 13:44:55 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (3597.0ms)
+2026-06-15 13:44:55 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-15 13:44:55 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (3326.1ms)
+2026-06-15 13:44:55 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-15 13:44:55 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-15 13:44:55 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (374.8ms)
+2026-06-15 13:44:55 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (265.8ms)
+2026-06-15 16:00:25 | INFO     | ultron-trading | → GET /api/version from 127.0.0.1
+2026-06-15 16:00:25 | INFO     | ultron-trading | ← GET /api/version → 200 (8.6ms)
