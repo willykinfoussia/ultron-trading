@@ -193,3 +193,253 @@
 2026-06-14 22:37:11 | INFO     | ultron-trading.stocks | History for AMD: 124 data points returned
 2026-06-14 22:37:11 | INFO     | ultron-trading | ← GET /api/stocks/AMD/quote → 200 (332.3ms)
 2026-06-14 22:37:11 | INFO     | ultron-trading | ← GET /api/stocks/AMD/history → 200 (53.5ms)
+2026-06-14 22:41:13 | INFO     | ultron-trading | → GET /api/stocks/AAPL/quote from 127.0.0.1
+2026-06-14 22:41:13 | INFO     | ultron-trading.stocks | Quote requested for AAPL
+2026-06-14 22:41:13 | INFO     | ultron-trading.stocks | Quote for AAPL: $291.13 (-1.52%)
+2026-06-14 22:41:13 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/quote → 200 (429.0ms)
+2026-06-14 22:46:46 | INFO     | ultron-trading | → GET /api/stocks/AAPL/quote from 127.0.0.1
+2026-06-14 22:46:46 | INFO     | ultron-trading.stocks | Quote requested for AAPL
+2026-06-14 22:46:46 | INFO     | ultron-trading.stocks | Quote for AAPL: $291.13 (-1.52%)
+2026-06-14 22:46:46 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/quote → 200 (187.6ms)
+2026-06-15 13:38:13 | INFO     | ultron-trading | → GET /api/stocks/AAPL/history from 185.249.44.4
+2026-06-15 13:38:13 | INFO     | ultron-trading.stocks | History requested for AAPL (period=6mo, interval=1d)
+2026-06-15 13:38:13 | INFO     | ultron-trading.stocks | History for AAPL: 125 data points returned
+2026-06-15 13:38:13 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/history → 200 (262.1ms)
+2026-06-15 13:38:13 | INFO     | ultron-trading | → GET /api/stocks/AAPL/quote from 185.249.44.4
+2026-06-15 13:38:13 | INFO     | ultron-trading.stocks | Quote requested for AAPL
+2026-06-15 13:38:13 | INFO     | ultron-trading.stocks | Quote for AAPL: $294.70 (+1.23%)
+2026-06-15 13:38:13 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/quote → 200 (351.5ms)
+2026-06-15 13:38:21 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-15 13:38:21 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-15 13:38:21 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-15 13:38:21 | ERROR    | ultron-trading | ✖ Unhandled exception on GET /api/market/indices: Out of range float values are not JSON compliant
+Traceback (most recent call last):
+  File "/home/opc/ultron-trading/backend/main.py", line 46, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/middleware/cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 1574, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 2012, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 1594, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 1183, in handle
+    await app(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 724, in app
+    response = actual_response_class(content, **response_args)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/responses.py", line 192, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/responses.py", line 45, in __init__
+    self.body = self.render(content)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/responses.py", line 195, in render
+    return json.dumps(
+           ^^^^^^^^^^^
+  File "/home/opc/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "/home/opc/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+ValueError: Out of range float values are not JSON compliant
+2026-06-15 13:38:21 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-15 13:38:21 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-15 13:38:24 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-15 13:38:25 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-15 13:38:25 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-15 13:38:25 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-15 13:38:25 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-15 13:38:25 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-15 13:38:26 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-15 13:38:26 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-15 13:38:26 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (4539.2ms)
+2026-06-15 13:38:26 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-15 13:38:26 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (548.2ms)
+2026-06-15 13:38:26 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-15 13:38:26 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-15 13:38:26 | ERROR    | ultron-trading | ✖ Unhandled exception on GET /api/market/indices: Out of range float values are not JSON compliant
+Traceback (most recent call last):
+  File "/home/opc/ultron-trading/backend/main.py", line 46, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/middleware/cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 1574, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 2012, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 1594, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 1183, in handle
+    await app(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 724, in app
+    response = actual_response_class(content, **response_args)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/responses.py", line 192, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/responses.py", line 45, in __init__
+    self.body = self.render(content)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/responses.py", line 195, in render
+    return json.dumps(
+           ^^^^^^^^^^^
+  File "/home/opc/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "/home/opc/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+ValueError: Out of range float values are not JSON compliant
+2026-06-15 13:38:26 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (356.6ms)
+2026-06-15 13:38:27 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-15 13:38:27 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-15 13:38:31 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-15 13:38:31 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-15 13:38:31 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-15 13:38:31 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-15 13:38:31 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (4167.5ms)
+2026-06-15 13:38:31 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-15 13:38:31 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-15 13:38:32 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-15 13:38:32 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-15 13:38:32 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (889.8ms)
+2026-06-15 13:38:32 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (62.3ms)
+2026-06-15 13:39:22 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-15 13:39:22 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-15 13:39:22 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-15 13:39:22 | ERROR    | ultron-trading | ✖ Unhandled exception on GET /api/market/indices: Out of range float values are not JSON compliant
+Traceback (most recent call last):
+  File "/home/opc/ultron-trading/backend/main.py", line 46, in log_requests
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/middleware/cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 1574, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 2012, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 1594, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 1183, in handle
+    await app(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 143, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 129, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/fastapi/routing.py", line 724, in app
+    response = actual_response_class(content, **response_args)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/responses.py", line 192, in __init__
+    super().__init__(content, status_code, headers, media_type, background)
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/responses.py", line 45, in __init__
+    self.body = self.render(content)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/ultron-trading/backend/.venv/lib/python3.11/site-packages/starlette/responses.py", line 195, in render
+    return json.dumps(
+           ^^^^^^^^^^^
+  File "/home/opc/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "/home/opc/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/opc/.local/share/uv/python/cpython-3.11.15-linux-aarch64-gnu/lib/python3.11/json/encoder.py", line 258, in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+ValueError: Out of range float values are not JSON compliant
+2026-06-15 13:39:22 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-15 13:39:22 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-15 13:39:22 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-15 13:39:22 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-15 13:39:22 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-15 13:39:22 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (575.3ms)
+2026-06-15 13:39:22 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-15 13:39:25 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-15 13:39:26 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-15 13:39:26 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-15 13:39:26 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-15 13:39:26 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (3576.1ms)
+2026-06-15 13:39:26 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (3508.1ms)

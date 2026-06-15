@@ -1,5 +1,6 @@
 """Market service — batch data, indices, movers, sectors."""
 import logging
+import math
 from typing import Optional
 from datetime import datetime
 
@@ -67,6 +68,17 @@ def _chunk_list(lst: list, size: int):
         yield lst[i:i + size]
 
 
+def _clean_float(val, default=0.0) -> float:
+    """Ensure a float value is JSON-compliant (no NaN/Inf)."""
+    try:
+        f = float(val)
+        if math.isnan(f) or math.isinf(f):
+            return default
+        return f
+    except (TypeError, ValueError):
+        return default
+
+
 async def get_indices() -> list[dict]:
     """Fetch current data for major market indices."""
     import yfinance as yf
@@ -97,8 +109,8 @@ async def get_indices() -> list[dict]:
                 latest = ticker_data.iloc[-1]
                 prev = ticker_data.iloc[-2] if len(ticker_data) > 1 else latest
 
-                close = float(latest["Close"])
-                prev_close = float(prev["Close"])
+                close = _clean_float(latest["Close"])
+                prev_close = _clean_float(prev["Close"])
                 change = close - prev_close
                 change_pct = (change / prev_close) * 100 if prev_close else 0
 
@@ -161,9 +173,9 @@ async def get_movers(top_n: int = 25) -> dict[str, list[dict]]:
                     latest = ticker_data.iloc[-1]
                     prev = ticker_data.iloc[-2] if len(ticker_data) > 1 else latest
 
-                    close = float(latest["Close"])
-                    prev_close = float(prev["Close"])
-                    volume = int(float(latest.get("Volume", 0)))
+                    close = _clean_float(latest["Close"])
+                    prev_close = _clean_float(prev["Close"])
+                    volume = int(_clean_float(latest.get("Volume", 0)))
 
                     if close <= 0 or prev_close <= 0:
                         continue
@@ -224,8 +236,8 @@ async def get_sector_performance() -> list[dict]:
                 latest = ticker_data.iloc[-1]
                 prev = ticker_data.iloc[-2] if len(ticker_data) > 1 else latest
 
-                close = float(latest["Close"])
-                prev_close = float(prev["Close"])
+                close = _clean_float(latest["Close"])
+                prev_close = _clean_float(prev["Close"])
                 change_pct = ((close - prev_close) / prev_close) * 100 if prev_close else 0
 
                 results.append({
@@ -268,7 +280,7 @@ def get_fear_greed_index() -> dict:
         if hist.empty:
             return {"value": 50, "label": "Neutral", "description": "VIX data unavailable"}
 
-        vix_value = float(hist.iloc[-1]["Close"])
+        vix_value = _clean_float(hist.iloc[-1]["Close"])
 
         # Simple VIX → Fear/Greed mapping
         if vix_value < 15:
