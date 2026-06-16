@@ -101,3 +101,93 @@ async def get_stock_history(symbol: str, period: str = "1mo", interval: str = "1
     except Exception as e:
         logger.error(f"Error fetching history for {sym}: {e}", exc_info=True)
         raise HTTPException(status_code=400, detail=f"Error fetching history for {sym}: {str(e)}")
+
+
+# ── Company Profile, Financials, Holders, News ─────────────────────────
+
+from app.services.company_service import (
+    get_company_profile,
+    get_company_financials,
+    get_company_holders,
+    get_company_news,
+)
+
+
+@router.get("/{symbol}/profile")
+async def get_profile(symbol: str):
+    """Get company profile data."""
+    sym = symbol.upper()
+    logger.info(f"Profile requested for {sym}")
+    try:
+        data = get_company_profile(sym)
+        if not data.get("long_name") and not data.get("short_name"):
+            raise HTTPException(status_code=404, detail=f"No profile data found for symbol: {sym}")
+        return data
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching profile for {sym}: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail=f"Error fetching profile for {sym}: {str(e)}")
+
+
+@router.get("/{symbol}/financials")
+async def get_financials(symbol: str):
+    """Get company financials data."""
+    sym = symbol.upper()
+    logger.info(f"Financials requested for {sym}")
+    try:
+        data = get_company_financials(sym)
+        # If we got no annual revenue and no quarterly data, the symbol might be invalid
+        if (
+            not data.get("annual_revenue")
+            and not data.get("quarterly_earnings")
+            and not data.get("total_cash")
+            and not data.get("total_debt")
+        ):
+            raise HTTPException(status_code=404, detail=f"No financial data found for symbol: {sym}")
+        return data
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching financials for {sym}: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail=f"Error fetching financials for {sym}: {str(e)}")
+
+
+@router.get("/{symbol}/holders")
+async def get_holders(symbol: str):
+    """Get company holder data."""
+    sym = symbol.upper()
+    logger.info(f"Holders requested for {sym}")
+    try:
+        data = get_company_holders(sym)
+        if (
+            not data.get("major_holders")
+            and not data.get("institutional_holders")
+            and not data.get("mutual_fund_holders")
+        ):
+            raise HTTPException(status_code=404, detail=f"No holder data found for symbol: {sym}")
+        return data
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching holders for {sym}: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail=f"Error fetching holders for {sym}: {str(e)}")
+
+
+@router.get("/{symbol}/news")
+async def get_news(symbol: str):
+    """Get company news."""
+    sym = symbol.upper()
+    logger.info(f"News requested for {sym}")
+    try:
+        ticker = yf.Ticker(sym)
+        info = ticker.info
+        if not info or "regularMarketPrice" not in info:
+            raise HTTPException(status_code=404, detail=f"No data found for symbol: {sym}")
+        data = get_company_news(sym)
+        return {"symbol": sym, "news": data}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching news for {sym}: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail=f"Error fetching news for {sym}: {str(e)}")
