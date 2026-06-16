@@ -4,8 +4,19 @@ from typing import Optional, List
 import yfinance as yf
 from datetime import datetime
 import logging
+import math
 
 logger = logging.getLogger("ultron-trading.stocks")
+
+def safe_yf_float(val, default=0.0):
+    """Convert a yfinance value to float, handling NaN/Inf."""
+    try:
+        f = float(val)
+        if math.isnan(f) or math.isinf(f):
+            return default
+        return f
+    except (TypeError, ValueError):
+        return default
 
 router = APIRouter()
 
@@ -33,15 +44,17 @@ async def get_stock_quote(symbol: str):
             logger.warning(f"No data returned for {sym}")
             raise HTTPException(status_code=404, detail=f"No data found for symbol: {sym}")
 
+        raw_change = info.get("regularMarketChange", 0.0)
+        raw_change_pct = info.get("regularMarketChangePercent", 0.0)
         quote = StockQuote(
             symbol=sym,
-            price=info.get("regularMarketPrice", 0.0),
+            price=safe_yf_float(info.get("regularMarketPrice"), 0.0),
             currency=info.get("currency", "USD"),
             exchange=info.get("exchange", ""),
             quote_type=info.get("quoteType", ""),
             market_state=info.get("marketState", ""),
-            regular_market_change=info.get("regularMarketChange", 0.0),
-            regular_market_change_percent=info.get("regularMarketChangePercent", 0.0),
+            regular_market_change=safe_yf_float(raw_change, 0.0),
+            regular_market_change_percent=safe_yf_float(raw_change_pct, 0.0),
             regular_market_time=datetime.fromtimestamp(info["regularMarketTime"]).isoformat() if info.get("regularMarketTime") else None,
             message="Success",
         )
@@ -69,10 +82,10 @@ async def get_stock_history(symbol: str, period: str = "1mo", interval: str = "1
         for index, row in hist.iterrows():
             history_data.append({
                 "date": index.isoformat(),
-                "open": float(row["Open"]),
-                "high": float(row["High"]),
-                "low": float(row["Low"]),
-                "close": float(row["Close"]),
+                "open": safe_yf_float(row["Open"]),
+                "high": safe_yf_float(row["High"]),
+                "low": safe_yf_float(row["Low"]),
+                "close": safe_yf_float(row["Close"]),
                 "volume": int(row["Volume"]),
             })
 
