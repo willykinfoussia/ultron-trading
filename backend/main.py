@@ -23,7 +23,7 @@ logger = logging.getLogger("ultron-trading")
 app = FastAPI(
     title="Ultron Trading API",
     description="API for stock market analysis and data",
-    version="0.2.0",
+    version="0.7.0",
 )
 
 # CORS
@@ -63,13 +63,13 @@ app.include_router(market.router, prefix="/api/market", tags=["market"])
 @app.get("/")
 async def root():
     logger.info("Root endpoint called")
-    return {"message": "Welcome to Ultron Trading API", "version": "0.5.0"}
+    return {"message": "Welcome to Ultron Trading API", "version": "0.7.0"}
 
 @app.get("/health")
 async def health_check():
     logger.debug("Health check OK")
-    return {"status": "healthy", "version": "0.5.0"}
+    return {"status": "healthy", "version": "0.7.0"}
 
 @app.get("/api/version")
 async def api_version():
-    return {"version": "0.5.0"}
+    return {"version": "0.7.0"}
