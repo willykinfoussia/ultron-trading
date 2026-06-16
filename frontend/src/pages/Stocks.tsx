@@ -1,10 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { getStockQuote, getStockHistory } from "../api/stocks";
 import type { StockQuote, StockHistory } from "../api/types";
+import type { StockTabId } from "../components/StockTabs";
 import StockChart from "../components/StockChart";
 import StatGrid from "../components/StatGrid";
 import AutocompleteSearch from "../components/AutocompleteSearch";
+import StockTabs from "../components/StockTabs";
 import PageHeader from "../components/PageHeader";
 import Spinner from "../components/Spinner";
 
@@ -13,7 +15,7 @@ const POPULAR_STOCKS = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "NVDA", "META"]
 const STAGGER = {
   initial: { opacity: 0, y: 12 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] },
+  transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] as const },
 };
 
 interface Props {
@@ -28,11 +30,13 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
   const [selectedSymbol, setSelectedSymbol] = useState(initialSymbol);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("6mo");
+  const [activeTab, setActiveTab] = useState<StockTabId>("overview");
 
   const fetchStock = useCallback(
     async (symbol: string, historyPeriod = period) => {
       setError(null);
       setLoading(true);
+      setActiveTab("overview");
       try {
         const [q, h] = await Promise.all([
           getStockQuote(symbol),
@@ -84,6 +88,12 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
         <AutocompleteSearch onSelect={(symbol) => fetchStock(symbol)} loading={loading} />
       </motion.div>
 
+      {quote && (
+        <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.07 }}>
+          <StockTabs activeTab={activeTab} onChange={setActiveTab} />
+        </motion.div>
+      )}
+
       {error && (
         <motion.div {...STAGGER} className="card" style={{ borderColor: "var(--danger-border)" }}>
           <div className="card-body text-danger">⚠️ {error}</div>
@@ -107,81 +117,171 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
       )}
 
       {quote && (
-        <>
-          <motion.div
-            className="card"
-            {...STAGGER}
-            transition={{ ...STAGGER.transition, delay: 0.1 }}
-          >
-            <div className="card-body">
-              <div className="quote-header">
-                <div>
-                  <h2 className="quote-symbol">{quote.symbol}</h2>
-                  <div className="quote-meta">
-                    {quote.exchange} · {quote.currency} · {quote.market_state}
-                  </div>
-                </div>
-                <div className="quote-price-block">
-                  <div className="quote-price">${quote.price.toFixed(2)}</div>
-                  <div className={`quote-change ${isPositive ? "positive" : "negative"}`}>
-                    {isPositive ? "▲" : "▼"}{" "}
-                    {Math.abs(quote.regular_market_change).toFixed(2)} (
-                    {Math.abs(quote.regular_market_change_percent).toFixed(2)}%)
-                  </div>
-                </div>
-              </div>
-              <StatGrid
-                items={[
-                  {
-                    label: "Change",
-                    value: `${isPositive ? "+" : ""}${quote.regular_market_change.toFixed(2)}`,
-                    tone: isPositive ? "positive" : "negative",
-                  },
-                  {
-                    label: "Change %",
-                    value: `${isPositive ? "+" : ""}${quote.regular_market_change_percent.toFixed(2)}%`,
-                    tone: isPositive ? "positive" : "negative",
-                  },
-                  { label: "Market State", value: quote.market_state },
-                  { label: "Type", value: quote.quote_type },
-                ]}
-              />
-            </div>
-          </motion.div>
-
-          {history && (
+        <AnimatePresence mode="wait">
+          {activeTab === "overview" && (
             <motion.div
-              {...STAGGER}
-              transition={{ ...STAGGER.transition, delay: 0.15 }}
+              key="overview"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
             >
-              <StockChart
-                data={history}
-                period={period}
-                onPeriodChange={handlePeriodChange}
-                loading={loading}
-              />
+              <motion.div
+                className="card"
+                {...STAGGER}
+                transition={{ ...STAGGER.transition, delay: 0.1 }}
+              >
+                <div className="card-body">
+                  <div className="quote-header">
+                    <div>
+                      <h2 className="quote-symbol">{quote.symbol}</h2>
+                      <div className="quote-meta">
+                        {quote.exchange} · {quote.currency} · {quote.market_state}
+                      </div>
+                    </div>
+                    <div className="quote-price-block">
+                      <div className="quote-price">${quote.price.toFixed(2)}</div>
+                      <div className={`quote-change ${isPositive ? "positive" : "negative"}`}>
+                        {isPositive ? "▲" : "▼"}{" "}
+                        {Math.abs(quote.regular_market_change).toFixed(2)} (
+                        {Math.abs(quote.regular_market_change_percent).toFixed(2)}%)
+                      </div>
+                    </div>
+                  </div>
+                  <StatGrid
+                    items={[
+                      {
+                        label: "Change",
+                        value: `${isPositive ? "+" : ""}${quote.regular_market_change.toFixed(2)}`,
+                        tone: isPositive ? "positive" : "negative",
+                      },
+                      {
+                        label: "Change %",
+                        value: `${isPositive ? "+" : ""}${quote.regular_market_change_percent.toFixed(2)}%`,
+                        tone: isPositive ? "positive" : "negative",
+                      },
+                      { label: "Market State", value: quote.market_state },
+                      { label: "Type", value: quote.quote_type },
+                    ]}
+                  />
+                </div>
+              </motion.div>
+
+              {history && (
+                <motion.div
+                  {...STAGGER}
+                  transition={{ ...STAGGER.transition, delay: 0.15 }}
+                >
+                  <StockChart
+                    data={history}
+                    period={period}
+                    onPeriodChange={handlePeriodChange}
+                    loading={loading}
+                  />
+                </motion.div>
+              )}
+
+              <motion.div
+                {...STAGGER}
+                transition={{ ...STAGGER.transition, delay: 0.2 }}
+              >
+                <p className="chip-group-label">Popular stocks</p>
+                <div className="chip-group">
+                  {POPULAR_STOCKS.map((s) => (
+                    <button
+                      key={s}
+                      type="button"
+                      onClick={() => fetchStock(s)}
+                      className={`chip ${selectedSymbol === s ? "active" : ""}`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
             </motion.div>
           )}
 
-          <motion.div
-            {...STAGGER}
-            transition={{ ...STAGGER.transition, delay: 0.2 }}
-          >
-            <p className="chip-group-label">Popular stocks</p>
-            <div className="chip-group">
-              {POPULAR_STOCKS.map((s) => (
-                <button
-                  key={s}
-                  type="button"
-                  onClick={() => fetchStock(s)}
-                  className={`chip ${selectedSymbol === s ? "active" : ""}`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        </>
+          {activeTab === "company" && (
+            <motion.div
+              key="company"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
+            >
+              <div className="placeholder-hero">
+                <span className="placeholder-icon">🏢</span>
+                <h1 className="placeholder-title">{quote.symbol}</h1>
+                <p className="placeholder-desc">Company profile — coming in Phase 4.</p>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === "financials" && (
+            <motion.div
+              key="financials"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
+            >
+              <div className="placeholder-hero">
+                <span className="placeholder-icon">📊</span>
+                <h1 className="placeholder-title">Financials</h1>
+                <p className="placeholder-desc">Revenue, income, and cash flow — coming in Phase 4.</p>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === "holders" && (
+            <motion.div
+              key="holders"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
+            >
+              <div className="placeholder-hero">
+                <span className="placeholder-icon">👥</span>
+                <h1 className="placeholder-title">Holders</h1>
+                <p className="placeholder-desc">Ownership breakdown — coming in Phase 4.</p>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === "analysis" && (
+            <motion.div
+              key="analysis"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
+            >
+              <div className="placeholder-hero">
+                <span className="placeholder-icon">🔬</span>
+                <h1 className="placeholder-title">Analysis</h1>
+                <p className="placeholder-desc">Technical and fundamental analysis — coming in Phase 4.</p>
+              </div>
+            </motion.div>
+          )}
+
+          {activeTab === "news" && (
+            <motion.div
+              key="news"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
+            >
+              <div className="placeholder-hero">
+                <span className="placeholder-icon">📰</span>
+                <h1 className="placeholder-title">News</h1>
+                <p className="placeholder-desc">Latest company news — coming in Phase 4.</p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       )}
     </div>
   );

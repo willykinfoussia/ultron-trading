@@ -4107,3 +4107,51 @@ textarea.editor {
   padding: var(--sp-2);
 }
 
+/* ── Stock Tabs ───────────────────────────────────────────── */
+.stock-tabs-wrapper {
+  margin-bottom: var(--sp-3);
+}
+
+.stock-tabs {
+  display: flex;
+  gap: 0;
+  position: relative;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  border-bottom: 1px solid var(--border);
+}
+
+.stock-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.stock-tab {
+  position: relative;
+  flex-shrink: 0;
+  padding: var(--sp-2) var(--sp-4);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  white-space: nowrap;
+}
+
+.stock-tab:hover {
+  color: var(--text);
+}
+
+.stock-tab.active {
+  color: var(--primary);
+}
+
+.stock-tab-indicator {
+  background: var(--primary);
+  border-radius: 1px;
+  pointer-events: none;
+}
+
+

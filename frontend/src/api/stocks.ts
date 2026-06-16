@@ -1,4 +1,11 @@
-import type { StockQuote, StockHistory } from './types'
+import type {
+  StockQuote,
+  StockHistory,
+  CompanyProfile,
+  CompanyFinancials,
+  CompanyHolders,
+  NewsItem,
+} from './types'
 
 const API_BASE = '/api'
 
@@ -32,4 +39,20 @@ export async function getStockHistory(
   return fetchJSON<StockHistory>(
     `${API_BASE}/stocks/${symbol}/history?period=${period}&interval=${interval}`
   )
+}
+
+export async function getCompanyProfile(symbol: string): Promise<CompanyProfile> {
+  return fetchJSON<CompanyProfile>(`${API_BASE}/stocks/${symbol}/profile`)
+}
+
+export async function getCompanyFinancials(symbol: string): Promise<CompanyFinancials> {
+  return fetchJSON<CompanyFinancials>(`${API_BASE}/stocks/${symbol}/financials`)
+}
+
+export async function getCompanyHolders(symbol: string): Promise<CompanyHolders> {
+  return fetchJSON<CompanyHolders>(`${API_BASE}/stocks/${symbol}/holders`)
+}
+
+export async function getCompanyNews(symbol: string): Promise<NewsItem[]> {
+  return fetchJSON<NewsItem[]>(`${API_BASE}/stocks/${symbol}/news`)
 }
