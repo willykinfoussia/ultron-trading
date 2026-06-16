@@ -2,7 +2,7 @@
 Analysis API Endpoints
 
 Provides REST endpoints for the plugin-based analysis engine.
-All methods are auto-registered on import via the analysis package.
+All methods are auto-registered on first import via the analysis package.
 """
 
 import logging
@@ -43,11 +43,17 @@ async def list_all_methods():
 
 @router.get("/categories")
 async def list_categories():
-    """List all categories with method counts."""
-    return {
-        "categories": registry.get_categories(),
-        "total_methods": len(registry.list_all()),
-    }
+    """List all categories with method counts and method metadata."""
+    categories = registry.get_categories()
+    result = []
+    for cat_name, count in categories.items():
+        methods = registry.get_methods(category=cat_name)
+        result.append({
+            "category": cat_name,
+            "methods_count": count,
+            "methods": methods,
+        })
+    return result
 
 
 @router.get("/{symbol}/run/{method_id}")
@@ -119,19 +125,25 @@ async def run_all_category(symbol: str, body: RunAllRequest):
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
 
 
-@router.get("/{symbol}/summary")
-async def run_summary(symbol: str):
-    """Run all analysis methods across all categories and return a summary."""
+@router.get("/{symbol}/all")
+async def run_all_analysis(symbol: str):
+    """Run all analysis methods across all categories. Returns flat list of results."""
     sym = symbol.upper()
-
     try:
         results = await registry.run_all(sym)
-        return {
-            "symbol": sym,
-            "results": [r.model_dump() for r in results],
-            "count": len(results),
-            "categories_covered": list(registry.get_categories().keys()),
-        }
+        return [r.model_dump() for r in results]
+    except Exception as e:
+        logger.error(f"Error running all analysis for {sym}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+
+@router.get("/{symbol}/summary")
+async def run_summary(symbol: str):
+    """Run all analysis methods across all categories and return a flat list."""
+    sym = symbol.upper()
+    try:
+        results = await registry.run_all(sym)
+        return [r.model_dump() for r in results]
     except Exception as e:
         logger.error(f"Error running summary for {sym}: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")

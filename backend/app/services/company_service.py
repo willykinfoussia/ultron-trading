@@ -1,11 +1,41 @@
 """Company service — wraps yfinance for company profile, financials, holders, news."""
 import logging
 import math
+import time
 from typing import Optional
 
 import yfinance as yf
 
 logger = logging.getLogger("ultron-trading.company")
+
+
+# ── Simple in-memory cache ─────────────────────────────────────────────
+
+class _TTLCache:
+    """Simple TTL in-memory cache."""
+
+    def __init__(self):
+        self._store: dict = {}
+
+    def get(self, key: str):
+        entry = self._store.get(key)
+        if entry is None:
+            return None
+        value, expires_at = entry
+        if time.time() > expires_at:
+            del self._store[key]
+            return None
+        return value
+
+    def set(self, key: str, value, ttl: int):
+        self._store[key] = (value, time.time() + ttl)
+
+    def clear(self):
+        self._store.clear()
+
+
+_profile_cache = _TTLCache()   # TTL: 60s
+_financials_cache = _TTLCache()  # TTL: 300s
 
 
 def _safe_float(val, default=0.0) -> float:
@@ -55,6 +85,11 @@ def get_company_profile(symbol: str) -> dict:
     sym = symbol.upper()
     logger.info(f"Company profile requested for {sym}")
 
+    cached = _profile_cache.get(sym)
+    if cached is not None:
+        logger.info(f"Profile cache hit for {sym}")
+        return cached
+
     try:
         ticker = yf.Ticker(sym)
         info = ticker.info
@@ -90,6 +125,7 @@ def get_company_profile(symbol: str) -> dict:
         }
 
         logger.info(f"Profile for {sym}: {profile.get('long_name')} ({profile.get('sector')})")
+        _profile_cache.set(sym, profile, ttl=60)
         return profile
 
     except Exception as e:
@@ -138,6 +174,11 @@ def get_company_financials(symbol: str) -> dict:
     """
     sym = symbol.upper()
     logger.info(f"Company financials requested for {sym}")
+
+    cached = _financials_cache.get(sym)
+    if cached is not None:
+        logger.info(f"Financials cache hit for {sym}")
+        return cached
 
     try:
         ticker = yf.Ticker(sym)
@@ -226,6 +267,7 @@ def get_company_financials(symbol: str) -> dict:
             f"Financials for {sym}: {len(annual_revenue)}y revenue, "
             f"{len(quarterly_earnings)}q earnings"
         )
+        _financials_cache.set(sym, result, ttl=300)
         return result
 
     except Exception as e:

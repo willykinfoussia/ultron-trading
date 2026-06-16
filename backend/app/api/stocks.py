@@ -185,7 +185,7 @@ async def get_news(symbol: str):
         if not info or "regularMarketPrice" not in info:
             raise HTTPException(status_code=404, detail=f"No data found for symbol: {sym}")
         data = get_company_news(sym)
-        return {"symbol": sym, "news": data}
+        return data
     except HTTPException:
         raise
     except Exception as e:

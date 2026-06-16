@@ -25,6 +25,3 @@ dev-dependencies = [
     "pytest>=8.0.0",
     "httpx>=0.26.0",
 ]
-
-[tool.uv.scripts]
-start = "uvicorn app.main:app --host 0.0.0.0 --port 8080"
