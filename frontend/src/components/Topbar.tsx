@@ -1,4 +1,6 @@
+import { motion } from "framer-motion";
 import type { TabId } from "./Sidebar";
+import { TAB_LABELS } from "./Sidebar";
 
 interface TopbarProps {
   activeTab: TabId;
@@ -6,22 +8,14 @@ interface TopbarProps {
   sidebarOpen: boolean;
   onToggleSidebar: () => void;
   apiStatus: "ok" | "error" | "loading";
+  subtitle?: string;
 }
 
 const QUICK_LINKS: Array<{ id: TabId; label: string }> = [
-  { id: "dashboard", label: "Dashboard" },
+  { id: "stocks", label: "Stocks" },
   { id: "market", label: "Market" },
   { id: "watchlist", label: "Watchlist" },
 ];
-
-const TAB_LABELS: Record<TabId, string> = {
-  dashboard: "Dashboard",
-  market: "Market",
-  analysis: "Analysis",
-  watchlist: "Watchlist",
-  system: "System",
-  settings: "Settings",
-};
 
 export default function Topbar({
   activeTab,
@@ -29,6 +23,7 @@ export default function Topbar({
   sidebarOpen,
   onToggleSidebar,
   apiStatus,
+  subtitle,
 }: TopbarProps) {
   return (
     <header className="topbar" role="banner">
@@ -43,22 +38,29 @@ export default function Topbar({
         </button>
       )}
 
-      {/* Quick nav links */}
       <div className="topbar-nav">
-        {QUICK_LINKS.map((link) => (
-          <button
-            key={link.id}
-            className={`topbar-nav-link ${activeTab === link.id ? "active" : ""}`}
-            onClick={() => onTabChange(link.id)}
-          >
-            {link.label}
-          </button>
-        ))}
+        {QUICK_LINKS.map((link) => {
+          const isActive = activeTab === link.id;
+          return (
+            <button
+              key={link.id}
+              className={`topbar-nav-link ${isActive ? "active" : ""}`}
+              onClick={() => onTabChange(link.id)}
+            >
+              {isActive && (
+                <motion.span
+                  className="topbar-nav-indicator"
+                  layoutId="topbar-indicator"
+                  transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                />
+              )}
+              <span className="topbar-nav-link-label">{link.label}</span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* Right side: API status + page title */}
       <div className="topbar-right">
-        {/* API status indicator */}
         <button
           className={`topbar-hermes-indicator topbar-hermes-indicator--${apiStatus}`}
           title={`API ${apiStatus === "ok" ? "connected" : apiStatus === "error" ? "error" : "loading"}`}
@@ -69,7 +71,10 @@ export default function Topbar({
             aria-hidden="true"
           />
         </button>
-        <span className="topbar-title">{TAB_LABELS[activeTab] ?? ""}</span>
+        <div className="topbar-titles">
+          <span className="topbar-title">{TAB_LABELS[activeTab] ?? ""}</span>
+          {subtitle && <span className="topbar-subtitle">{subtitle}</span>}
+        </div>
       </div>
     </header>
   );

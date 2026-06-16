@@ -1,116 +1,92 @@
-import { useState } from 'react'
-import type { MarketMover } from '../api/types'
+import { useState } from "react";
+import type { MarketMover } from "../api/types";
+import SegmentedControl, { type SegmentTab } from "./SegmentedControl";
 
 interface Props {
-  gainers: MarketMover[]
-  losers: MarketMover[]
-  actives: MarketMover[]
-  onSelect: (symbol: string) => void
+  gainers: MarketMover[];
+  losers: MarketMover[];
+  actives: MarketMover[];
+  onSelect: (symbol: string) => void;
 }
 
-type Tab = 'gainers' | 'losers' | 'actives'
+type Tab = "gainers" | "losers" | "actives";
 
-const TAB_CONFIG: { key: Tab; label: string; icon: string; color: string }[] = [
-  { key: 'gainers', label: 'Top Gainers', icon: '🚀', color: 'var(--success)' },
-  { key: 'losers', label: 'Top Losers', icon: '📉', color: 'var(--danger)' },
-  { key: 'actives', label: 'Most Active', icon: '🔥', color: 'var(--accent)' },
-]
+const TABS: SegmentTab[] = [
+  { id: "gainers", label: "Top Gainers", icon: "🚀", tone: "success" },
+  { id: "losers", label: "Top Losers", icon: "📉", tone: "danger" },
+  { id: "actives", label: "Most Active", icon: "🔥", tone: "primary" },
+];
 
-export default function MoversTabs({ gainers, losers, actives, onSelect }: Props) {
-  const [activeTab, setActiveTab] = useState<Tab>('gainers')
-
-  const data: Record<Tab, MarketMover[]> = { gainers, losers, actives }
-  const items = data[activeTab]
-  const config = TAB_CONFIG.find((t) => t.key === activeTab)!
-
-  return (
-    <div style={{
-      background: 'var(--bg-card)',
-      borderRadius: '12px',
-      border: '1px solid var(--border)',
-      overflow: 'hidden',
-    }}>
-      {/* Tab headers */}
-      <div style={{ display: 'flex', borderBottom: '1px solid var(--border)' }}>
-        {TAB_CONFIG.map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            style={{
-              flex: 1,
-              padding: '0.75rem',
-              background: activeTab === tab.key ? 'var(--bg-hover, #1e1e3a)' : 'transparent',
-              border: 'none',
-              color: activeTab === tab.key ? tab.color : 'var(--text-secondary)',
-              cursor: 'pointer',
-              fontWeight: activeTab === tab.key ? 700 : 400,
-              fontSize: '0.85rem',
-              borderBottom: activeTab === tab.key ? `2px solid ${tab.color}` : '2px solid transparent',
-              transition: 'all 0.15s',
-            }}
-          >
-            {tab.icon} {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Table */}
-      <div style={{ maxHeight: 500, overflowY: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-          <thead>
-            <tr style={{ color: 'var(--text-secondary)', borderBottom: '1px solid var(--border)' }}>
-              <th style={{ padding: '0.6rem 1rem', textAlign: 'left', fontWeight: 600 }}>Symbol</th>
-              <th style={{ padding: '0.6rem 1rem', textAlign: 'right', fontWeight: 600 }}>Price</th>
-              <th style={{ padding: '0.6rem 1rem', textAlign: 'right', fontWeight: 600 }}>Change</th>
-              <th style={{ padding: '0.6rem 1rem', textAlign: 'right', fontWeight: 600 }}>Volume</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item, i) => {
-              const pos = item.change_percent >= 0
-              return (
-                <tr
-                  key={item.symbol}
-                  onClick={() => onSelect(item.symbol)}
-                  style={{
-                    cursor: 'pointer',
-                    borderBottom: '1px solid var(--border)',
-                    background: i % 2 === 0 ? 'transparent' : 'var(--bg-hover, rgba(255,255,255,0.02))',
-                    transition: 'background 0.1s',
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--bg-hover, #1e1e3a)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : 'var(--bg-hover, rgba(255,255,255,0.02))')}
-                >
-                  <td style={{ padding: '0.5rem 1rem', fontWeight: 700, color: config.color }}>
-                    {item.symbol}
-                  </td>
-                  <td style={{ padding: '0.5rem 1rem', textAlign: 'right', fontWeight: 600 }}>
-                    ${item.price.toFixed(2)}
-                  </td>
-                  <td style={{
-                    padding: '0.5rem 1rem',
-                    textAlign: 'right',
-                    fontWeight: 600,
-                    color: pos ? 'var(--success)' : 'var(--danger)',
-                  }}>
-                    {pos ? '+' : ''}{item.change_percent.toFixed(2)}%
-                  </td>
-                  <td style={{ padding: '0.5rem 1rem', textAlign: 'right', color: 'var(--text-secondary)' }}>
-                    {formatVolume(item.volume)}
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
-}
+const SYMBOL_TONE: Record<Tab, "success" | "danger" | "primary"> = {
+  gainers: "success",
+  losers: "danger",
+  actives: "primary",
+};
 
 function formatVolume(v: number): string {
-  if (v >= 1_000_000_000) return (v / 1_000_000_000).toFixed(1) + 'B'
-  if (v >= 1_000_000) return (v / 1_000_000).toFixed(1) + 'M'
-  if (v >= 1_000) return (v / 1_000).toFixed(1) + 'K'
-  return v.toString()
+  if (v >= 1_000_000_000) return (v / 1_000_000_000).toFixed(1) + "B";
+  if (v >= 1_000_000) return (v / 1_000_000).toFixed(1) + "M";
+  if (v >= 1_000) return (v / 1_000).toFixed(1) + "K";
+  return v.toString();
+}
+
+export default function MoversTabs({ gainers, losers, actives, onSelect }: Props) {
+  const [activeTab, setActiveTab] = useState<Tab>("gainers");
+
+  const data: Record<Tab, MarketMover[]> = { gainers, losers, actives };
+  const items = data[activeTab];
+  const symbolTone = SYMBOL_TONE[activeTab];
+
+  return (
+    <div className="card">
+      <div className="card-header">
+        <span className="card-title">Market Movers</span>
+      </div>
+      <div className="card-body no-padding">
+        <div style={{ padding: "var(--sp-3) var(--sp-4)", borderBottom: "1px solid var(--border-subtle)" }}>
+          <SegmentedControl
+            tabs={TABS}
+            active={activeTab}
+            onChange={(id) => setActiveTab(id as Tab)}
+            fullWidth
+            layoutId="movers-segment"
+          />
+        </div>
+        <div className="data-table-wrap">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>Symbol</th>
+                <th className="num">Price</th>
+                <th className="num">Change</th>
+                <th className="num">Volume</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => {
+                const pos = item.change_percent >= 0;
+                return (
+                  <tr
+                    key={item.symbol}
+                    className="data-table-row"
+                    onClick={() => onSelect(item.symbol)}
+                  >
+                    <td>
+                      <span className={`data-table-symbol ${symbolTone}`}>{item.symbol}</span>
+                    </td>
+                    <td className="num">${item.price.toFixed(2)}</td>
+                    <td className={`num data-table-change ${pos ? "positive" : "negative"}`}>
+                      {pos ? "+" : ""}
+                      {item.change_percent.toFixed(2)}%
+                    </td>
+                    <td className="num data-table-volume">{formatVolume(item.volume)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
 }

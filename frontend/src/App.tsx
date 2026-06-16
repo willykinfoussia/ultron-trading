@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import Sidebar, { type TabId } from "./components/Sidebar";
 import Topbar from "./components/Topbar";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Toast, type ToastKind, type ToastState } from "./components/Toast";
-import Dashboard from "./pages/Dashboard";
+import Stocks from "./pages/Stocks";
 import Market from "./pages/Market";
 import "./styles.css";
 
-/* ── API health check ── */
 async function checkApiHealth(): Promise<"ok" | "error" | "loading"> {
   try {
     const r = await fetch("/api/market/indices", { signal: AbortSignal.timeout(5000) });
@@ -17,24 +17,34 @@ async function checkApiHealth(): Promise<"ok" | "error" | "loading"> {
   }
 }
 
-/* ── App ── */
+const PAGE_MOTION = {
+  initial: { opacity: 0, y: 8 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -8 },
+  transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] },
+};
+
 export default function App() {
-  const [activeTab, setActiveTab] = useState<TabId>("dashboard");
+  const [activeTab, setActiveTab] = useState<TabId>("stocks");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [apiStatus, setApiStatus] = useState<"ok" | "error" | "loading">("loading");
   const [toast, setToastState] = useState<ToastState>(null);
   const [version, setVersion] = useState("");
+  const [selectedSymbol, setSelectedSymbol] = useState("AAPL");
 
   const setToast = useCallback((message: string, kind: ToastKind = "info") => {
     setToastState({ message, kind });
   }, []);
 
-  // Expose setToast for child components via window (legacy compat)
+  const navigateToStock = useCallback((symbol: string) => {
+    setSelectedSymbol(symbol);
+    setActiveTab("stocks");
+  }, []);
+
   useEffect(() => {
     (window as unknown as Record<string, unknown>).__setToast = setToast;
   }, [setToast]);
 
-  // API health poll
   useEffect(() => {
     let active = true;
     const poll = async () => {
@@ -43,10 +53,12 @@ export default function App() {
     };
     poll();
     const id = setInterval(poll, 30_000);
-    return () => { active = false; clearInterval(id); };
+    return () => {
+      active = false;
+      clearInterval(id);
+    };
   }, []);
 
-  // Fetch version
   useEffect(() => {
     fetch("/api/version")
       .then((r) => r.json())
@@ -56,7 +68,6 @@ export default function App() {
       .catch(() => {});
   }, []);
 
-  // Auto-hide toast
   useEffect(() => {
     if (!toast) return;
     const id = setTimeout(() => setToastState(null), 4000);
@@ -65,22 +76,34 @@ export default function App() {
 
   function renderPage() {
     switch (activeTab) {
-      case "dashboard":
-        return <Dashboard />;
+      case "stocks":
+        return (
+          <Stocks
+            initialSymbol={selectedSymbol}
+            onSymbolChange={setSelectedSymbol}
+          />
+        );
       case "market":
-        return <Market onSelectStock={() => setActiveTab("dashboard")} />;
+        return <Market onSelectStock={navigateToStock} />;
       case "analysis":
         return <AnalysisPlaceholder />;
       case "watchlist":
         return <WatchlistPlaceholder />;
       case "system":
-        return <SystemPage apiStatus={apiStatus} />;
+        return <SystemPage apiStatus={apiStatus} version={version} />;
       case "settings":
         return <SettingsPage />;
       default:
-        return <Dashboard />;
+        return (
+          <Stocks
+            initialSymbol={selectedSymbol}
+            onSymbolChange={setSelectedSymbol}
+          />
+        );
     }
   }
+
+  const topbarSubtitle = activeTab === "stocks" ? selectedSymbol : undefined;
 
   return (
     <div className={`layout ${sidebarOpen ? "sidebar-open" : "sidebar-closed"}`}>
@@ -99,12 +122,19 @@ export default function App() {
           sidebarOpen={sidebarOpen}
           onToggleSidebar={() => setSidebarOpen(true)}
           apiStatus={apiStatus}
+          subtitle={topbarSubtitle}
         />
 
         <main role="main" className="main-content">
-          <ErrorBoundary key={activeTab}>
-            {renderPage()}
-          </ErrorBoundary>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              className="page-transition"
+              {...PAGE_MOTION}
+            >
+              <ErrorBoundary>{renderPage()}</ErrorBoundary>
+            </motion.div>
+          </AnimatePresence>
         </main>
       </div>
 
@@ -113,17 +143,25 @@ export default function App() {
   );
 }
 
-/* ── Placeholder pages ── */
 function AnalysisPlaceholder() {
   return (
     <div className="page">
-      <div className="card">
-        <div className="card-header">
-          <span className="card-title">🔬 Analysis</span>
-        </div>
-        <div className="card-body">
-          <p style={{ color: "var(--text-2)" }}>Coming soon — sector analysis, charts, and more.</p>
-        </div>
+      <div className="placeholder-hero">
+        <span className="placeholder-icon">🔬</span>
+        <h1 className="placeholder-title">Analysis</h1>
+        <p className="placeholder-desc">
+          Sector analysis, technical indicators, and comparative charts — coming soon.
+        </p>
+      </div>
+      <div className="placeholder-skeleton-grid">
+        {[1, 2, 3].map((n) => (
+          <div key={n} className="card">
+            <div className="card-body">
+              <div className="skeleton" style={{ height: 14, width: "40%", marginBottom: 12 }} />
+              <div className="skeleton" style={{ height: 80 }} />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -132,32 +170,78 @@ function AnalysisPlaceholder() {
 function WatchlistPlaceholder() {
   return (
     <div className="page">
+      <div className="placeholder-hero">
+        <span className="placeholder-icon">⭐</span>
+        <h1 className="placeholder-title">Watchlist</h1>
+        <p className="placeholder-desc">
+          Track your favorite stocks and get alerts on price movements.
+        </p>
+      </div>
       <div className="card">
         <div className="card-header">
-          <span className="card-title">⭐ Watchlist</span>
+          <span className="card-title">Your watchlist</span>
         </div>
         <div className="card-body">
-          <p style={{ color: "var(--text-2)" }}>Coming soon — track your favorite stocks.</p>
+          <div className="empty-state">
+            <span className="empty-state-icon">📋</span>
+            <span className="empty-state-title">No stocks yet</span>
+            <span className="empty-state-desc">
+              Add symbols from the Stocks or Market page to build your watchlist.
+            </span>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-function SystemPage({ apiStatus }: { apiStatus: string }) {
+function SystemPage({ apiStatus, version }: { apiStatus: string; version: string }) {
+  const ok = apiStatus === "ok";
   return (
-    <div className="page">
-      <div className="card">
-        <div className="card-header">
-          <span className="card-title">🖥️ System</span>
-        </div>
-        <div className="card-body">
-          <p style={{ color: "var(--text-2)" }}>
-            API Status:{" "}
-            <span style={{ color: apiStatus === "ok" ? "var(--success)" : "var(--danger)" }}>
-              {apiStatus}
+    <div className="page system-page">
+      <div className="system-cards-grid">
+        <div className="card metric-card">
+          <div className="card-header">
+            <span className="card-title">
+              <span className="metric-icon">🌐</span>
+              API Status
             </span>
-          </p>
+          </div>
+          <div className="card-body">
+            <div
+              className={`stat-cell-value ${ok ? "positive" : "negative"}`}
+              style={{ fontSize: "var(--text-xl)" }}
+            >
+              {apiStatus.toUpperCase()}
+            </div>
+            <p className="metric-details">
+              {ok ? "All market endpoints responding." : "Unable to reach the API."}
+            </p>
+          </div>
+        </div>
+        <div className="card metric-card">
+          <div className="card-header">
+            <span className="card-title">
+              <span className="metric-icon">📦</span>
+              Version
+            </span>
+          </div>
+          <div className="card-body">
+            <div className="stat-cell-value mono">v{version || "—"}</div>
+            <p className="metric-details">Ultron Trading frontend</p>
+          </div>
+        </div>
+        <div className="card metric-card">
+          <div className="card-header">
+            <span className="card-title">
+              <span className="metric-icon">⚡</span>
+              Polling
+            </span>
+          </div>
+          <div className="card-body">
+            <div className="stat-cell-value">30s / 60s</div>
+            <p className="metric-details">API health / market data refresh intervals</p>
+          </div>
         </div>
       </div>
     </div>
@@ -166,13 +250,27 @@ function SystemPage({ apiStatus }: { apiStatus: string }) {
 
 function SettingsPage() {
   return (
-    <div className="page">
+    <div className="page settings-page">
+      <div className="placeholder-hero" style={{ paddingTop: "var(--sp-4)" }}>
+        <span className="placeholder-icon">⚙️</span>
+        <h1 className="placeholder-title">Settings</h1>
+        <p className="placeholder-desc">Theme, accent color, and display preferences.</p>
+      </div>
       <div className="card">
         <div className="card-header">
-          <span className="card-title">⚙️ Settings</span>
+          <span className="card-title">Appearance</span>
         </div>
         <div className="card-body">
-          <p style={{ color: "var(--text-2)" }}>Coming soon — theme, accent, preferences.</p>
+          <div className="settings-row">
+            <button type="button" className="settings-theme-btn active">
+              <span>🌙</span>
+              <span>Dark (active)</span>
+            </button>
+            <button type="button" className="settings-theme-btn" disabled>
+              <span>☀️</span>
+              <span>Light (soon)</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>

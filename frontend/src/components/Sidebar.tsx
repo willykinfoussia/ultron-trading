@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export type TabId = "dashboard" | "market" | "analysis" | "watchlist" | "system" | "settings";
+export type TabId = "stocks" | "market" | "analysis" | "watchlist" | "system" | "settings";
 
 interface NavItem {
   id: TabId;
@@ -18,12 +18,12 @@ const SECTIONS: Array<{ id: SectionId; label: string }> = [
 ];
 
 const NAV: NavItem[] = [
-  { id: "dashboard",  label: "Dashboard",  icon: "📊", section: "trading" },
-  { id: "market",     label: "Market",     icon: "📈", section: "trading" },
-  { id: "analysis",   label: "Analysis",   icon: "🔬", section: "tools" },
-  { id: "watchlist",  label: "Watchlist",  icon: "⭐", section: "tools" },
-  { id: "system",     label: "System",     icon: "🖥️", section: "system" },
-  { id: "settings",   label: "Settings",   icon: "⚙️", section: "system" },
+  { id: "stocks", label: "Stocks", icon: "📈", section: "trading" },
+  { id: "market", label: "Market", icon: "📊", section: "trading" },
+  { id: "analysis", label: "Analysis", icon: "🔬", section: "tools" },
+  { id: "watchlist", label: "Watchlist", icon: "⭐", section: "tools" },
+  { id: "system", label: "System", icon: "🖥️", section: "system" },
+  { id: "settings", label: "Settings", icon: "⚙️", section: "system" },
 ];
 
 interface SidebarProps {
@@ -48,7 +48,6 @@ export default function Sidebar({
 
   return (
     <aside className="sidebar" role="navigation" aria-label="Sidebar">
-      {/* Sidebar header */}
       <div className="sidebar-header">
         <span className="sidebar-logo" aria-label="Ultron Trading">
           <span>U</span>
@@ -64,7 +63,6 @@ export default function Sidebar({
         </button>
       </div>
 
-      {/* Nav sections */}
       <div className="sidebar-nav">
         {navBySection.map((sec) => (
           <div key={sec.id} className="sidebar-section">
@@ -101,7 +99,6 @@ export default function Sidebar({
         ))}
       </div>
 
-      {/* Sidebar footer */}
       {sidebarOpen && (
         <div className="sidebar-footer">
           <span className="sidebar-version">v{version || "—"}</span>
@@ -110,3 +107,12 @@ export default function Sidebar({
     </aside>
   );
 }
+
+export const TAB_LABELS: Record<TabId, string> = {
+  stocks: "Stocks",
+  market: "Market",
+  analysis: "Analysis",
+  watchlist: "Watchlist",
+  system: "System",
+  settings: "Settings",
+};

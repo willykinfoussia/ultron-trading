@@ -1,15 +1,23 @@
 import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
 import { getMarketIndices, getMovers, getSectors, getFearGreed } from "../api/market";
 import type { MarketIndex, MoversData, SectorPerf, FearGreed } from "../api/types";
 import IndexTicker, { FearGreedGauge } from "../components/MarketOverview";
 import MoversTabs from "../components/MoversTabs";
 import SectorGrid from "../components/SectorGrid";
 import MarketHeatmap from "../components/MarketHeatmap";
+import PageHeader from "../components/PageHeader";
 import Spinner from "../components/Spinner";
 
 interface Props {
   onSelectStock: (symbol: string) => void;
 }
+
+const STAGGER = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] },
+};
 
 export default function MarketPage({ onSelectStock }: Props) {
   const [indices, setIndices] = useState<MarketIndex[]>([]);
@@ -49,37 +57,23 @@ export default function MarketPage({ onSelectStock }: Props) {
   }, [fetchData]);
 
   return (
-    <div className="page">
-      {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "var(--sp-4)",
-          flexWrap: "wrap",
-          gap: "var(--sp-2)",
-        }}
-      >
-        <h2 style={{ fontSize: "var(--text-xl)", fontWeight: 700, margin: 0 }}>
-          📊 Market Overview
-        </h2>
-        <div style={{ display: "flex", alignItems: "center", gap: "var(--sp-3)" }}>
-          {lastUpdate && (
-            <span style={{ fontSize: "var(--text-xs)", color: "var(--text-3)" }}>
-              Updated {lastUpdate.toLocaleTimeString()}
-            </span>
-          )}
-          <button
-            onClick={fetchData}
-            disabled={loading}
-            className="btn-ghost"
-            style={{ fontSize: "var(--text-sm)", opacity: loading ? 0.6 : 1 }}
-          >
-            {loading ? "⟳ Loading..." : "↻ Refresh"}
-          </button>
-        </div>
-      </div>
+    <div className="page page-stagger">
+      <motion.div {...STAGGER}>
+        <PageHeader
+          title="Market"
+          meta={lastUpdate ? `Updated ${lastUpdate.toLocaleTimeString()}` : "Live market overview"}
+          actions={
+            <button
+              type="button"
+              onClick={fetchData}
+              disabled={loading}
+              className="btn-ghost"
+            >
+              {loading ? "⟳ Loading…" : "↻ Refresh"}
+            </button>
+          }
+        />
+      </motion.div>
 
       {loading && !indices.length && (
         <div className="loading-center">
@@ -88,41 +82,39 @@ export default function MarketPage({ onSelectStock }: Props) {
       )}
 
       {error && (
-        <div className="card" style={{ marginBottom: "var(--sp-4)", borderColor: "var(--danger-border)" }}>
-          <div className="card-body" style={{ color: "var(--danger)" }}>
-            ⚠️ {error}
-          </div>
-        </div>
+        <motion.div {...STAGGER} className="card" style={{ borderColor: "var(--danger-border)" }}>
+          <div className="card-body text-danger">⚠️ {error}</div>
+        </motion.div>
       )}
 
-      {/* Index Ticker */}
-      <IndexTicker indices={indices} />
+      <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.05 }}>
+        <IndexTicker indices={indices} />
+      </motion.div>
 
-      {/* Main grid */}
-      <div className="split-2" style={{ marginBottom: "var(--sp-6)" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--sp-4)" }}>
-          <MoversTabs
-            gainers={movers.gainers}
-            losers={movers.losers}
-            actives={movers.actives}
-            onSelect={onSelectStock}
-          />
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--sp-4)" }}>
-          <FearGreedGauge data={fearGreed} />
-        </div>
-      </div>
+      <motion.div
+        className="split-2"
+        {...STAGGER}
+        transition={{ ...STAGGER.transition, delay: 0.1 }}
+      >
+        <MoversTabs
+          gainers={movers.gainers}
+          losers={movers.losers}
+          actives={movers.actives}
+          onSelect={onSelectStock}
+        />
+        <FearGreedGauge data={fearGreed} />
+      </motion.div>
 
-      {/* Sectors */}
-      <div style={{ marginBottom: "var(--sp-6)" }}>
+      <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.15 }}>
         <SectorGrid sectors={sectors} />
-      </div>
+      </motion.div>
 
-      {/* Heatmap */}
-      <MarketHeatmap
-        movers={[...movers.gainers, ...movers.losers]}
-        onSelect={onSelectStock}
-      />
+      <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.2 }}>
+        <MarketHeatmap
+          movers={[...movers.gainers, ...movers.losers]}
+          onSelect={onSelectStock}
+        />
+      </motion.div>
     </div>
   );
 }
