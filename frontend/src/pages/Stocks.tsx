@@ -9,6 +9,11 @@ import AutocompleteSearch from "../components/AutocompleteSearch";
 import StockTabs from "../components/StockTabs";
 import PageHeader from "../components/PageHeader";
 import Spinner from "../components/Spinner";
+import CompanyProfile from "../components/CompanyProfile";
+import FinancialsTable from "../components/FinancialsTable";
+import HoldersChart from "../components/HoldersChart";
+import NewsFeed from "../components/NewsFeed";
+import EmbeddedAnalysis from "../components/EmbeddedAnalysis";
 
 const POPULAR_STOCKS = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "NVDA", "META"];
 
@@ -96,7 +101,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
 
       {error && (
         <motion.div {...STAGGER} className="card" style={{ borderColor: "var(--danger-border)" }}>
-          <div className="card-body text-danger">⚠️ {error}</div>
+          <div className="card-body text-danger">{error}</div>
         </motion.div>
       )}
 
@@ -210,11 +215,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
             >
-              <div className="placeholder-hero">
-                <span className="placeholder-icon">🏢</span>
-                <h1 className="placeholder-title">{quote.symbol}</h1>
-                <p className="placeholder-desc">Company profile — coming in Phase 4.</p>
-              </div>
+              <CompanyProfile symbol={quote.symbol} />
             </motion.div>
           )}
 
@@ -226,11 +227,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
             >
-              <div className="placeholder-hero">
-                <span className="placeholder-icon">📊</span>
-                <h1 className="placeholder-title">Financials</h1>
-                <p className="placeholder-desc">Revenue, income, and cash flow — coming in Phase 4.</p>
-              </div>
+              <FinancialsTable symbol={quote.symbol} />
             </motion.div>
           )}
 
@@ -242,11 +239,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
             >
-              <div className="placeholder-hero">
-                <span className="placeholder-icon">👥</span>
-                <h1 className="placeholder-title">Holders</h1>
-                <p className="placeholder-desc">Ownership breakdown — coming in Phase 4.</p>
-              </div>
+              <HoldersChart symbol={quote.symbol} />
             </motion.div>
           )}
 
@@ -258,11 +251,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
             >
-              <div className="placeholder-hero">
-                <span className="placeholder-icon">🔬</span>
-                <h1 className="placeholder-title">Analysis</h1>
-                <p className="placeholder-desc">Technical and fundamental analysis — coming in Phase 4.</p>
-              </div>
+              <EmbeddedAnalysis symbol={selectedSymbol} />
             </motion.div>
           )}
 
@@ -274,11 +263,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
             >
-              <div className="placeholder-hero">
-                <span className="placeholder-icon">📰</span>
-                <h1 className="placeholder-title">News</h1>
-                <p className="placeholder-desc">Latest company news — coming in Phase 4.</p>
-              </div>
+              <NewsFeed symbol={selectedSymbol} />
             </motion.div>
           )}
         </AnimatePresence>

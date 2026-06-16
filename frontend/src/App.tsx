@@ -6,6 +6,7 @@ import { ErrorBoundary } from "./components/ErrorBoundary";
 import { Toast, type ToastKind, type ToastState } from "./components/Toast";
 import Stocks from "./pages/Stocks";
 import Market from "./pages/Market";
+import Analysis from './pages/Analysis';
 import "./styles.css";
 
 async function checkApiHealth(): Promise<"ok" | "error" | "loading"> {
@@ -21,7 +22,7 @@ const PAGE_MOTION = {
   initial: { opacity: 0, y: 8 },
   animate: { opacity: 1, y: 0 },
   exit: { opacity: 0, y: -8 },
-  transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] },
+  transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] as const },
 };
 
 export default function App() {
@@ -86,7 +87,7 @@ export default function App() {
       case "market":
         return <Market onSelectStock={navigateToStock} />;
       case "analysis":
-        return <AnalysisPlaceholder />;
+        return <Analysis symbol={selectedSymbol} />;
       case "watchlist":
         return <WatchlistPlaceholder />;
       case "system":
@@ -143,29 +144,6 @@ export default function App() {
   );
 }
 
-function AnalysisPlaceholder() {
-  return (
-    <div className="page">
-      <div className="placeholder-hero">
-        <span className="placeholder-icon">🔬</span>
-        <h1 className="placeholder-title">Analysis</h1>
-        <p className="placeholder-desc">
-          Sector analysis, technical indicators, and comparative charts — coming soon.
-        </p>
-      </div>
-      <div className="placeholder-skeleton-grid">
-        {[1, 2, 3].map((n) => (
-          <div key={n} className="card">
-            <div className="card-body">
-              <div className="skeleton" style={{ height: 14, width: "40%", marginBottom: 12 }} />
-              <div className="skeleton" style={{ height: 80 }} />
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 function WatchlistPlaceholder() {
   return (
