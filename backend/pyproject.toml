@@ -1,6 +1,6 @@
 [project]
 name = "ultron-trading-backend"
-version = "0.5.0"
+version = "0.6.0"
 description = "Backend API for Ultron Trading"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -10,6 +10,7 @@ dependencies = [
     "yfinance>=0.2.40",
     "pydantic>=2.6.0",
     "python-dotenv>=1.0.0",
+    "ta>=0.11.0",
 ]
 
 [project.urls]
