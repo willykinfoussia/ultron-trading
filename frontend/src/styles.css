@@ -200,6 +200,8 @@ select:focus-visible {
 .layout {
   display: flex;
   min-height: 100vh;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 /* ── Sidebar ─────────────────────────────────────────────── */
@@ -581,6 +583,8 @@ select:focus-visible {
   flex: 1;
   align-content: start;
   overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 .split-2 {
@@ -1254,6 +1258,40 @@ select:focus-visible {
 .heatmap-cell.intense .heatmap-cell-symbol,
 .heatmap-cell.intense .heatmap-cell-change {
   color: #fff;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .split-2 {
+    grid-template-columns: 1fr;
+  }
+  .split-2 > * {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .index-ticker {
+    gap: var(--sp-2);
+  }
+  .index-card {
+    min-width: 120px;
+    padding: var(--sp-2) var(--sp-3);
+  }
+  .heatmap-cell {
+    width: 60px;
+    height: 40px;
+  }
+  .heatmap-cell-symbol {
+    font-size: 9px;
+  }
+  .heatmap-cell-change {
+    font-size: 8px;
+  }
+  .page {
+    padding: var(--sp-3);
+    gap: var(--sp-3);
+  }
 }
 
 /* ── Page transitions ────────────────────────────────────── */

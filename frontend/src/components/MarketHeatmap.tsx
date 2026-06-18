@@ -82,7 +82,7 @@ export default function MarketHeatmap({ movers, onSelect }: Props) {
                         if (e.key === "Enter" || e.key === " ") onSelect(item.symbol);
                       }}
                     >
-                      <span className="heatmap-cell-symbol">{item.symbol}</span>
+                      <span className="heatmap-cell-symbol">{item.short_name || item.symbol}</span>
                       <span
                         className="heatmap-cell-change"
                         style={

@@ -100,30 +100,38 @@ export default function MarketPage({ onSelectStock }: Props) {
         <IndexTicker indices={indices} />
       </motion.div>
 
-      <motion.div
-        className="split-2"
-        {...STAGGER}
-        transition={{ ...STAGGER.transition, delay: 0.1 }}
-      >
-        <MoversTabs
-          gainers={movers.gainers}
-          losers={movers.losers}
-          actives={movers.actives}
-          onSelect={onSelectStock}
-        />
-        <FearGreedGauge data={fearGreed} />
-      </motion.div>
+      {loading && !movers.gainers.length && !movers.losers.length && !movers.actives.length ? (
+        <div className="loading-center">
+          <Spinner size="lg" />
+        </div>
+      ) : (
+        <>
+          <motion.div
+            className="split-2"
+            {...STAGGER}
+            transition={{ ...STAGGER.transition, delay: 0.1 }}
+          >
+            <MoversTabs
+              gainers={movers.gainers}
+              losers={movers.losers}
+              actives={movers.actives}
+              onSelect={onSelectStock}
+            />
+            <FearGreedGauge data={fearGreed} />
+          </motion.div>
 
-      <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.15 }}>
-        <SectorGrid sectors={sectors} />
-      </motion.div>
+          <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.15 }}>
+            <SectorGrid sectors={sectors} />
+          </motion.div>
 
-      <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.2 }}>
-        <MarketHeatmap
-          movers={[...movers.gainers, ...movers.losers]}
-          onSelect={onSelectStock}
-        />
-      </motion.div>
+          <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.2 }}>
+            <MarketHeatmap
+              movers={[...movers.gainers, ...movers.losers]}
+              onSelect={onSelectStock}
+            />
+          </motion.div>
+        </>
+      )}
     </div>
   );
 }
