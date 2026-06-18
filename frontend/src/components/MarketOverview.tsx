@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import type { MarketIndex, FearGreed } from "../api/types";
 
 interface IndexTickerProps {
@@ -8,11 +9,26 @@ export default function IndexTicker({ indices }: IndexTickerProps) {
   if (!indices || indices.length === 0) return null;
 
   return (
-    <div className="index-ticker">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] as const }}
+      className="index-ticker stagger-item"
+    >
       {indices.map((idx) => {
         const pos = idx.change_percent >= 0;
         return (
-          <div key={idx.name} className="index-card">
+          <motion.div
+            key={idx.name}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{
+              duration: 0.2,
+              delay: indices.indexOf(idx) * 0.03,
+              ease: [0.16, 1, 0.3, 1] as const,
+            }}
+            className="index-card"
+          >
             <div className="index-card-name">{idx.name}</div>
             <div className="index-card-row">
               <span className="index-card-price">
@@ -27,10 +43,10 @@ export default function IndexTicker({ indices }: IndexTickerProps) {
                 {pos ? "▲" : "▼"} {Math.abs(idx.change_percent).toFixed(2)}%
               </span>
             </div>
-          </div>
+          </motion.div>
         );
       })}
-    </div>
+    </motion.div>
   );
 }
 
@@ -47,28 +63,35 @@ export function FearGreedGauge({ data }: FearGreedGaugeProps) {
   const rotation = (data.value / 100) * 180 - 90;
 
   return (
-    <div className={`card fear-greed-card ${toneClass}`}>
-      <div className="card-header">
-        <span className="card-title">Fear &amp; Greed Index</span>
-      </div>
-      <div className="fear-greed-body">
-        <div className="fear-greed-gauge-wrap">
-          <div
-            className="fear-greed-needle"
-            style={{
-              transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
-              transformOrigin: "bottom center",
-            }}
-          />
-          <div className="fear-greed-center">
-            <div className="fear-greed-value" style={{ color: `hsl(${hue}, 70%, 50%)` }}>
-              {data.value}
-            </div>
-            <div className="fear-greed-label">{data.label}</div>
-          </div>
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] as const }}
+      className="stagger-item"
+    >
+      <div className={`card fear-greed-card ${toneClass}`}>
+        <div className="card-header">
+          <span className="card-title">Fear &amp; Greed Index</span>
         </div>
-        <p className="fear-greed-desc">{data.description}</p>
+        <div className="fear-greed-body">
+          <div className="fear-greed-gauge-wrap">
+            <div
+              className="fear-greed-needle"
+              style={{
+                transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
+                transformOrigin: "bottom center",
+              }}
+            />
+            <div className="fear-greed-center">
+              <div className="fear-greed-value" style={{ color: `hsl(${hue}, 70%, 50%)` }}>
+                {data.value}
+              </div>
+              <div className="fear-greed-label">{data.label}</div>
+            </div>
+          </div>
+          <p className="fear-greed-desc">{data.description}</p>
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

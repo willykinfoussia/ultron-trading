@@ -22,6 +22,8 @@ router = APIRouter()
 
 class StockQuote(BaseModel):
     symbol: str
+    short_name: str = ""
+    long_name: str = ""
     price: float
     currency: str
     exchange: str
@@ -48,6 +50,8 @@ async def get_stock_quote(symbol: str):
         raw_change_pct = info.get("regularMarketChangePercent", 0.0)
         quote = StockQuote(
             symbol=sym,
+            short_name=info.get("shortName") or info.get("short_name") or sym,
+            long_name=info.get("longName") or info.get("long_name") or info.get("shortName") or sym,
             price=safe_yf_float(info.get("regularMarketPrice"), 0.0),
             currency=info.get("currency", "USD"),
             exchange=info.get("exchange", ""),

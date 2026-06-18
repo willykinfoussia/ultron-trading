@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import type { AnalysisMethod } from '../../api/types'
 
 interface Props {
@@ -5,10 +6,15 @@ interface Props {
 }
 
 export default function MethodDocs({ method }: Props) {
-  const paramEntries = Object.entries(method.parameters || {})
+  const paramEntries = Object.entries(method.parameters || {});
 
   return (
-    <div className="card method-docs" style={{ overflow: 'hidden' }}>
+    <motion.div className="card method-docs stagger-item"
+      style={{ overflow: 'hidden' }}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] as const }}
+    >
       <div className="card-header">
         <span className="card-title">{method.method_name}</span>
         <span
@@ -98,10 +104,10 @@ export default function MethodDocs({ method }: Props) {
             fontFamily: 'var(--font-mono)',
             overflow: 'auto',
           }}>
-{`GET /api/analysis/{symbol}/run/${method.method_id}`}
+            {`GET /api/analysis/{symbol}/run/${method.method_id}`}
           </pre>
         </div>
       </div>
-    </div>
-  )
+    </motion.div>
+  );
 }

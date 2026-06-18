@@ -185,6 +185,7 @@ async def get_movers(top_n: int = 25) -> dict[str, list[dict]]:
 
                     all_quotes.append({
                         "symbol": sym,
+                        "short_name": "",
                         "price": round(close, 2),
                         "change": round(change, 2),
                         "change_percent": round(change_pct, 2),

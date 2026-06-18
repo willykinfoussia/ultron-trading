@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 export type Signal = 'buy' | 'sell' | 'hold' | 'neutral'
 
 const SIGNAL_STYLES: Record<Signal, { bg: string; border: string; text: string; label: string }> = {
@@ -18,7 +19,7 @@ export default function SignalBadge({ signal, size = 'md' }: Props) {
   const fs = size === 'sm' ? 'var(--text-xs)' : 'var(--text-sm)'
 
   return (
-    <span
+    <motion.span
       className="signal-badge"
       style={{
         display: 'inline-flex',
@@ -35,8 +36,11 @@ export default function SignalBadge({ signal, size = 'md' }: Props) {
         textTransform: 'uppercase',
         lineHeight: 1,
       }}
+      initial={{ scale: 0.9 }}
+      animate={{ scale: 1 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
     >
       {s.label}
-    </span>
+    </motion.span>
   )
 }

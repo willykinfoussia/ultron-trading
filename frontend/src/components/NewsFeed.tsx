@@ -114,24 +114,31 @@ export default function NewsFeed({ symbol }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchNews = () => {
     let cancelled = false;
-    async function fetchNews() {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await getCompanyNews(symbol);
-        if (!cancelled) setNews(data);
-      } catch (err) {
-        if (!cancelled) setError(String(err));
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    }
-    fetchNews();
+    setLoading(true);
+    setError(null);
+    getCompanyNews(symbol)
+      .then((data) => {
+        if (!cancelled) {
+          setNews(data);
+          setLoading(false);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(String(err));
+          setLoading(false);
+        }
+      });
     return () => {
       cancelled = true;
     };
+  };
+
+  useEffect(() => {
+    const cleanup = fetchNews();
+    return cleanup;
   }, [symbol]);
 
   if (loading) {
@@ -155,8 +162,19 @@ export default function NewsFeed({ symbol }: Props) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.2 }}
       >
-        <div className="card-body text-danger" style={{ textAlign: "center" }}>
-          Failed to load news for {symbol}. Please try again later.
+        <div className="error-state">
+          <span className="error-state-icon">📰</span>
+          <span className="error-state-title">Failed to load news</span>
+          <span className="error-state-desc">
+            {error.includes("429") || error.includes("rate")
+              ? "API rate limit reached. Please wait a moment and try again."
+              : `Could not load news for ${symbol}. ${error}`}
+          </span>
+          <div className="error-state-actions">
+            <button className="btn-retry" onClick={fetchNews}>
+              ↻ Retry
+            </button>
+          </div>
         </div>
       </motion.div>
     );

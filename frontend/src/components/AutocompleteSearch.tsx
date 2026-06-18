@@ -6,9 +6,10 @@ interface Props {
   onSelect: (symbol: string) => void;
   loading?: boolean;
   onSearchChange?: (query: string) => void;
+  placeholder?: string;
 }
 
-export default function AutocompleteSearch({ onSelect, loading, onSearchChange }: Props) {
+export default function AutocompleteSearch({ onSelect, loading, onSearchChange, placeholder = "Search company or symbol…" }: Props) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -109,7 +110,7 @@ export default function AutocompleteSearch({ onSelect, loading, onSearchChange }
             onChange={(e) => handleChange(e.target.value)}
             onKeyDown={handleKeyDown}
             onFocus={() => results.length > 0 && setIsOpen(true)}
-            placeholder="Search company or symbol…"
+            placeholder={placeholder}
             autoComplete="off"
           />
           {searching && <span className="search-spinner">⋯</span>}

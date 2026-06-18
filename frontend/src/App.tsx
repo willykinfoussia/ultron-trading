@@ -26,7 +26,7 @@ const PAGE_MOTION = {
 };
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<TabId>("stocks");
+  const [activeTab, setActiveTab] = useState<TabId>("market");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [apiStatus, setApiStatus] = useState<"ok" | "error" | "loading">("loading");
   const [toast, setToastState] = useState<ToastState>(null);

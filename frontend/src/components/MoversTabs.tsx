@@ -72,7 +72,12 @@ export default function MoversTabs({ gainers, losers, actives, onSelect }: Props
                     onClick={() => onSelect(item.symbol)}
                   >
                     <td>
-                      <span className={`data-table-symbol ${symbolTone}`}>{item.symbol}</span>
+                      <div className="mover-cell">
+                        <span className={`data-table-symbol ${symbolTone}`}>{item.symbol}</span>
+                        {item.short_name && item.short_name !== item.symbol && (
+                          <span className="mover-short-name">{item.short_name}</span>
+                        )}
+                      </div>
                     </td>
                     <td className="num">${item.price.toFixed(2)}</td>
                     <td className={`num data-table-change ${pos ? "positive" : "negative"}`}>

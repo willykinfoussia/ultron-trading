@@ -139,7 +139,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
                 <div className="card-body">
                   <div className="quote-header">
                     <div>
-                      <h2 className="quote-symbol">{quote.symbol}</h2>
+                      <h2 className="quote-symbol">{quote.long_name || quote.short_name || quote.symbol} <span className="quote-symbol-ticker">({quote.symbol})</span></h2>
                       <div className="quote-meta">
                         {quote.exchange} · {quote.currency} · {quote.market_state}
                       </div>

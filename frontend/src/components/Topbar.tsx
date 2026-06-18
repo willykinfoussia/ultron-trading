@@ -12,8 +12,8 @@ interface TopbarProps {
 }
 
 const QUICK_LINKS: Array<{ id: TabId; label: string }> = [
-  { id: "stocks", label: "Stocks" },
   { id: "market", label: "Market" },
+  { id: "stocks", label: "Stocks" },
   { id: "watchlist", label: "Watchlist" },
 ];
 

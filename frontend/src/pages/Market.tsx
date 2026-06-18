@@ -8,6 +8,7 @@ import SectorGrid from "../components/SectorGrid";
 import MarketHeatmap from "../components/MarketHeatmap";
 import PageHeader from "../components/PageHeader";
 import Spinner from "../components/Spinner";
+import AutocompleteSearch from "../components/AutocompleteSearch";
 
 interface Props {
   onSelectStock: (symbol: string) => void;
@@ -16,7 +17,7 @@ interface Props {
 const STAGGER = {
   initial: { opacity: 0, y: 12 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] },
+  transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] as const },
 };
 
 export default function MarketPage({ onSelectStock }: Props) {
@@ -73,6 +74,14 @@ export default function MarketPage({ onSelectStock }: Props) {
             </button>
           }
         />
+      </motion.div>
+  
+      <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.05 }}>
+        <AutocompleteSearch 
+              onSelect={onSelectStock} 
+              loading={loading}
+              placeholder="Search any stock…"
+            />
       </motion.div>
 
       {loading && !indices.length && (

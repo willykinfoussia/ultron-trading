@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { AnalysisResult } from "../api/types";
 import AnalysisCard from "./analysis/AnalysisCard";
-import Spinner from "./Spinner";
+import Spinner from "../components/Spinner";
 
 interface AnalysisMethodDef {
   method_id: string;
@@ -57,12 +57,22 @@ export default function EmbeddedAnalysis({ symbol }: Props) {
   const [results, setResults] = useState<AnalysisResult[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
+  const [rateLimit, setRateLimit] = useState(false);
 
   const runAnalysis = useCallback(async () => {
     setRunning(true);
     setError(null);
+    setRateLimit(false);
     try {
       const res = await fetch(`/api/analysis/${symbol}/all`);
+      
+      // Check for rate limit (429 status)
+      if (res.status === 429) {
+        setRateLimit(true);
+        setRunning(false);
+        return;
+      }
+      
       if (res.ok) {
         const data = await res.json();
         setResults(data.results || data || []);
@@ -97,11 +107,22 @@ export default function EmbeddedAnalysis({ symbol }: Props) {
             <>
               <Spinner size="sm" /> Running...
             </>
+          ) : rateLimit ? (
+            <>
+              <Spinner size="sm" /> Rate limited
+            </>
           ) : (
             "Run All Analysis"
           )}
         </motion.button>
       </div>
+
+      {/* Rate limit notice */}
+      {rateLimit && (
+        <div className="rate-limit-notice">
+          ⚠️ API rate limit reached. Please wait a moment and try again.
+        </div>
+      )}
 
       {/* Method listing */}
       <div className="analysis-methods-grid">
@@ -154,11 +175,17 @@ export default function EmbeddedAnalysis({ symbol }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
           >
-            <div
-              className="card-body text-danger"
-              style={{ textAlign: "center" }}
-            >
-              {error}
+            <div className="error-state">
+              <span className="error-state-icon">⚠️</span>
+              <span className="error-state-title">Analysis Error</span>
+              <span className="error-state-desc">
+                {error}
+              </span>
+              <div className="error-state-actions">
+                <button className="btn-retry" onClick={runAnalysis}>
+                  ↻ Retry
+                </button>
+              </div>
             </div>
           </motion.div>
         )}

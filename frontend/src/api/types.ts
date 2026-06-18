@@ -1,5 +1,7 @@
 export interface StockQuote {
   symbol: string
+  short_name: string
+  long_name: string
   price: number
   currency: string
   exchange: string
@@ -44,6 +46,7 @@ export interface MarketIndex {
 
 export interface MarketMover {
   symbol: string
+  short_name: string
   price: number
   change: number
   change_percent: number

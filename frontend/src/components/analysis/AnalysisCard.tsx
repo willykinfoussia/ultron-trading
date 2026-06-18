@@ -13,7 +13,7 @@ export default function AnalysisCard({ result }: Props) {
 
   return (
     <motion.div
-      className="card analysis-card"
+      className="card analysis-card stagger-item"
       layout
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}

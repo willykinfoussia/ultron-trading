@@ -45,7 +45,7 @@ export default function ConfidenceMeter({ value, size = 'md', showLabel = true }
         />
       </div>
       {showLabel && (
-        <span
+        <motion.span
           className="confidence-label"
           style={{
             fontSize: 'var(--text-xs)',
@@ -55,9 +55,12 @@ export default function ConfidenceMeter({ value, size = 'md', showLabel = true }
             minWidth: 36,
             textAlign: 'right',
           }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
         >
           {Math.round(pct)}%
-        </span>
+        </motion.span>
       )}
     </div>
   )

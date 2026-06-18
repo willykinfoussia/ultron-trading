@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { motion } from "framer-motion";
 import type { MarketMover } from "../api/types";
 
 interface Props {
@@ -32,7 +33,12 @@ export default function MarketHeatmap({ movers, onSelect }: Props) {
   if (heatmapData.length === 0) return null;
 
   return (
-    <div className="card">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] as const }}
+      className="card stagger-item"
+    >
       <div className="card-header">
         <span className="card-title">Market Heatmap</span>
       </div>
@@ -40,19 +46,36 @@ export default function MarketHeatmap({ movers, onSelect }: Props) {
         <div className="heatmap-scroll">
           <div className="heatmap-grid">
             {heatmapData.map((row, ri) => (
-              <div key={ri} className="heatmap-col">
+              <motion.div
+                key={ri}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.2,
+                  delay: ri * 0.02,
+                  ease: [0.16, 1, 0.3, 1] as const,
+                }}
+                className="heatmap-col"
+              >
                 {row.map((item) => {
                   const pos = item.change_percent >= 0;
                   const intensity = Math.min(Math.abs(item.change_percent) / maxAbs, 1);
                   const intense = intensity > 0.5;
 
                   return (
-                    <div
+                    <motion.div
                       key={item.symbol}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        duration: 0.3,
+                        delay: (ri * 8 + heatmapData[0].indexOf(item)) * 0.01,
+                        ease: [0.16, 1, 0.3, 1] as const,
+                      }}
                       className={`heatmap-cell${intense ? " intense" : ""}`}
                       style={{ background: cellColor(pos, intensity) }}
                       onClick={() => onSelect(item.symbol)}
-                      title={`${item.symbol}: ${item.change_percent >= 0 ? "+" : ""}${item.change_percent.toFixed(2)}% — $${item.price.toFixed(2)}`}
+                      title={`${item.short_name || item.symbol} (${item.symbol}): ${item.change_percent >= 0 ? "+" : ""}${item.change_percent.toFixed(2)}% — $${item.price.toFixed(2)}`}
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
@@ -71,14 +94,14 @@ export default function MarketHeatmap({ movers, onSelect }: Props) {
                         {pos ? "+" : ""}
                         {item.change_percent.toFixed(1)}%
                       </span>
-                    </div>
+                    </motion.div>
                   );
                 })}
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

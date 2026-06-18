@@ -18,8 +18,8 @@ const SECTIONS: Array<{ id: SectionId; label: string }> = [
 ];
 
 const NAV: NavItem[] = [
-  { id: "stocks", label: "Stocks", icon: "📈", section: "trading" },
   { id: "market", label: "Market", icon: "📊", section: "trading" },
+  { id: "stocks", label: "Stocks", icon: "📈", section: "trading" },
   { id: "analysis", label: "Analysis", icon: "🔬", section: "tools" },
   { id: "watchlist", label: "Watchlist", icon: "⭐", section: "tools" },
   { id: "system", label: "System", icon: "🖥️", section: "system" },

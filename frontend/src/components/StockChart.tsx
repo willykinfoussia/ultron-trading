@@ -42,7 +42,7 @@ export default function StockChart({ data, period, onPeriodChange, loading }: Pr
   const gradientId = `priceGradient-${data.symbol}`;
 
   return (
-    <div className="chart-card">
+    <div className="chart-card chart-animate">
       <div className="card-header">
         <span className="card-title">Price History — {data.symbol}</span>
         <div className="btn-group">

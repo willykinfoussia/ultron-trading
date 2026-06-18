@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import type { AnalysisResult } from '../../api/types'
 import SignalBadge from './SignalBadge'
 import ConfidenceMeter from './ConfidenceMeter'
@@ -9,7 +10,13 @@ interface Props {
 
 export default function AnalysisDetail({ result, onClose }: Props) {
   return (
-    <div className="card analysis-detail" style={{ overflow: 'hidden' }}>
+    <motion.div className="card analysis-detail stagger-item"
+      style={{ overflow: 'hidden' }}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] as const }}
+    >
       <div className="card-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-2)' }}>
           <span className="card-title">{result.method_name}</span>
@@ -134,6 +141,6 @@ export default function AnalysisDetail({ result, onClose }: Props) {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   )
 }
