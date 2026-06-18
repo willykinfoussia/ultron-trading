@@ -835,6 +835,8 @@ select:focus-visible {
 .data-table-wrap {
   max-height: 480px;
   overflow-y: auto;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
 .data-table {
@@ -1209,6 +1211,8 @@ select:focus-visible {
 /* ── Heatmap ─────────────────────────────────────────────── */
 .heatmap-scroll {
   overflow-x: auto;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .heatmap-grid {
@@ -1499,6 +1503,8 @@ select:focus-visible {
   padding: var(--sp-4);
   flex: 1;
   min-height: 0;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .card-body.no-padding { padding: 0; }

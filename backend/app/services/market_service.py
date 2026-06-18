@@ -146,7 +146,7 @@ async def get_movers(top_n: int = 25) -> dict[str, list[dict]]:
 
     Returns:
         {"gainers": [...], "losers": [...], "actives": [...]}
-        Each item: {symbol, price, change, change_percent, volume}
+        Each item: {symbol, short_name, price, change, change_percent, volume}
     """
     import yfinance as yf
 
@@ -159,6 +159,17 @@ async def get_movers(top_n: int = 25) -> dict[str, list[dict]]:
             data = yf.download(chunk, period="2d", interval="1d", group_by="ticker", progress=False)
             if data.empty:
                 continue
+
+            # Batch-fetch short names via yfinance tickers
+            tickers = yf.Tickers(" ".join(chunk))
+            name_map: dict[str, str] = {}
+            for sym in chunk:
+                try:
+                    info = tickers.tickers[sym].info
+                    name = info.get("shortName") or info.get("longName") or ""
+                    name_map[sym] = name
+                except Exception:
+                    name_map[sym] = ""
 
             for sym in chunk:
                 try:
@@ -185,7 +196,7 @@ async def get_movers(top_n: int = 25) -> dict[str, list[dict]]:
 
                     all_quotes.append({
                         "symbol": sym,
-                        "short_name": "",
+                        "short_name": name_map.get(sym, ""),
                         "price": round(close, 2),
                         "change": round(change, 2),
                         "change_percent": round(change_pct, 2),
