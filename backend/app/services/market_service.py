@@ -149,9 +149,14 @@ async def get_movers(top_n: int = 25) -> dict[str, list[dict]]:
         Each item: {symbol, short_name, price, change, change_percent, volume}
     """
     import yfinance as yf
+    import asyncio
+    from concurrent.futures import ThreadPoolExecutor
 
     logger.info(f"Fetching movers from universe of {len(UNIVERSE)} symbols")
     all_quotes: list[dict] = []
+
+    # Build name cache from yfinance (fast batch mode)
+    name_map = _get_name_map(UNIVERSE)
 
     # Process in chunks of 50 to avoid rate limiting
     for chunk in _chunk_list(UNIVERSE, 50):
@@ -159,17 +164,6 @@ async def get_movers(top_n: int = 25) -> dict[str, list[dict]]:
             data = yf.download(chunk, period="2d", interval="1d", group_by="ticker", progress=False)
             if data.empty:
                 continue
-
-            # Batch-fetch short names via yfinance tickers
-            tickers = yf.Tickers(" ".join(chunk))
-            name_map: dict[str, str] = {}
-            for sym in chunk:
-                try:
-                    info = tickers.tickers[sym].info
-                    name = info.get("shortName") or info.get("longName") or ""
-                    name_map[sym] = name
-                except Exception:
-                    name_map[sym] = ""
 
             for sym in chunk:
                 try:
@@ -217,6 +211,62 @@ async def get_movers(top_n: int = 25) -> dict[str, list[dict]]:
 
     logger.info(f"Movers: {len(gainers)} gainers, {len(losers)} losers, {len(actives)} actives")
     return {"gainers": gainers, "losers": losers, "actives": actives}
+
+
+# ── Name cache ──────────────────────────────────────────────────────
+# Persistent in-memory cache: built on first call, reused forever.
+# Refreshed only on server restart.
+_NAME_CACHE: dict[str, str] = {}
+_NAME_CACHE_BUILT = False
+
+def _get_name_map(symbols: list[str]) -> dict[str, str]:
+    """Return symbol→short_name mapping from persistent cache.
+    
+    First call builds the cache via yfinance (may take ~10s).
+    Subsequent calls return instantly.
+    """
+    global _NAME_CACHE_BUILT
+    
+    if _NAME_CACHE_BUILT:
+        return _NAME_CACHE
+    
+    import concurrent.futures
+    import yfinance as yf
+    
+    try:
+        tickers = yf.Tickers(" ".join(symbols))
+        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+            futures = {
+                executor.submit(_safe_get_name, tickers.tickers.get(sym)): sym
+                for sym in symbols
+                if tickers.tickers.get(sym) is not None
+            }
+            done, _ = concurrent.futures.wait(futures.keys(), timeout=20)
+            for future in done:
+                sym = futures[future]
+                try:
+                    name = future.result()
+                    if name:
+                        _NAME_CACHE[sym] = name
+                except Exception:
+                    continue
+        logger.info(f"Name cache built: {len(_NAME_CACHE)}/{len(symbols)} symbols")
+    except Exception as e:
+        logger.warning(f"Name cache build failed: {e}")
+    
+    _NAME_CACHE_BUILT = True
+    return _NAME_CACHE
+
+
+def _safe_get_name(ticker) -> str:
+    """Safely extract short_name from a yfinance Ticker object."""
+    if ticker is None:
+        return ""
+    try:
+        info = ticker.info
+        return info.get("shortName") or info.get("longName") or ""
+    except Exception:
+        return ""
 
 
 async def get_sector_performance() -> list[dict]:
