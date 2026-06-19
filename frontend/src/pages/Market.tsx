@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { getMarketIndices, getMovers, getSectors, getFearGreed } from "../api/market";
 import type { MarketIndex, MoversData, SectorPerf, FearGreed } from "../api/types";
 import IndexTicker, { FearGreedGauge } from "../components/MarketOverview";
-import MoversTabs from "../components/MoversTabs";
+import MoversPanel from "../components/MoversPanel";
 import SectorGrid from "../components/SectorGrid";
 import MarketHeatmap from "../components/MarketHeatmap";
 import PageHeader from "../components/PageHeader";
@@ -107,21 +107,24 @@ export default function MarketPage({ onSelectStock }: Props) {
       ) : (
         <>
           <motion.div
-            className="split-2"
             {...STAGGER}
             transition={{ ...STAGGER.transition, delay: 0.1 }}
           >
-            <MoversTabs
+            <MoversPanel
               gainers={movers.gainers}
               losers={movers.losers}
               actives={movers.actives}
               onSelect={onSelectStock}
             />
-            <FearGreedGauge data={fearGreed} />
           </motion.div>
 
-          <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.15 }}>
+          <motion.div
+            className="split-2"
+            {...STAGGER}
+            transition={{ ...STAGGER.transition, delay: 0.15 }}
+          >
             <SectorGrid sectors={sectors} />
+            <FearGreedGauge data={fearGreed} />
           </motion.div>
 
           <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.2 }}>
