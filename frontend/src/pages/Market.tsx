@@ -64,30 +64,19 @@ export default function MarketPage({ onSelectStock }: Props) {
           title="Market"
           meta={lastUpdate ? `Updated ${lastUpdate.toLocaleTimeString()}` : "Live market overview"}
           actions={
-            <button
-              type="button"
-              onClick={fetchData}
-              disabled={loading}
-              className="btn-ghost"
-            >
+            <button type="button" onClick={fetchData} disabled={loading} className="btn-ghost">
               {loading ? "⟳ Loading…" : "↻ Refresh"}
             </button>
           }
         />
       </motion.div>
-  
+
       <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.05 }}>
-        <AutocompleteSearch 
-              onSelect={onSelectStock} 
-              loading={loading}
-              placeholder="Search any stock…"
-            />
+        <AutocompleteSearch onSelect={onSelectStock} loading={loading} placeholder="Search any stock…" />
       </motion.div>
 
       {loading && !indices.length && (
-        <div className="loading-center">
-          <Spinner size="lg" />
-        </div>
+        <div className="loading-center"><Spinner size="lg" /></div>
       )}
 
       {error && (
@@ -101,15 +90,10 @@ export default function MarketPage({ onSelectStock }: Props) {
       </motion.div>
 
       {loading && !movers.gainers.length && !movers.losers.length && !movers.actives.length ? (
-        <div className="loading-center">
-          <Spinner size="lg" />
-        </div>
+        <div className="loading-center"><Spinner size="lg" /></div>
       ) : (
         <>
-          <motion.div
-            {...STAGGER}
-            transition={{ ...STAGGER.transition, delay: 0.1 }}
-          >
+          <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.1 }}>
             <MoversPanel
               gainers={movers.gainers}
               losers={movers.losers}
@@ -118,12 +102,11 @@ export default function MarketPage({ onSelectStock }: Props) {
             />
           </motion.div>
 
-          <motion.div
-            className="split-2"
-            {...STAGGER}
-            transition={{ ...STAGGER.transition, delay: 0.15 }}
-          >
+          <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.15 }}>
             <SectorGrid sectors={sectors} />
+          </motion.div>
+
+          <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.18 }}>
             <FearGreedGauge data={fearGreed} />
           </motion.div>
 

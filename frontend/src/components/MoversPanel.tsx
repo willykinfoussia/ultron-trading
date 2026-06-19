@@ -29,70 +29,50 @@ function MoversColumn({ title, icon, items, tone, onSelect }: ColumnProps) {
         <span className="movers-col-icon">{icon}</span>
         <span className="movers-col-title">{title}</span>
       </div>
-      <div className="movers-col-table">
-        <table className="data-table data-table-compact">
-          <thead>
-            <tr>
-              <th>Sym</th>
-              <th className="num">Chg%</th>
-              <th className="num">Vol</th>
-            </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => {
-              const pos = item.change_percent >= 0;
-              return (
-                <tr
-                  key={item.symbol}
-                  className="data-table-row"
-                  onClick={() => onSelect(item.symbol)}
-                >
-                  <td>
-                    <span className={`data-table-symbol ${tone}`}>{item.symbol}</span>
-                  </td>
-                  <td className={`num data-table-change ${pos ? "positive" : "negative"}`}>
-                    {pos ? "+" : ""}{item.change_percent.toFixed(1)}%
-                  </td>
-                  <td className="num data-table-volume">{formatVolume(item.volume)}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>Sym</th>
+            <th className="num">Chg%</th>
+            <th className="num">Vol</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item) => {
+            const pos = item.change_percent >= 0;
+            return (
+              <tr
+                key={item.symbol}
+                className="data-table-row"
+                onClick={() => onSelect(item.symbol)}
+              >
+                <td>
+                  <span className={`data-table-symbol ${tone}`}>{item.symbol}</span>
+                </td>
+                <td className={`num data-table-change ${pos ? "positive" : "negative"}`}>
+                  {pos ? "+" : ""}{item.change_percent.toFixed(1)}%
+                </td>
+                <td className="num data-table-volume">{formatVolume(item.volume)}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </div>
   );
 }
 
 export default function MoversPanel({ gainers, losers, actives, onSelect }: Props) {
   return (
-    <div className="card card-movers-panel">
+    <div className="card">
       <div className="card-header">
         <span className="card-title">Market Movers</span>
       </div>
       <div className="card-body no-padding">
-        <div className="movers-3col">
-          <MoversColumn
-            title="Gainers"
-            icon="🚀"
-            items={gainers}
-            tone="success"
-            onSelect={onSelect}
-          />
-          <MoversColumn
-            title="Losers"
-            icon="📉"
-            items={losers}
-            tone="danger"
-            onSelect={onSelect}
-          />
-          <MoversColumn
-            title="Most Active"
-            icon="🔥"
-            items={actives}
-            tone="primary"
-            onSelect={onSelect}
-          />
+        <div className="movers-cols">
+          <MoversColumn title="Gainers" icon="🚀" items={gainers} tone="success" onSelect={onSelect} />
+          <MoversColumn title="Losers" icon="📉" items={losers} tone="danger" onSelect={onSelect} />
+          <MoversColumn title="Most Active" icon="🔥" items={actives} tone="primary" onSelect={onSelect} />
         </div>
       </div>
     </div>
