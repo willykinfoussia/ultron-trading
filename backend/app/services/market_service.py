@@ -33,15 +33,17 @@ UNIVERSE: list[str] = [
 ]
 
 # Major indices symbols (yfinance tickers)
+# US indices often return NaN via batch download — use ETFs as proxies
 INDEX_MAP: dict[str, str] = {
-    "S&P 500": "^GSPC",
-    "Dow Jones": "^DJI",
-    "NASDAQ": "^IXIC",
-    "Russell 2000": "^RUT",
+    "S&P 500": "SPY",        # ETF proxy for ^GSPC
+    "Dow Jones": "DIA",       # ETF proxy for ^DJI
+    "NASDAQ": "QQQ",          # ETF proxy for ^IXIC
+    "Russell 2000": "IWM",    # ETF proxy for ^RUT
     "VIX": "^VIX",
     "S&P/TSX": "^GSPTSE",
     "FTSE 100": "^FTSE",
     "DAX": "^GDAXI",
+    "CAC 40": "^FCHI",
     "Nikkei 225": "^N225",
     "Hang Seng": "^HSI",
 }
@@ -82,54 +84,58 @@ def _clean_float(val, default=0.0) -> float:
 async def get_indices() -> list[dict]:
     """Fetch current data for major market indices."""
     import yfinance as yf
+    import concurrent.futures
 
     logger.info("Fetching market indices")
     results = []
-    symbols = list(INDEX_MAP.values())
-    names = {v: k for k, v in INDEX_MAP.items()}
 
-    try:
-        # Download in batch for efficiency
-        data = yf.download(symbols, period="2d", interval="1d", group_by="ticker", progress=False)
-        if data.empty:
-            logger.warning("No index data returned from yfinance")
-            return _fallback_indices()
+    def _fetch_index(name: str, sym: str) -> dict | None:
+        try:
+            ticker = yf.Ticker(sym)
+            hist = ticker.history(period="5d")
+            if hist.empty:
+                logger.warning(f"Index {sym} ({name}): no data")
+                return None
 
-        for sym in symbols:
-            try:
-                name = names[sym]
-                if len(symbols) == 1:
-                    ticker_data = data
-                else:
-                    ticker_data = data[sym] if sym in data.columns.levels[0] else None
+            latest = hist.iloc[-1]
+            prev = hist.iloc[-2] if len(hist) > 1 else latest
 
-                if ticker_data is None or ticker_data.empty:
-                    continue
+            close = _clean_float(latest["Close"])
+            prev_close = _clean_float(prev["Close"])
+            change = close - prev_close
+            change_pct = (change / prev_close) * 100 if prev_close else 0
 
-                latest = ticker_data.iloc[-1]
-                prev = ticker_data.iloc[-2] if len(ticker_data) > 1 else latest
+            logger.debug(f"Index {sym} ({name}): close={close}, prev={prev_close}, change={change:.2f}, pct={change_pct:.2f}%")
 
-                close = _clean_float(latest["Close"])
-                prev_close = _clean_float(prev["Close"])
-                change = close - prev_close
-                change_pct = (change / prev_close) * 100 if prev_close else 0
+            return {
+                "name": name,
+                "symbol": sym,
+                "price": round(close, 2),
+                "change": round(change, 2),
+                "change_percent": round(change_pct, 2),
+            }
+        except Exception as e:
+            logger.warning(f"Error fetching index {sym} ({name}): {e}")
+            return None
 
-                results.append({
-                    "name": name,
-                    "symbol": sym,
-                    "price": round(close, 2),
-                    "change": round(change, 2),
-                    "change_percent": round(change_pct, 2),
-                })
-            except Exception as e:
-                logger.warning(f"Error processing index {sym}: {e}")
-                continue
+    # Fetch in parallel
+    with concurrent.futures.ThreadPoolExecutor(max_workers=6) as executor:
+        futures = {
+            executor.submit(_fetch_index, name, sym): (name, sym)
+            for name, sym in INDEX_MAP.items()
+        }
+        for future in concurrent.futures.as_completed(futures, timeout=30):
+            result = future.result()
+            if result:
+                results.append(result)
 
-    except Exception as e:
-        logger.error(f"Error fetching indices: {e}", exc_info=True)
-        return _fallback_indices()
+    # Sort by original order
+    order = {sym: i for i, sym in enumerate(INDEX_MAP.values())}
+    results.sort(key=lambda x: order.get(x["symbol"], 99))
 
     logger.info(f"Indices fetched: {len(results)} results")
+    if not results:
+        return _fallback_indices()
     return results
 
 
@@ -161,7 +167,7 @@ async def get_movers(top_n: int = 25) -> dict[str, list[dict]]:
     # Process in chunks of 50 to avoid rate limiting
     for chunk in _chunk_list(UNIVERSE, 50):
         try:
-            data = yf.download(chunk, period="2d", interval="1d", group_by="ticker", progress=False)
+            data = yf.download(chunk, period="5d", interval="1d", group_by="ticker", progress=False)
             if data.empty:
                 continue
 
@@ -279,7 +285,7 @@ async def get_sector_performance() -> list[dict]:
     names = {v: k for k, v in SECTOR_ETFS.items()}
 
     try:
-        data = yf.download(symbols, period="2d", interval="1d", group_by="ticker", progress=False)
+        data = yf.download(symbols, period="5d", interval="1d", group_by="ticker", progress=False)
         if data.empty:
             logger.warning("No sector data returned")
             return _fallback_sectors()
