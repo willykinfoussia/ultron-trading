@@ -1,9 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { getMarketIndices, getMovers, getSectors, getFearGreed } from "../api/market";
-import type { MarketIndex, MoversData, SectorPerf, FearGreed, MarketMover } from "../api/types";
-import { KPICard, DashboardGrid, MiniChart, DonutChart, BarChart, DataTable } from "../components/dashboard";
-import { TreemapHeatmap } from "../components/dashboard";
+import type { MarketIndex, MoversData, SectorPerf, FearGreed } from "../api/types";
+import { KPICard, DashboardGrid, MiniChart, DonutChart, BarChart, TreemapHeatmap, MoversTable } from "../components/dashboard";
 import AutocompleteSearch from "../components/AutocompleteSearch";
 import Spinner from "../components/Spinner";
 import PageHeader from "../components/PageHeader";
@@ -92,15 +91,6 @@ export default function MarketPage({ onSelectStock }: Props) {
   const sectorBarData = (sectors || [])
     .sort((a, b) => b.change_percent - a.change_percent)
     .map((s) => ({ label: s.name, value: s.change_percent }));
-
-  const moversColumns = (_type: "gainers" | "losers" | "actives", _label: string, tone: "positive" | "negative" | "primary") => [
-    { key: "symbol", header: "Symbol", width: "35%", render: (item: MarketMover) => <span className={`data-table-symbol ${tone}`}>{item.symbol}</span> },
-    { key: "price", header: "Price", align: "right" as const, width: "30%", render: (item: MarketMover) => `$${formatPrice(item.price)}` },
-    { key: "change", header: "Chg%", align: "right" as const, width: "35%", render: (item: MarketMover) => {
-      const pos = item.change_percent >= 0;
-      return <span className={`data-table-change ${pos ? "positive" : "negative"}`}>{pos ? "+" : ""}{item.change_percent.toFixed(2)}%</span>;
-    }},
-  ];
 
   return (
     <div className="page page-dashboard">
@@ -236,67 +226,39 @@ export default function MarketPage({ onSelectStock }: Props) {
           {/* ── Movers Tables ── */}
           <div className="dashboard-row">
             <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.18 }} className="dashboard-row-left">
-              <div className="card">
-                <div className="card-header">
-                  <span className="card-title">🚀 Top Gainers</span>
-                </div>
-                <div className="card-body no-padding">
-                  <DataTable
-                    columns={moversColumns("gainers", "Top Gainers", "positive")}
-                    data={movers.gainers || []}
-                    keyExtractor={(m) => m.symbol}
-                    onRowClick={(m) => onSelectStock(m.symbol)}
-                    maxRows={10}
-                    compact
-                  />
-                </div>
-              </div>
+              <MoversTable
+                title="Top Gainers"
+                icon="🚀"
+                data={movers.gainers || []}
+                onSelect={onSelectStock}
+                tone="positive"
+                maxRows={10}
+              />
             </motion.div>
 
             <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.2 }} className="dashboard-row-right">
-              <div className="card">
-                <div className="card-header">
-                  <span className="card-title">📉 Top Losers</span>
-                </div>
-                <div className="card-body no-padding">
-                  <DataTable
-                    columns={moversColumns("losers", "Top Losers", "negative")}
-                    data={movers.losers || []}
-                    keyExtractor={(m) => m.symbol}
-                    onRowClick={(m) => onSelectStock(m.symbol)}
-                    maxRows={10}
-                    compact
-                  />
-                </div>
-              </div>
+              <MoversTable
+                title="Top Losers"
+                icon="📉"
+                data={movers.losers || []}
+                onSelect={onSelectStock}
+                tone="negative"
+                maxRows={10}
+              />
             </motion.div>
           </div>
 
           {/* ── Most Active ── */}
           <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.22 }}>
-            <div className="card">
-              <div className="card-header">
-                <span className="card-title">🔥 Most Active</span>
-              </div>
-              <div className="card-body no-padding">
-                <DataTable
-                  columns={[
-                    { key: "symbol", header: "Symbol", width: "25%", render: (item: MarketMover) => <span className="data-table-symbol primary">{item.symbol}</span> },
-                    { key: "price", header: "Price", align: "right" as const, width: "25%", render: (item: MarketMover) => `$${formatPrice(item.price)}` },
-                    { key: "change", header: "Chg%", align: "right" as const, width: "25%", render: (item: MarketMover) => {
-                      const pos = item.change_percent >= 0;
-                      return <span className={`data-table-change ${pos ? "positive" : "negative"}`}>{pos ? "+" : ""}{item.change_percent.toFixed(2)}%</span>;
-                    }},
-                    { key: "volume", header: "Volume", align: "right" as const, width: "25%", render: (item: MarketMover) => formatVolume(item.volume) },
-                  ]}
-                  data={movers.actives || []}
-                  keyExtractor={(m) => m.symbol}
-                  onRowClick={(m) => onSelectStock(m.symbol)}
-                  maxRows={10}
-                  compact
-                />
-              </div>
-            </div>
+            <MoversTable
+              title="Most Active"
+              icon="🔥"
+              data={movers.actives || []}
+              onSelect={onSelectStock}
+              tone="primary"
+              maxRows={10}
+              showVolume
+            />
           </motion.div>
         </>
       )}

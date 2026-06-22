@@ -97,10 +97,18 @@ export function TreemapHeatmap({ movers, onSelect }: Props) {
     };
   }, []);
 
-  // Prepare data — top 24 movers by absolute change
+  // Prepare data — top 24 unique movers by absolute change
   const { gridRects, cellW, cellH } = useMemo(() => {
     const MAX_ITEMS = 24;
-    const all = [...movers]
+    // Deduplicate by symbol, keep the one with highest absolute change
+    const seen = new Map<string, (typeof movers)[0]>();
+    for (const m of movers) {
+      const existing = seen.get(m.symbol);
+      if (!existing || Math.abs(m.change_percent) > Math.abs(existing.change_percent)) {
+        seen.set(m.symbol, m);
+      }
+    }
+    const all = Array.from(seen.values())
       .sort((a, b) => Math.abs(b.change_percent) - Math.abs(a.change_percent))
       .slice(0, MAX_ITEMS);
 

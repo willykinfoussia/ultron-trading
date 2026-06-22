@@ -3,3 +3,4 @@ export { DonutChart } from "./DonutChart";
 export { BarChart } from "./BarChart";
 export { DataTable } from "./DataTable";
 export { TreemapHeatmap } from "./TreemapHeatmap";
+export { MoversTable } from "./MoversTable";
