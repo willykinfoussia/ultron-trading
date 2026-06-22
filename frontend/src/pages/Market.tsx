@@ -93,7 +93,7 @@ export default function MarketPage({ onSelectStock }: Props) {
     .sort((a, b) => b.change_percent - a.change_percent)
     .map((s) => ({ label: s.name, value: s.change_percent }));
 
-  const moversColumns = (key: "gainers" | "losers" | "actives", title: string, tone: "positive" | "negative" | "primary") => [
+  const moversColumns = (_type: "gainers" | "losers" | "actives", _label: string, tone: "positive" | "negative" | "primary") => [
     { key: "symbol", header: "Symbol", width: "35%", render: (item: MarketMover) => <span className={`data-table-symbol ${tone}`}>{item.symbol}</span> },
     { key: "price", header: "Price", align: "right" as const, width: "30%", render: (item: MarketMover) => `$${formatPrice(item.price)}` },
     { key: "change", header: "Chg%", align: "right" as const, width: "35%", render: (item: MarketMover) => {
