@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { getMarketIndices, getMovers, getSectors, getFearGreed } from "../api/market";
 import type { MarketIndex, MoversData, SectorPerf, FearGreed, MarketMover } from "../api/types";
 import { KPICard, DashboardGrid, MiniChart, DonutChart, BarChart, DataTable } from "../components/dashboard";
-import MarketHeatmap from "../components/MarketHeatmap";
+import { TreemapHeatmap } from "../components/dashboard";
 import AutocompleteSearch from "../components/AutocompleteSearch";
 import Spinner from "../components/Spinner";
 import PageHeader from "../components/PageHeader";
@@ -230,7 +230,7 @@ export default function MarketPage({ onSelectStock }: Props) {
 
           {/* ── Market Heatmap ── */}
           <motion.div {...STAGGER} transition={{ ...STAGGER.transition, delay: 0.16 }}>
-            <MarketHeatmap movers={allMovers} onSelect={onSelectStock} />
+            <TreemapHeatmap movers={allMovers} onSelect={onSelectStock} />
           </motion.div>
 
           {/* ── Movers Tables ── */}

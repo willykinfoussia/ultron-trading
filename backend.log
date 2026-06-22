@@ -7550,3 +7550,334 @@ ValueError: Out of range float values are not JSON compliant
 2026-06-18 11:27:24 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
 2026-06-22 09:43:55 | INFO     | ultron-trading | → GET /api/version from 127.0.0.1
 2026-06-22 09:43:55 | INFO     | ultron-trading | ← GET /api/version → 200 (11.7ms)
+2026-06-22 09:44:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:44:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:44:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:44:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (426.9ms)
+2026-06-22 09:44:05 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-22 09:44:05 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-22 09:44:08 | INFO     | ultron-trading.market | Name cache built: 92/94 symbols
+2026-06-22 09:44:11 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:44:11 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-22 09:44:11 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:44:11 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-22 09:44:11 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-22 09:44:11 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-22 09:44:11 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-22 09:44:11 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-22 09:44:11 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (6373.1ms)
+2026-06-22 09:44:11 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (432.4ms)
+2026-06-22 09:44:11 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:44:11 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (61.5ms)
+2026-06-22 09:44:11 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:44:12 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:44:12 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (233.4ms)
+2026-06-22 09:45:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:45:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:45:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:45:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (236.5ms)
+2026-06-22 09:45:05 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-22 09:45:05 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-22 09:45:08 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:45:08 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-22 09:45:08 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:45:08 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-22 09:45:08 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-22 09:45:08 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-22 09:45:08 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-22 09:45:08 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-22 09:45:08 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (3665.1ms)
+2026-06-22 09:45:08 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (705.5ms)
+2026-06-22 09:45:08 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:45:08 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (74.4ms)
+2026-06-22 09:45:08 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:45:09 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:45:09 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (309.1ms)
+2026-06-22 09:46:05 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-22 09:46:05 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-22 09:46:07 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:46:07 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-22 09:46:07 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:46:07 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-22 09:46:07 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-22 09:46:07 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (2857.8ms)
+2026-06-22 09:46:07 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-22 09:46:08 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-22 09:46:08 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-22 09:46:08 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:46:08 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (393.5ms)
+2026-06-22 09:46:08 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:46:08 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:46:08 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (326.7ms)
+2026-06-22 09:46:08 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (272.6ms)
+2026-06-22 09:46:08 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:46:08 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:46:08 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:46:08 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (269.9ms)
+2026-06-22 09:47:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:47:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:47:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:47:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (273.3ms)
+2026-06-22 09:47:05 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-22 09:47:05 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-22 09:47:07 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:47:07 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-22 09:47:07 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:47:08 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-22 09:47:08 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-22 09:47:08 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-22 09:47:08 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (2771.4ms)
+2026-06-22 09:47:08 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-22 09:47:08 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-22 09:47:08 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (391.6ms)
+2026-06-22 09:47:08 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:47:08 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (318.1ms)
+2026-06-22 09:47:08 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:47:08 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:47:08 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (236.6ms)
+2026-06-22 09:47:36 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:47:36 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:47:36 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:47:36 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (220.8ms)
+2026-06-22 09:47:49 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-22 09:47:49 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-22 09:47:51 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:47:51 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-22 09:47:51 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:47:51 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-22 09:47:51 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (2603.8ms)
+2026-06-22 09:47:51 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-22 09:47:51 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-22 09:47:51 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-22 09:47:51 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-22 09:47:51 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:47:51 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (367.8ms)
+2026-06-22 09:47:51 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:47:52 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:47:52 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (374.0ms)
+2026-06-22 09:47:52 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (320.1ms)
+2026-06-22 09:47:52 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:47:52 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:47:52 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:47:52 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (255.4ms)
+2026-06-22 09:48:19 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:48:19 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:48:19 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:48:19 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (266.3ms)
+2026-06-22 09:49:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:49:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:49:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:49:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (239.1ms)
+2026-06-22 09:49:05 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-22 09:49:05 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-22 09:49:07 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:49:08 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-22 09:49:08 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:49:08 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-22 09:49:08 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-22 09:49:08 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-22 09:49:08 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-22 09:49:08 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-22 09:49:08 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (3124.1ms)
+2026-06-22 09:49:08 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (389.2ms)
+2026-06-22 09:49:08 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:49:08 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (57.3ms)
+2026-06-22 09:49:08 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:49:08 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:49:08 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (266.5ms)
+2026-06-22 09:50:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:50:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:50:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:50:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (286.9ms)
+2026-06-22 09:50:05 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-22 09:50:05 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-22 09:50:08 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:50:08 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-22 09:50:08 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:50:08 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-22 09:50:08 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-22 09:50:08 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-22 09:50:08 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (3002.7ms)
+2026-06-22 09:50:08 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-22 09:50:08 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-22 09:50:08 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (408.7ms)
+2026-06-22 09:50:08 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:50:08 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (347.5ms)
+2026-06-22 09:50:08 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:50:08 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:50:08 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (235.3ms)
+2026-06-22 09:51:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:51:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:51:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:51:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (270.2ms)
+2026-06-22 09:51:05 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-22 09:51:05 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-22 09:51:07 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:51:07 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-22 09:51:07 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:51:07 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-22 09:51:07 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-22 09:51:08 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-22 09:51:08 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (2739.0ms)
+2026-06-22 09:51:08 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-22 09:51:08 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-22 09:51:08 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (389.5ms)
+2026-06-22 09:51:08 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:51:08 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (327.7ms)
+2026-06-22 09:51:08 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:51:08 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:51:08 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (275.5ms)
+2026-06-22 09:52:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:52:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:52:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:52:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (278.5ms)
+2026-06-22 09:52:05 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-22 09:52:05 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-22 09:52:07 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:52:08 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-22 09:52:08 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:52:08 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-22 09:52:08 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-22 09:52:08 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-22 09:52:08 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-22 09:52:08 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-22 09:52:08 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (3115.9ms)
+2026-06-22 09:52:08 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (626.7ms)
+2026-06-22 09:52:08 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:52:08 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (297.6ms)
+2026-06-22 09:52:08 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:52:08 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:52:08 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (261.2ms)
+2026-06-22 09:53:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:53:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:53:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:53:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (258.7ms)
+2026-06-22 09:53:05 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-22 09:53:05 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-22 09:53:07 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:53:08 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-22 09:53:08 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:53:08 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-22 09:53:08 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-22 09:53:08 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-22 09:53:08 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-22 09:53:08 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-22 09:53:08 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (3225.1ms)
+2026-06-22 09:53:08 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (401.5ms)
+2026-06-22 09:53:08 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:53:08 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (55.0ms)
+2026-06-22 09:53:08 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:53:08 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:53:08 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (231.8ms)
+2026-06-22 09:54:03 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:54:03 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:54:03 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:54:03 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (242.2ms)
+2026-06-22 09:54:03 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-22 09:54:03 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-22 09:54:05 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:54:06 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-22 09:54:06 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:54:06 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-22 09:54:06 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-22 09:54:06 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-22 09:54:06 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-22 09:54:06 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-22 09:54:06 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (3029.2ms)
+2026-06-22 09:54:06 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (395.6ms)
+2026-06-22 09:54:06 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:54:06 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (54.9ms)
+2026-06-22 09:54:06 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:54:06 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:54:06 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (205.0ms)
+2026-06-22 09:54:07 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:54:07 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:54:07 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:54:07 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (282.6ms)
+2026-06-22 09:54:07 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-22 09:54:07 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-22 09:54:09 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:54:09 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-22 09:54:09 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:54:10 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-22 09:54:10 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-22 09:54:10 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-22 09:54:10 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (2754.4ms)
+2026-06-22 09:54:10 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-22 09:54:10 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-22 09:54:10 | INFO     | ultron-trading | → GET /api/version from 185.249.44.4
+2026-06-22 09:54:10 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (415.6ms)
+2026-06-22 09:54:10 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:54:10 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (356.3ms)
+2026-06-22 09:54:10 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:54:10 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:54:10 | INFO     | ultron-trading | ← GET /api/version → 200 (260.4ms)
+2026-06-22 09:54:10 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (260.1ms)
+2026-06-22 09:54:37 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:54:37 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:54:37 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:54:37 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (268.5ms)
+2026-06-22 09:55:01 | INFO     | ultron-trading | → GET /api/stocks/INTC/quote from 185.249.44.4
+2026-06-22 09:55:01 | INFO     | ultron-trading.stocks | Quote requested for INTC
+2026-06-22 09:55:01 | INFO     | ultron-trading.stocks | Quote for INTC: $133.99 (+10.64%)
+2026-06-22 09:55:01 | INFO     | ultron-trading | → GET /api/stocks/INTC/history from 185.249.44.4
+2026-06-22 09:55:01 | INFO     | ultron-trading.stocks | History requested for INTC (period=6mo, interval=1d)
+2026-06-22 09:55:01 | INFO     | ultron-trading.stocks | History for INTC: 124 data points returned
+2026-06-22 09:55:01 | INFO     | ultron-trading | ← GET /api/stocks/INTC/quote → 200 (549.9ms)
+2026-06-22 09:55:01 | INFO     | ultron-trading | ← GET /api/stocks/INTC/history → 200 (105.5ms)
+2026-06-22 09:55:07 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:55:07 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:55:07 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:55:07 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (245.5ms)
+2026-06-22 09:55:38 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:55:38 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:55:38 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:55:38 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (265.1ms)
+2026-06-22 09:56:08 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:56:08 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:56:08 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:56:08 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (245.5ms)
+2026-06-22 09:56:38 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:56:38 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:56:38 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:56:38 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (256.3ms)
+2026-06-22 09:57:07 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:57:08 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:57:08 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:57:08 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (247.7ms)
+2026-06-22 09:58:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:58:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:58:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:58:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (234.6ms)
+2026-06-22 09:59:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 09:59:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 09:59:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 09:59:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (259.9ms)
+2026-06-22 10:00:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 10:00:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 10:00:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 10:00:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (271.1ms)
+2026-06-22 10:01:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 10:01:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 10:01:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 10:01:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (255.4ms)
+2026-06-22 10:02:04 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 10:02:04 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 10:02:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 10:02:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (239.9ms)
+2026-06-22 10:03:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 10:03:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 10:03:05 | INFO     | ultron-trading.market | Indices fetched: 10 results
+2026-06-22 10:03:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (252.5ms)
