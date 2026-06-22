@@ -83,7 +83,7 @@ export default function MarketPage({ onSelectStock }: Props) {
 
   // ── Derived data ──
   const topIndex = indices[0];
-  const allMovers = [...(movers.gainers || []), ...(movers.losers || [])];
+  const allMovers = [...(movers.gainers || []), ...(movers.losers || []), ...(movers.actives || [])];
   const avgChange = allMovers.length > 0 ? allMovers.reduce((s, m) => s + m.change_percent, 0) / allMovers.length : 0;
   const gainersCount = movers.gainers?.length ?? 0;
   const losersCount = movers.losers?.length ?? 0;
