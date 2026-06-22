@@ -195,3 +195,113 @@ async def get_news(symbol: str):
     except Exception as e:
         logger.error(f"Error fetching news for {sym}: {e}", exc_info=True)
         raise HTTPException(status_code=400, detail=f"Error fetching news for {sym}: {str(e)}")
+
+
+@router.get("/{symbol}/related")
+async def get_related(symbol: str, limit: int = 12):
+    """Get related stocks — same sector peers with live quotes.
+
+    Returns stocks in the same sector, sorted by absolute change_percent
+    (most volatile/movers first), excluding the current symbol.
+    """
+    sym = symbol.upper()
+    logger.info(f"Related stocks requested for {sym}")
+    try:
+        ticker = yf.Ticker(sym)
+        info = ticker.info
+        if not info or "regularMarketPrice" not in info:
+            raise HTTPException(status_code=404, detail=f"No data found for symbol: {sym}")
+
+        sector = info.get("sector", "")
+        industry = info.get("industry", "")
+
+        # Find stocks in our universe with the same sector
+        from app.services.market_service import UNIVERSE, _get_name_map, _clean_float
+        import concurrent.futures
+
+        # Get sector for all universe stocks (use cache if available)
+        related_symbols = []
+        # Known sector mapping for our universe (fast path)
+        SECTOR_MAP = {
+            "Technology": [
+                "AAPL", "MSFT", "GOOGL", "GOOG", "META", "NVDA", "AMD", "INTC",
+                "CRM", "ADBE", "PYPL", "UBER", "SHOP", "SQ", "SNOW", "PLTR",
+                "NET", "DDOG", "ZM", "ROKU", "TWLO", "OKTA", "FSLY", "HUBS",
+            ],
+            "Health Care": [
+                "JNJ", "PFE", "MRK", "ABT", "TMO", "DHR", "LLY", "BMY", "GILD",
+            ],
+            "Financials": [
+                "JPM", "BAC", "GS", "MS", "WFC", "C", "BLK", "SCHW", "AXP", "V", "MA",
+            ],
+            "Consumer Discretionary": [
+                "AMZN", "TSLA", "MCD", "NKE", "SBUX", "TGT", "DIS", "NFLX", "SPOT",
+                "RIVN", "LCID",
+            ],
+            "Consumer Staples": ["WMT", "PG", "KO", "PEP", "COST"],
+            "Industrials": ["BA", "CAT", "GE", "HON", "UPS", "RTX"],
+            "Energy": ["XOM", "CVX"],
+            "Communication Services": ["VZ", "T", "CMCSA"],
+        }
+
+        candidates = SECTOR_MAP.get(sector, [])
+        # Remove current symbol
+        candidates = [s for s in candidates if s != sym]
+
+        if not candidates:
+            # Fallback: return top movers from universe
+            candidates = [s for s in UNIVERSE[:20] if s != sym]
+
+        # Fetch quotes in parallel
+        results = []
+        name_map = _get_name_map(UNIVERSE)
+
+        def _fetch_quote(s: str) -> dict | None:
+            try:
+                t = yf.Ticker(s)
+                h = t.history(period="5d")
+                if h.empty:
+                    return None
+                latest = h.iloc[-1]
+                prev = h.iloc[-2] if len(h) > 1 else latest
+                close = _clean_float(latest["Close"])
+                prev_close = _clean_float(prev["Close"])
+                if close <= 0 or prev_close <= 0:
+                    return None
+                change = close - prev_close
+                change_pct = (change / prev_close) * 100
+                return {
+                    "symbol": s,
+                    "short_name": name_map.get(s, s),
+                    "price": round(close, 2),
+                    "change": round(change, 2),
+                    "change_percent": round(change_pct, 2),
+                    "volume": int(_clean_float(latest.get("Volume", 0))),
+                    "sector": sector,  # Same sector as the queried stock
+                }
+            except Exception:
+                return None
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:
+            futures = {executor.submit(_fetch_quote, s): s for s in candidates[:20]}
+            for future in concurrent.futures.as_completed(futures, timeout=25):
+                result = future.result()
+                if result:
+                    results.append(result)
+
+        # Sort by absolute change (most active movers first)
+        results.sort(key=lambda x: abs(x["change_percent"]), reverse=True)
+
+        logger.info(f"Related stocks for {sym} ({sector}): {len(results)} found")
+        return {
+            "symbol": sym,
+            "sector": sector,
+            "industry": industry,
+            "count": len(results),
+            "stocks": results[:limit],
+        }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching related stocks for {sym}: {e}", exc_info=True)
+        raise HTTPException(status_code=400, detail=f"Error fetching related stocks: {str(e)}")

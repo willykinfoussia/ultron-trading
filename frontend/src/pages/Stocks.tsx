@@ -14,8 +14,7 @@ import FinancialsTable from "../components/FinancialsTable";
 import HoldersChart from "../components/HoldersChart";
 import NewsFeed from "../components/NewsFeed";
 import EmbeddedAnalysis from "../components/EmbeddedAnalysis";
-
-const POPULAR_STOCKS = ["AAPL", "GOOGL", "MSFT", "AMZN", "TSLA", "NVDA", "META"];
+import RelatedStocks from "../components/RelatedStocks";
 
 const STAGGER = {
   initial: { opacity: 0, y: 12 },
@@ -190,19 +189,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
                 {...STAGGER}
                 transition={{ ...STAGGER.transition, delay: 0.2 }}
               >
-                <p className="chip-group-label">Popular stocks</p>
-                <div className="chip-group">
-                  {POPULAR_STOCKS.map((s) => (
-                    <button
-                      key={s}
-                      type="button"
-                      onClick={() => fetchStock(s)}
-                      className={`chip ${selectedSymbol === s ? "active" : ""}`}
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
+                <RelatedStocks symbol={selectedSymbol} onSelect={fetchStock} />
               </motion.div>
             </motion.div>
           )}
