@@ -53,7 +53,7 @@ interface MiniChartProps {
 }
 
 export function MiniChart({ data, color, height = 40, width = 120, fill = true }: MiniChartProps) {
-  if (!data || data.length < 2) return <div className="mini-chart-empty" style={{ height, width }} />;
+  if (!data || data.length < 2) return <div className="mini-chart-empty" style={{ height, width: "100%" }} />;
 
   const min = Math.min(...data);
   const max = Math.max(...data);
@@ -70,7 +70,7 @@ export function MiniChart({ data, color, height = 40, width = 120, fill = true }
   const fillD = fill ? `${pathD} L${width},${height} L0,${height} Z` : undefined;
 
   return (
-    <svg className="mini-chart" width={width} height={height} viewBox={`0 0 ${width} ${height}`}>
+    <svg className="mini-chart" width="100%" height={height} viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
       {fillD && <path d={fillD} fill={stroke} opacity="0.12" />}
       <path d={pathD} fill="none" stroke={stroke} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>

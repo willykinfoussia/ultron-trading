@@ -1475,6 +1475,7 @@ select:focus-visible {
   flex-direction: column;
   transition: background var(--t-mid) var(--ease-out),
               border-color var(--t-mid) var(--ease-out);
+  min-width: 0;
 }
 
 .card-header {
@@ -5042,12 +5043,16 @@ textarea.editor {
   display: grid;
   gap: var(--sp-3);
   padding: var(--sp-3);
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 /* ── Dashboard Grid (KPI row) ── */
 .dashboard-grid {
   display: grid;
   gap: var(--sp-3);
+  min-width: 0;
 }
 .dashboard-grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
 .dashboard-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
@@ -5068,6 +5073,8 @@ textarea.editor {
   grid-template-columns: 1fr 320px;
   gap: var(--sp-3);
   align-items: start;
+  min-width: 0;
+  max-width: 100%;
 }
 .dashboard-row-left { min-width: 0; }
 .dashboard-row-right { min-width: 0; }
@@ -5089,6 +5096,8 @@ textarea.editor {
   gap: var(--sp-1);
   transition: border-color var(--t-fast) var(--ease-out), box-shadow var(--t-fast) var(--ease-out);
   cursor: default;
+  min-width: 0;
+  overflow: hidden;
 }
 .kpi-card[role="button"] { cursor: pointer; }
 .kpi-card[role="button"]:hover {
@@ -5143,15 +5152,20 @@ textarea.editor {
   overflow-x: auto;
   padding-bottom: var(--sp-1);
   -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+  min-width: 0;
 }
 .index-sparkline-card {
   flex: 0 0 auto;
-  min-width: 180px;
+  min-width: 120px;
+  max-width: 160px;
+  width: 100%;
   padding: var(--sp-3);
   background: var(--surface-2);
   border-radius: var(--r-md);
   cursor: pointer;
   transition: background var(--t-fast) var(--ease-out);
+  overflow: hidden;
 }
 .index-sparkline-card:hover {
   background: var(--surface-3);
