@@ -843,8 +843,8 @@ select:focus-visible {
 
 .related-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-  gap: var(--sp-2);
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: var(--sp-3);
   padding: 0 var(--sp-4) var(--sp-4);
 }
 
@@ -858,8 +858,8 @@ select:focus-visible {
 .related-item {
   display: flex;
   flex-direction: column;
-  padding: var(--sp-2);
-  border-radius: var(--r-md);
+  padding: var(--sp-3);
+  border-radius: var(--r-lg);
   border: 1px solid var(--border);
   background: var(--surface-2);
   cursor: pointer;
@@ -905,8 +905,8 @@ select:focus-visible {
 .related-item-top {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  margin-bottom: 6px;
+  gap: 4px;
+  margin-bottom: 8px;
   min-width: 0;
 }
 
@@ -921,13 +921,13 @@ select:focus-visible {
 .related-symbol {
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   color: var(--text-1);
   flex-shrink: 0;
 }
 
 .related-name {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-3);
   white-space: nowrap;
   overflow: hidden;
@@ -938,9 +938,9 @@ select:focus-visible {
 .related-change-badge {
   display: inline-flex;
   align-items: center;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 1px 5px;
+  padding: 2px 7px;
   border-radius: var(--r-full);
   font-family: var(--font-mono);
   white-space: nowrap;
@@ -961,14 +961,15 @@ select:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4px;
+  gap: var(--sp-2);
+  margin-bottom: 4px;
   min-width: 0;
 }
 
 .related-price {
   font-family: var(--font-mono);
   font-weight: 600;
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
   color: var(--text-1);
   flex-shrink: 0;
 }
@@ -981,8 +982,8 @@ select:focus-visible {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 4px;
-  font-size: 10px;
+  margin-top: 6px;
+  font-size: 11px;
   color: var(--text-3);
   font-family: var(--font-mono);
 }

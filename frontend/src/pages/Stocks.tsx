@@ -188,6 +188,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
               <motion.div
                 {...STAGGER}
                 transition={{ ...STAGGER.transition, delay: 0.2 }}
+                style={{ marginTop: "var(--sp-5)" }}
               >
                 <RelatedStocks symbol={selectedSymbol} onSelect={fetchStock} />
               </motion.div>

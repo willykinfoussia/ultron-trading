@@ -12627,3 +12627,63 @@ ValueError: Out of range float values are not JSON compliant
 2026-06-22 14:59:04 | INFO     | ultron-trading.market | Fetching market indices
 2026-06-22 14:59:04 | INFO     | ultron-trading.market | Indices fetched: 11 results
 2026-06-22 14:59:04 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (198.9ms)
+2026-06-22 15:00:04 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 15:00:04 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 15:00:05 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-22 15:00:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (530.4ms)
+2026-06-22 15:00:37 | INFO     | ultron-trading | → GET /api/version from 127.0.0.1
+2026-06-22 15:00:37 | INFO     | ultron-trading | ← GET /api/version → 200 (13.0ms)
+2026-06-22 15:01:04 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 15:01:04 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 15:01:05 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-22 15:01:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (558.9ms)
+2026-06-22 15:01:09 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 15:01:09 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 15:01:09 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-22 15:01:09 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (344.2ms)
+2026-06-22 15:01:09 | INFO     | ultron-trading | → GET /api/version from 185.249.44.4
+2026-06-22 15:01:09 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-22 15:01:09 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-22 15:01:10 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-22 15:01:10 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-22 15:01:10 | INFO     | ultron-trading | ← GET /api/version → 200 (502.9ms)
+2026-06-22 15:01:10 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-22 15:01:10 | ERROR    | yfinance | HTTP Error 401: {"finance":{"result":null,"error":{"code":"Unauthorized","description":"Invalid Crumb"}}}
+2026-06-22 15:01:15 | INFO     | ultron-trading.market | Name cache built: 92/94 symbols
+2026-06-22 15:01:18 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=5d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 15:01:18 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-22 15:01:18 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=5d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 15:01:18 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-22 15:01:18 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-22 15:01:18 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (8868.0ms)
+2026-06-22 15:01:18 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-22 15:01:18 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (8442.2ms)
+2026-06-22 15:01:18 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-22 15:01:18 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-22 15:01:18 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (267.3ms)
+2026-06-22 15:01:18 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (192.9ms)
+2026-06-22 15:01:22 | INFO     | ultron-trading | → GET /api/stocks/NFLX/quote from 185.249.44.4
+2026-06-22 15:01:22 | INFO     | ultron-trading.stocks | Quote requested for NFLX
+2026-06-22 15:01:23 | INFO     | ultron-trading.stocks | Quote for NFLX: $74.32 (-3.95%)
+2026-06-22 15:01:23 | INFO     | ultron-trading | → GET /api/stocks/NFLX/history from 185.249.44.4
+2026-06-22 15:01:23 | INFO     | ultron-trading | ← GET /api/stocks/NFLX/quote → 200 (211.1ms)
+2026-06-22 15:01:23 | INFO     | ultron-trading.stocks | History requested for NFLX (period=6mo, interval=1d)
+2026-06-22 15:01:23 | INFO     | ultron-trading.stocks | History for NFLX: 124 data points returned
+2026-06-22 15:01:23 | INFO     | ultron-trading | ← GET /api/stocks/NFLX/history → 200 (132.5ms)
+2026-06-22 15:01:23 | INFO     | ultron-trading | → GET /api/stocks/NFLX/related from 185.249.44.4
+2026-06-22 15:01:23 | INFO     | ultron-trading.stocks | Related stocks requested for NFLX
+2026-06-22 15:01:23 | INFO     | ultron-trading.stocks | Related stocks for NFLX (Communication Services): 3 found
+2026-06-22 15:01:23 | INFO     | ultron-trading | ← GET /api/stocks/NFLX/related → 200 (353.6ms)
+2026-06-22 15:01:23 | INFO     | ultron-trading | → GET /api/stocks/T/history from 185.249.44.4
+2026-06-22 15:01:23 | INFO     | ultron-trading.stocks | History requested for T (period=1mo, interval=1d)
+2026-06-22 15:01:23 | INFO     | ultron-trading.stocks | History for T: 20 data points returned
+2026-06-22 15:01:23 | INFO     | ultron-trading | ← GET /api/stocks/T/history → 200 (147.3ms)
+2026-06-22 15:01:23 | INFO     | ultron-trading | → GET /api/stocks/CMCSA/history from 185.249.44.4
+2026-06-22 15:01:23 | INFO     | ultron-trading.stocks | History requested for CMCSA (period=1mo, interval=1d)
+2026-06-22 15:01:23 | INFO     | ultron-trading.stocks | History for CMCSA: 20 data points returned
+2026-06-22 15:01:23 | INFO     | ultron-trading | → GET /api/stocks/VZ/history from 185.249.44.4
+2026-06-22 15:01:23 | INFO     | ultron-trading.stocks | History requested for VZ (period=1mo, interval=1d)
+2026-06-22 15:01:24 | INFO     | ultron-trading.stocks | History for VZ: 20 data points returned
+2026-06-22 15:01:24 | INFO     | ultron-trading | ← GET /api/stocks/CMCSA/history → 200 (241.0ms)
+2026-06-22 15:01:24 | INFO     | ultron-trading | ← GET /api/stocks/VZ/history → 200 (148.8ms)
