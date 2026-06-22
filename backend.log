@@ -7548,3 +7548,5 @@ ValueError: Out of range float values are not JSON compliant
 2026-06-18 11:27:07 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (298.0ms)
 2026-06-18 11:27:07 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
 2026-06-18 11:27:24 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=2d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-22 09:43:55 | INFO     | ultron-trading | → GET /api/version from 127.0.0.1
+2026-06-22 09:43:55 | INFO     | ultron-trading | ← GET /api/version → 200 (11.7ms)

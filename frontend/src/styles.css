@@ -842,6 +842,9 @@ select:focus-visible {
   overflow-y: auto;
   overflow-x: auto;
   max-width: 100%;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .data-table {
@@ -1476,6 +1479,9 @@ select:focus-visible {
   transition: background var(--t-mid) var(--ease-out),
               border-color var(--t-mid) var(--ease-out);
   min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .card-header {
@@ -1512,6 +1518,9 @@ select:focus-visible {
   min-height: 0;
   min-width: 0;
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .card-body.no-padding { padding: 0; }
@@ -5040,12 +5049,19 @@ textarea.editor {
 
 /* ── Page ── */
 .page-dashboard {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--sp-3);
   padding: var(--sp-3);
+  width: 100%;
   max-width: 100%;
   min-width: 0;
   overflow-x: hidden;
+  box-sizing: border-box;
+}
+.page-dashboard > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* ── Dashboard Grid (KPI row) ── */
@@ -5070,14 +5086,16 @@ textarea.editor {
 /* ── Dashboard Row (2-col layout) ── */
 .dashboard-row {
   display: grid;
-  grid-template-columns: 1fr 320px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
   gap: var(--sp-3);
   align-items: start;
   min-width: 0;
   max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
-.dashboard-row-left { min-width: 0; }
-.dashboard-row-right { min-width: 0; }
+.dashboard-row-left { min-width: 0; max-width: 100%; overflow: hidden; }
+.dashboard-row-right { min-width: 0; max-width: 100%; overflow: hidden; }
 
 @media (max-width: 900px) {
   .dashboard-row {
@@ -5250,7 +5268,7 @@ textarea.editor {
 .bar-chart-label {
   font-size: var(--text-xs);
   color: var(--text-3);
-  width: 80px;
+  width: 64px;
   text-align: right;
   flex-shrink: 0;
   white-space: nowrap;

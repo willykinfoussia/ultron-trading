@@ -4,8 +4,19 @@ from fastapi.responses import JSONResponse
 import logging
 import time
 import sys
+from pathlib import Path
 
 from app.api import stocks, charts, analysis, search, market
+
+# ── Read version from VERSION file ──────────────────────────────────────
+def _read_version() -> str:
+    """Read version from the project root VERSION file."""
+    for candidate in [Path(__file__).parent.parent / "VERSION", Path(__file__).parent / "VERSION"]:
+        if candidate.exists():
+            return candidate.read_text().strip()
+    return "0.0.0"
+
+VERSION = _read_version()
 
 # ── Logging configuration ──────────────────────────────────────────────
 logging.basicConfig(
@@ -23,7 +34,7 @@ logger = logging.getLogger("ultron-trading")
 app = FastAPI(
     title="Ultron Trading API",
     description="API for stock market analysis and data",
-    version="0.7.0",
+    version=VERSION,
 )
 
 # CORS
@@ -63,13 +74,13 @@ app.include_router(market.router, prefix="/api/market", tags=["market"])
 @app.get("/")
 async def root():
     logger.info("Root endpoint called")
-    return {"message": "Welcome to Ultron Trading API", "version": "0.7.0"}
+    return {"message": "Welcome to Ultron Trading API", "version": VERSION}
 
 @app.get("/health")
 async def health_check():
     logger.debug("Health check OK")
-    return {"status": "healthy", "version": "0.7.0"}
+    return {"status": "healthy", "version": VERSION}
 
 @app.get("/api/version")
 async def api_version():
-    return {"version": "0.7.0"}
+    return {"version": VERSION}
