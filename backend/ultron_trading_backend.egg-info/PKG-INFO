@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: ultron-trading-backend
-Version: 0.6.0
+Version: 0.8.0
 Summary: Backend API for Ultron Trading
 Project-URL: Homepage, https://github.com/willykinfoussia/ultron-trading
 Requires-Python: >=3.11
