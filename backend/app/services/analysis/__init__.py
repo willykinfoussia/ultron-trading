@@ -42,19 +42,25 @@ class AnalysisRegistry:
     def get_method(self, method_id: str) -> Optional[AnalysisMethod]:
         """Get a registered method instance by its ID."""
         return self._methods.get(method_id)
-
     def get_methods(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
         """List method metadata, optionally filtered by category."""
+        from .metadata import ANALYSIS_METADATA
         results = []
         for mid, method in self._methods.items():
             if category and method.category != category:
                 continue
+            meta = ANALYSIS_METADATA.get(mid, {})
             results.append({
                 "method_id": method.method_id,
                 "method_name": method.method_name,
                 "category": method.category,
                 "description": method.description,
                 "parameters": method.parameters,
+                "how_it_works": meta.get("how_it_works", method.how_it_works),
+                "pros": meta.get("pros", method.pros),
+                "cons": meta.get("cons", method.cons),
+                "interpretation_guide": meta.get("interpretation_guide", method.interpretation_guide),
+                "example_scenarios": meta.get("example_scenarios", method.example_scenarios),
             })
         return results
 

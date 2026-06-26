@@ -147,4 +147,17 @@ export interface AnalysisMethod {
   category: string
   description: string
   parameters: Record<string, { type: string; default: unknown; description: string }>
+  how_it_works: string
+  pros: string[]
+  cons: string[]
+  interpretation_guide: {
+    buy_signal: string
+    sell_signal: string
+    hold_signal: string
+    confidence_meaning: string
+  }
+  example_scenarios: {
+    scenario: string
+    outcome: string
+  }[]
 }

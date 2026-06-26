@@ -62,6 +62,31 @@ class AnalysisMethod(ABC):
         """Parameter schema: {name: {type, default, min, max, description}}."""
         return {}
 
+    @property
+    def how_it_works(self) -> str:
+        """Detailed explanation of how this method works."""
+        return ""
+
+    @property
+    def pros(self) -> List[str]:
+        """List of advantages."""
+        return []
+
+    @property
+    def cons(self) -> List[str]:
+        """List of disadvantages."""
+        return []
+
+    @property
+    def interpretation_guide(self) -> Dict[str, str]:
+        """How to interpret signals: {buy_signal, sell_signal, hold_signal, confidence_meaning}."""
+        return {}
+
+    @property
+    def example_scenarios(self) -> List[Dict[str, str]]:
+        """Example scenarios: [{scenario, outcome}]."""
+        return []
+
     def _validate_metadata(self):
         """Validate that required metadata is not empty."""
         if not self.method_id:
