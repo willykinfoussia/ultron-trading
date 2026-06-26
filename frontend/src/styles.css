@@ -6666,3 +6666,243 @@ textarea.editor {
     display: none;
   }
 }
+
+/* === Consensus Report === */
+.consensus-report {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  margin-top: var(--sp-4);
+}
+
+.consensus-verdict {
+  background: var(--card);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: var(--sp-5);
+  text-align: center;
+}
+
+.consensus-verdict-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sp-4);
+}
+
+.consensus-verdict-header h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.consensus-score {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-2);
+  font-family: var(--font-mono);
+}
+
+.consensus-meter {
+  position: relative;
+  height: 12px;
+  background: var(--surface-2);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: var(--sp-2);
+}
+
+.consensus-meter-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+.consensus-meter-center {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--text-2);
+  opacity: 0.5;
+}
+
+.consensus-meter-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-3);
+}
+
+.consensus-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-3);
+}
+
+.consensus-stat {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: var(--sp-3);
+  text-align: center;
+}
+
+.consensus-stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.consensus-stat-label {
+  font-size: 0.75rem;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.consensus-categories {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--sp-4);
+}
+
+.consensus-categories h3 {
+  margin: 0 0 var(--sp-4) 0;
+  font-size: 1rem;
+  color: var(--text-1);
+}
+
+.consensus-category {
+  margin-bottom: var(--sp-4);
+}
+
+.consensus-category:last-child {
+  margin-bottom: 0;
+}
+
+.consensus-category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--sp-2);
+}
+
+.consensus-category-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-1);
+}
+
+.consensus-category-signal {
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.consensus-category-bar {
+  position: relative;
+  height: 8px;
+  background: var(--surface-2);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: var(--sp-2);
+}
+
+.consensus-category-methods {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+
+.consensus-method-tag {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--surface-2);
+  color: var(--text-2);
+  cursor: help;
+}
+
+.consensus-method-tag.buy {
+  border-left: 3px solid #10b981;
+}
+
+.consensus-method-tag.sell {
+  border-left: 3px solid #ef4444;
+}
+
+.consensus-method-tag.hold,
+.consensus-method-tag.neutral {
+  border-left: 3px solid #fbbf24;
+}
+
+.consensus-conflicts {
+  background: rgba(251, 191, 36, 0.1);
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  border-radius: 12px;
+  padding: var(--sp-4);
+}
+
+.consensus-conflicts h3 {
+  margin: 0 0 var(--sp-3) 0;
+  color: #fbbf24;
+  font-size: 0.95rem;
+}
+
+.consensus-conflict {
+  padding: var(--sp-2) var(--sp-3);
+  margin-bottom: var(--sp-2);
+  background: rgba(251, 191, 36, 0.05);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--text-2);
+}
+
+.consensus-conflict:last-child {
+  margin-bottom: 0;
+}
+
+.consensus-insights {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--sp-4);
+}
+
+.consensus-insights h3 {
+  margin: 0 0 var(--sp-3) 0;
+  font-size: 0.95rem;
+  color: var(--text-1);
+}
+
+.consensus-insights ul {
+  margin: 0;
+  padding-left: var(--sp-5);
+}
+
+.consensus-insights li {
+  margin-bottom: var(--sp-2);
+  font-size: 0.85rem;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+
+.consensus-insights li:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .consensus-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .consensus-verdict-header {
+    flex-direction: column;
+    gap: var(--sp-2);
+  }
+}

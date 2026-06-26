@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAnalysisMethods, runAllAnalysis } from "../api/analysis";
 import type { AnalysisMethod, AnalysisResult } from "../api/types";
-import AnalysisCard from "../components/analysis/AnalysisCard";
+import ConsensusReport from "./ConsensusReport";
 import Spinner from "../components/Spinner";
 
 interface Props {
@@ -142,21 +142,11 @@ export default function EmbeddedAnalysis({ symbol, onViewMethodDetail }: Props) 
         {results.length > 0 && !running && (
           <motion.div
             key="results"
-            className="analysis-results"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <h3 className="analysis-results-title">Results ({results.length} methods)</h3>
-            <div className="analysis-results-grid">
-              {results.map((r, i) => (
-                <AnalysisCard
-                  key={`${r.method_id}-${i}`}
-                  result={r}
-                  onViewDetails={onViewMethodDetail ? () => onViewMethodDetail(r.method_id) : undefined}
-                />
-              ))}
-            </div>
+            <ConsensusReport symbol={symbol} results={results} />
           </motion.div>
         )}
       </AnimatePresence>
