@@ -30,8 +30,8 @@ function MiniSparkline({ data, positive }: { data: number[]; positive: boolean }
   const min = Math.min(...data);
   const max = Math.max(...data);
   const range = max - min || 1;
-  const w = 80;
-  const h = 28;
+  const w = 90;
+  const h = 36;
   const points = data.slice(-20).map((v, i, arr) => {
     const x = (i / (arr.length - 1)) * w;
     const y = h - ((v - min) / range) * h;
@@ -44,7 +44,7 @@ function MiniSparkline({ data, positive }: { data: number[]; positive: boolean }
         points={points.join(" ")}
         fill="none"
         stroke={stroke}
-        strokeWidth="1.5"
+        strokeWidth="1.8"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
@@ -157,7 +157,7 @@ export default function RelatedStocks({ symbol, onSelect }: Props) {
         </div>
 
         <div className="related-grid">
-          {data.stocks.map((s, i) => (
+          {data.stocks.slice(0, 6).map((s, i) => (
             <motion.button
               key={s.symbol}
               className={`related-item ${isPositive(s) ? "pos" : "neg"}`}

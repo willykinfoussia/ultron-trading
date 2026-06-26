@@ -12687,3 +12687,710 @@ ValueError: Out of range float values are not JSON compliant
 2026-06-22 15:01:24 | INFO     | ultron-trading.stocks | History for VZ: 20 data points returned
 2026-06-22 15:01:24 | INFO     | ultron-trading | ← GET /api/stocks/CMCSA/history → 200 (241.0ms)
 2026-06-22 15:01:24 | INFO     | ultron-trading | ← GET /api/stocks/VZ/history → 200 (148.8ms)
+2026-06-22 15:10:36 | INFO     | ultron-trading | → GET /api/version from 127.0.0.1
+2026-06-22 15:10:36 | INFO     | ultron-trading | ← GET /api/version → 200 (12.4ms)
+2026-06-23 12:35:24 | INFO     | ultron-trading | → GET /api/version from 127.0.0.1
+2026-06-23 12:35:24 | INFO     | ultron-trading | ← GET /api/version → 200 (12.4ms)
+2026-06-23 12:40:57 | INFO     | ultron-trading | → GET /api/version from 127.0.0.1
+2026-06-23 12:40:57 | INFO     | ultron-trading | ← GET /api/version → 200 (0.8ms)
+2026-06-23 12:41:28 | INFO     | ultron-trading | → GET /api/version from 127.0.0.1
+2026-06-23 12:41:28 | INFO     | ultron-trading | ← GET /api/version → 200 (0.7ms)
+2026-06-23 12:41:28 | INFO     | ultron-trading | → GET /api/stocks/AAPL/related from 127.0.0.1
+2026-06-23 12:41:28 | INFO     | ultron-trading.stocks | Related stocks requested for AAPL
+2026-06-23 12:41:32 | INFO     | ultron-trading.market | Name cache built: 92/94 symbols
+2026-06-23 12:41:33 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=5d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-23 12:41:33 | INFO     | ultron-trading.stocks | Related stocks for AAPL (Technology): 19 found
+2026-06-23 12:41:33 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/related → 200 (4635.3ms)
+2026-06-23 12:48:32 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-23 12:48:32 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-23 12:48:32 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-23 12:48:32 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-23 12:48:32 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-23 12:48:35 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=5d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-23 12:48:41 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-23 12:48:41 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=5d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-23 12:48:41 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-23 12:48:41 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-23 12:48:41 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (8668.9ms)
+2026-06-23 12:48:41 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-23 12:48:41 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-23 12:48:41 | INFO     | ultron-trading | → GET /api/version from 185.249.44.4
+2026-06-23 12:48:41 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (8665.2ms)
+2026-06-23 12:48:41 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-23 12:48:41 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (373.7ms)
+2026-06-23 12:48:41 | INFO     | ultron-trading | ← GET /api/version → 200 (79.2ms)
+2026-06-23 12:48:41 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (78.0ms)
+2026-06-23 12:48:55 | INFO     | ultron-trading | → GET /api/stocks/DIA/quote from 185.249.44.4
+2026-06-23 12:48:55 | INFO     | ultron-trading.stocks | Quote requested for DIA
+2026-06-23 12:48:55 | INFO     | ultron-trading.stocks | Quote for DIA: $517.08 (+0.30%)
+2026-06-23 12:48:55 | INFO     | ultron-trading | → GET /api/stocks/DIA/history from 185.249.44.4
+2026-06-23 12:48:55 | INFO     | ultron-trading.stocks | History requested for DIA (period=6mo, interval=1d)
+2026-06-23 12:48:55 | INFO     | ultron-trading.stocks | History for DIA: 123 data points returned
+2026-06-23 12:48:55 | INFO     | ultron-trading | ← GET /api/stocks/DIA/quote → 200 (514.7ms)
+2026-06-23 12:48:55 | INFO     | ultron-trading | ← GET /api/stocks/DIA/history → 200 (95.5ms)
+2026-06-23 12:48:56 | INFO     | ultron-trading | → GET /api/stocks/DIA/related from 185.249.44.4
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | Related stocks requested for DIA
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | Related stocks for DIA (): 20 found
+2026-06-23 12:48:56 | INFO     | ultron-trading | ← GET /api/stocks/DIA/related → 200 (368.0ms)
+2026-06-23 12:48:56 | INFO     | ultron-trading | → GET /api/stocks/GOOG/history from 185.249.44.4
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | History requested for GOOG (period=1mo, interval=1d)
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | History for GOOG: 19 data points returned
+2026-06-23 12:48:56 | INFO     | ultron-trading | → GET /api/stocks/GOOGL/history from 185.249.44.4
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | History requested for GOOGL (period=1mo, interval=1d)
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | History for GOOGL: 19 data points returned
+2026-06-23 12:48:56 | INFO     | ultron-trading | ← GET /api/stocks/GOOG/history → 200 (123.6ms)
+2026-06-23 12:48:56 | INFO     | ultron-trading | → GET /api/stocks/MSFT/history from 185.249.44.4
+2026-06-23 12:48:56 | INFO     | ultron-trading | ← GET /api/stocks/GOOGL/history → 200 (56.4ms)
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | History requested for MSFT (period=1mo, interval=1d)
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | History for MSFT: 19 data points returned
+2026-06-23 12:48:56 | INFO     | ultron-trading | → GET /api/stocks/META/history from 185.249.44.4
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | History requested for META (period=1mo, interval=1d)
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | History for META: 19 data points returned
+2026-06-23 12:48:56 | INFO     | ultron-trading | → GET /api/stocks/AMZN/history from 185.249.44.4
+2026-06-23 12:48:56 | INFO     | ultron-trading | ← GET /api/stocks/MSFT/history → 200 (132.3ms)
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | History requested for AMZN (period=1mo, interval=1d)
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | History for AMZN: 19 data points returned
+2026-06-23 12:48:56 | INFO     | ultron-trading | → GET /api/stocks/BAC/history from 185.249.44.4
+2026-06-23 12:48:56 | INFO     | ultron-trading | ← GET /api/stocks/META/history → 200 (97.3ms)
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | History requested for BAC (period=1mo, interval=1d)
+2026-06-23 12:48:56 | INFO     | ultron-trading.stocks | History for BAC: 19 data points returned
+2026-06-23 12:48:56 | INFO     | ultron-trading | ← GET /api/stocks/AMZN/history → 200 (142.3ms)
+2026-06-23 12:48:56 | INFO     | ultron-trading | ← GET /api/stocks/BAC/history → 200 (96.4ms)
+2026-06-23 12:49:02 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-23 12:49:02 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-23 12:49:02 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-23 12:49:02 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (203.8ms)
+2026-06-26 08:38:21 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:38:21 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:38:21 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:38:21 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (185.0ms)
+2026-06-26 08:38:21 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-26 08:38:21 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-26 08:38:21 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-26 08:38:22 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-26 08:38:22 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-26 08:38:22 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (344.6ms)
+2026-06-26 08:38:22 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-26 08:38:24 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=5d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-26 08:38:24 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-26 08:38:24 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=5d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-26 08:38:24 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-26 08:38:24 | INFO     | ultron-trading | → GET /api/version from 185.249.44.4
+2026-06-26 08:38:24 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (3077.0ms)
+2026-06-26 08:38:24 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:38:24 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (2760.9ms)
+2026-06-26 08:38:24 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:38:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:38:25 | INFO     | ultron-trading | ← GET /api/version → 200 (166.7ms)
+2026-06-26 08:38:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (166.2ms)
+2026-06-26 08:38:37 | INFO     | ultron-trading | → GET /api/stocks/AAPL/quote from 185.249.44.4
+2026-06-26 08:38:37 | INFO     | ultron-trading.stocks | Quote requested for AAPL
+2026-06-26 08:38:37 | INFO     | ultron-trading.stocks | Quote for AAPL: $275.15 (-6.15%)
+2026-06-26 08:38:37 | INFO     | ultron-trading | → GET /api/stocks/AAPL/history from 185.249.44.4
+2026-06-26 08:38:37 | INFO     | ultron-trading.stocks | History requested for AAPL (period=6mo, interval=1d)
+2026-06-26 08:38:37 | INFO     | ultron-trading.stocks | History for AAPL: 124 data points returned
+2026-06-26 08:38:37 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/quote → 200 (435.8ms)
+2026-06-26 08:38:37 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/history → 200 (101.8ms)
+2026-06-26 08:38:37 | INFO     | ultron-trading | → GET /api/stocks/AAPL/related from 185.249.44.4
+2026-06-26 08:38:37 | INFO     | ultron-trading.stocks | Related stocks requested for AAPL
+2026-06-26 08:38:38 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=5d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-26 08:38:38 | INFO     | ultron-trading.stocks | Related stocks for AAPL (Technology): 19 found
+2026-06-26 08:38:38 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/related → 200 (452.6ms)
+2026-06-26 08:38:38 | INFO     | ultron-trading | → GET /api/stocks/PLTR/history from 185.249.44.4
+2026-06-26 08:38:38 | INFO     | ultron-trading.stocks | History requested for PLTR (period=1mo, interval=1d)
+2026-06-26 08:38:38 | INFO     | ultron-trading.stocks | History for PLTR: 22 data points returned
+2026-06-26 08:38:38 | INFO     | ultron-trading | → GET /api/stocks/MSFT/history from 185.249.44.4
+2026-06-26 08:38:38 | INFO     | ultron-trading | ← GET /api/stocks/PLTR/history → 200 (51.1ms)
+2026-06-26 08:38:38 | INFO     | ultron-trading.stocks | History requested for MSFT (period=1mo, interval=1d)
+2026-06-26 08:38:38 | INFO     | ultron-trading.stocks | History for MSFT: 22 data points returned
+2026-06-26 08:38:38 | INFO     | ultron-trading | → GET /api/stocks/SHOP/history from 185.249.44.4
+2026-06-26 08:38:38 | INFO     | ultron-trading.stocks | History requested for SHOP (period=1mo, interval=1d)
+2026-06-26 08:38:38 | INFO     | ultron-trading.stocks | History for SHOP: 22 data points returned
+2026-06-26 08:38:38 | INFO     | ultron-trading | → GET /api/stocks/AMD/history from 185.249.44.4
+2026-06-26 08:38:38 | INFO     | ultron-trading | ← GET /api/stocks/MSFT/history → 200 (173.3ms)
+2026-06-26 08:38:38 | INFO     | ultron-trading.stocks | History requested for AMD (period=1mo, interval=1d)
+2026-06-26 08:38:38 | INFO     | ultron-trading.stocks | History for AMD: 22 data points returned
+2026-06-26 08:38:38 | INFO     | ultron-trading | → GET /api/stocks/ZM/history from 185.249.44.4
+2026-06-26 08:38:38 | INFO     | ultron-trading | ← GET /api/stocks/SHOP/history → 200 (133.4ms)
+2026-06-26 08:38:38 | INFO     | ultron-trading.stocks | History requested for ZM (period=1mo, interval=1d)
+2026-06-26 08:38:38 | INFO     | ultron-trading.stocks | History for ZM: 22 data points returned
+2026-06-26 08:38:38 | INFO     | ultron-trading | → GET /api/stocks/META/history from 185.249.44.4
+2026-06-26 08:38:38 | INFO     | ultron-trading | ← GET /api/stocks/AMD/history → 200 (98.5ms)
+2026-06-26 08:38:38 | INFO     | ultron-trading.stocks | History requested for META (period=1mo, interval=1d)
+2026-06-26 08:38:38 | INFO     | ultron-trading.stocks | History for META: 22 data points returned
+2026-06-26 08:38:38 | INFO     | ultron-trading | ← GET /api/stocks/ZM/history → 200 (114.1ms)
+2026-06-26 08:38:38 | INFO     | ultron-trading | ← GET /api/stocks/META/history → 200 (62.3ms)
+2026-06-26 08:38:51 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:38:51 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:38:51 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:38:51 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (195.7ms)
+2026-06-26 08:39:21 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:39:21 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:39:21 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:39:21 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (177.7ms)
+2026-06-26 08:39:51 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:39:51 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:39:52 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:39:52 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (200.7ms)
+2026-06-26 08:40:21 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:40:21 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:40:21 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:40:21 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (192.9ms)
+2026-06-26 08:40:51 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:40:51 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:40:51 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:40:51 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (188.4ms)
+2026-06-26 08:41:21 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:41:21 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:41:21 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:41:21 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (196.0ms)
+2026-06-26 08:42:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:42:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:42:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:42:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (178.0ms)
+2026-06-26 08:43:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:43:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:43:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:43:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (186.8ms)
+2026-06-26 08:44:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:44:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:44:26 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:44:26 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (211.7ms)
+2026-06-26 08:45:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:45:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:45:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:45:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (200.8ms)
+2026-06-26 08:46:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:46:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:46:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:46:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (186.9ms)
+2026-06-26 08:47:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:47:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:47:26 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:47:26 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (202.6ms)
+2026-06-26 08:48:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:48:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:48:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:48:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (177.5ms)
+2026-06-26 08:49:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:49:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:49:26 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:49:26 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (212.8ms)
+2026-06-26 08:50:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:50:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:50:26 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:50:26 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (224.5ms)
+2026-06-26 08:51:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:51:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:51:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:51:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (206.3ms)
+2026-06-26 08:52:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:52:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:52:26 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:52:26 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (220.0ms)
+2026-06-26 08:53:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:53:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:53:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:53:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (191.2ms)
+2026-06-26 08:54:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:54:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:54:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:54:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (188.8ms)
+2026-06-26 08:55:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:55:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:55:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:55:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (203.3ms)
+2026-06-26 08:56:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:56:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:56:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:56:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (204.0ms)
+2026-06-26 08:57:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:57:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:57:26 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:57:26 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (209.9ms)
+2026-06-26 08:58:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:58:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:58:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:58:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (173.0ms)
+2026-06-26 08:59:26 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 08:59:26 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 08:59:26 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 08:59:26 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (227.1ms)
+2026-06-26 09:00:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:00:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:00:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:00:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (212.1ms)
+2026-06-26 09:01:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:01:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:01:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:01:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (201.4ms)
+2026-06-26 09:02:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:02:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:02:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:02:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (192.5ms)
+2026-06-26 09:03:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:03:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:03:26 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:03:26 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (204.9ms)
+2026-06-26 09:04:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:04:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:04:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:04:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (176.1ms)
+2026-06-26 09:05:13 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:05:13 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:05:13 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:05:13 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (206.6ms)
+2026-06-26 09:05:21 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:05:21 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:05:21 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:05:21 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (168.1ms)
+2026-06-26 09:05:51 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:05:51 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:05:51 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:05:51 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (189.3ms)
+2026-06-26 09:06:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:06:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:06:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:06:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (176.5ms)
+2026-06-26 09:07:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:07:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:07:26 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:07:26 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (325.4ms)
+2026-06-26 09:08:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:08:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:08:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:08:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (193.4ms)
+2026-06-26 09:09:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:09:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:09:26 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:09:26 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (234.1ms)
+2026-06-26 09:10:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:10:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:10:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:10:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (185.0ms)
+2026-06-26 09:44:35 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-26 09:44:35 | INFO     | ultron-trading | → GET /api/version from 185.249.44.4
+2026-06-26 09:44:35 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-26 09:44:35 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (89.7ms)
+2026-06-26 09:44:35 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-26 09:44:37 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=5d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-26 09:44:38 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-26 09:44:38 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=5d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-26 09:44:38 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-26 09:44:38 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:44:38 | INFO     | ultron-trading | ← GET /api/version → 200 (2699.4ms)
+2026-06-26 09:44:38 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:44:38 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:44:38 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-26 09:44:38 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (2875.3ms)
+2026-06-26 09:44:38 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-26 09:44:38 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-26 09:44:38 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (533.0ms)
+2026-06-26 09:44:38 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (356.8ms)
+2026-06-26 09:44:38 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:44:38 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:44:38 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:44:38 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (178.4ms)
+2026-06-26 09:44:42 | INFO     | ultron-trading | → GET /api/stocks/SPY/history from 185.249.44.4
+2026-06-26 09:44:42 | INFO     | ultron-trading.stocks | History requested for SPY (period=6mo, interval=1d)
+2026-06-26 09:44:42 | INFO     | ultron-trading.stocks | History for SPY: 124 data points returned
+2026-06-26 09:44:42 | INFO     | ultron-trading | → GET /api/stocks/SPY/quote from 185.249.44.4
+2026-06-26 09:44:42 | INFO     | ultron-trading | ← GET /api/stocks/SPY/history → 200 (110.3ms)
+2026-06-26 09:44:42 | INFO     | ultron-trading.stocks | Quote requested for SPY
+2026-06-26 09:44:43 | INFO     | ultron-trading.stocks | Quote for SPY: $734.30 (+0.14%)
+2026-06-26 09:44:43 | INFO     | ultron-trading | ← GET /api/stocks/SPY/quote → 200 (544.3ms)
+2026-06-26 09:44:43 | INFO     | ultron-trading | → GET /api/stocks/SPY/related from 185.249.44.4
+2026-06-26 09:44:43 | INFO     | ultron-trading.stocks | Related stocks requested for SPY
+2026-06-26 09:44:43 | INFO     | ultron-trading.stocks | Related stocks for SPY (): 20 found
+2026-06-26 09:44:43 | INFO     | ultron-trading | ← GET /api/stocks/SPY/related → 200 (369.2ms)
+2026-06-26 09:44:43 | INFO     | ultron-trading | → GET /api/stocks/AMZN/history from 185.249.44.4
+2026-06-26 09:44:43 | INFO     | ultron-trading.stocks | History requested for AMZN (period=1mo, interval=1d)
+2026-06-26 09:44:43 | INFO     | ultron-trading.stocks | History for AMZN: 22 data points returned
+2026-06-26 09:44:43 | INFO     | ultron-trading | → GET /api/stocks/AAPL/history from 185.249.44.4
+2026-06-26 09:44:43 | INFO     | ultron-trading.stocks | History requested for AAPL (period=1mo, interval=1d)
+2026-06-26 09:44:43 | INFO     | ultron-trading.stocks | History for AAPL: 22 data points returned
+2026-06-26 09:44:43 | INFO     | ultron-trading | → GET /api/stocks/NVDA/history from 185.249.44.4
+2026-06-26 09:44:43 | INFO     | ultron-trading | ← GET /api/stocks/AMZN/history → 200 (142.0ms)
+2026-06-26 09:44:43 | INFO     | ultron-trading.stocks | History requested for NVDA (period=1mo, interval=1d)
+2026-06-26 09:44:43 | INFO     | ultron-trading.stocks | History for NVDA: 22 data points returned
+2026-06-26 09:44:43 | INFO     | ultron-trading | → GET /api/stocks/SCHW/history from 185.249.44.4
+2026-06-26 09:44:43 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/history → 200 (154.3ms)
+2026-06-26 09:44:43 | INFO     | ultron-trading.stocks | History requested for SCHW (period=1mo, interval=1d)
+2026-06-26 09:44:43 | INFO     | ultron-trading.stocks | History for SCHW: 22 data points returned
+2026-06-26 09:44:43 | INFO     | ultron-trading | → GET /api/stocks/MSFT/history from 185.249.44.4
+2026-06-26 09:44:43 | INFO     | ultron-trading | ← GET /api/stocks/NVDA/history → 200 (162.4ms)
+2026-06-26 09:44:43 | INFO     | ultron-trading.stocks | History requested for MSFT (period=1mo, interval=1d)
+2026-06-26 09:44:44 | INFO     | ultron-trading.stocks | History for MSFT: 22 data points returned
+2026-06-26 09:44:44 | INFO     | ultron-trading | → GET /api/stocks/META/history from 185.249.44.4
+2026-06-26 09:44:44 | INFO     | ultron-trading | ← GET /api/stocks/SCHW/history → 200 (179.5ms)
+2026-06-26 09:44:44 | INFO     | ultron-trading.stocks | History requested for META (period=1mo, interval=1d)
+2026-06-26 09:44:44 | INFO     | ultron-trading.stocks | History for META: 22 data points returned
+2026-06-26 09:44:44 | INFO     | ultron-trading | ← GET /api/stocks/MSFT/history → 200 (132.2ms)
+2026-06-26 09:44:44 | INFO     | ultron-trading | ← GET /api/stocks/META/history → 200 (52.9ms)
+2026-06-26 09:45:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:45:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:45:05 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:45:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (205.5ms)
+2026-06-26 09:45:35 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:45:35 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:45:35 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:45:35 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (188.7ms)
+2026-06-26 09:46:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:46:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:46:05 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:46:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (224.7ms)
+2026-06-26 09:46:35 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:46:35 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:46:35 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:46:35 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (227.8ms)
+2026-06-26 09:47:05 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:47:05 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:47:05 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:47:05 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (193.7ms)
+2026-06-26 09:47:35 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:47:35 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:47:35 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:47:35 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (220.3ms)
+2026-06-26 09:48:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:48:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:48:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:48:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (182.3ms)
+2026-06-26 09:49:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:49:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:49:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:49:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (193.1ms)
+2026-06-26 09:50:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:50:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:50:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:50:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (215.2ms)
+2026-06-26 09:51:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:51:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:51:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:51:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (180.7ms)
+2026-06-26 09:52:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:52:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:52:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:52:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (189.1ms)
+2026-06-26 09:53:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:53:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:53:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:53:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (204.2ms)
+2026-06-26 09:54:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:54:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:54:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:54:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (182.3ms)
+2026-06-26 09:55:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:55:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:55:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:55:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (211.9ms)
+2026-06-26 09:56:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:56:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:56:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:56:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (219.0ms)
+2026-06-26 09:57:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:57:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:57:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:57:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (211.3ms)
+2026-06-26 09:58:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:58:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:58:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:58:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (222.7ms)
+2026-06-26 09:59:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 09:59:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 09:59:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 09:59:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (180.5ms)
+2026-06-26 10:00:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:00:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:00:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:00:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (210.1ms)
+2026-06-26 10:01:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:01:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:01:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:01:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (215.4ms)
+2026-06-26 10:02:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:02:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:02:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:02:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (227.0ms)
+2026-06-26 10:03:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:03:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:03:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:03:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (201.7ms)
+2026-06-26 10:04:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:04:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:04:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:04:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (209.1ms)
+2026-06-26 10:05:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:05:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:05:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:05:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (188.8ms)
+2026-06-26 10:06:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:06:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:06:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:06:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (206.1ms)
+2026-06-26 10:07:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:07:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:07:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:07:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (242.0ms)
+2026-06-26 10:08:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:08:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:08:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:08:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (218.7ms)
+2026-06-26 10:09:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:09:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:09:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:09:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (249.1ms)
+2026-06-26 10:10:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:10:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:10:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:10:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (215.3ms)
+2026-06-26 10:11:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:11:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:11:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:11:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (202.9ms)
+2026-06-26 10:12:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:12:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:12:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:12:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (204.7ms)
+2026-06-26 10:13:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:13:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:13:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:13:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (232.7ms)
+2026-06-26 10:14:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:14:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:14:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:14:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (244.2ms)
+2026-06-26 10:15:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:15:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:15:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:15:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (230.5ms)
+2026-06-26 10:16:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:16:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:16:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:16:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (217.5ms)
+2026-06-26 10:17:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:17:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:17:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:17:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (215.2ms)
+2026-06-26 10:18:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:18:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:18:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:18:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (224.0ms)
+2026-06-26 10:19:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:19:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:19:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:19:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (208.8ms)
+2026-06-26 10:20:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:20:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:20:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:20:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (224.3ms)
+2026-06-26 10:21:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:21:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:21:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:21:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (191.2ms)
+2026-06-26 10:22:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:22:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:22:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:22:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (216.3ms)
+2026-06-26 10:23:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:23:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:23:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:23:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (203.7ms)
+2026-06-26 10:24:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:24:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:24:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:24:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (202.4ms)
+2026-06-26 10:25:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:25:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:25:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:25:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (214.1ms)
+2026-06-26 10:26:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:26:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:26:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:26:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (194.6ms)
+2026-06-26 10:27:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:27:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:27:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:27:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (204.3ms)
+2026-06-26 10:28:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:28:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:28:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:28:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (201.3ms)
+2026-06-26 10:29:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:29:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:29:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:29:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (201.5ms)
+2026-06-26 10:30:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:30:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:30:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:30:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (213.9ms)
+2026-06-26 10:31:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:31:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:31:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:31:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (212.4ms)
+2026-06-26 10:32:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:32:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:32:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:32:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (204.0ms)
+2026-06-26 10:33:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:33:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:33:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:33:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (189.8ms)
+2026-06-26 10:34:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:34:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:34:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:34:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (212.3ms)
+2026-06-26 10:35:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:35:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:35:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:35:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (184.8ms)
+2026-06-26 10:36:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:36:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:36:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:36:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (205.0ms)
+2026-06-26 10:37:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:37:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:37:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:37:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (206.3ms)
+2026-06-26 10:38:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:38:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:38:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:38:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (228.3ms)
+2026-06-26 10:39:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:39:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:39:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:39:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (195.3ms)
+2026-06-26 10:40:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:40:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:40:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:40:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (197.0ms)
+2026-06-26 10:41:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:41:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:41:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:41:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (202.7ms)
+2026-06-26 10:42:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:42:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:42:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:42:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (243.7ms)
+2026-06-26 10:43:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:43:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:43:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:43:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (197.9ms)
+2026-06-26 10:44:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:44:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:44:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:44:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (205.7ms)
+2026-06-26 10:45:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 10:45:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 10:45:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 10:45:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (200.9ms)
+2026-06-26 11:22:59 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:22:59 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:23:00 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:23:00 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (187.2ms)
+2026-06-26 11:23:02 | INFO     | ultron-trading | → GET /api/market/sectors from 185.249.44.4
+2026-06-26 11:23:02 | INFO     | ultron-trading.market | Fetching sector performance
+2026-06-26 11:23:02 | INFO     | ultron-trading.market | Sector performance: 11 sectors
+2026-06-26 11:23:02 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:23:02 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:23:02 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:23:02 | INFO     | ultron-trading | ← GET /api/market/sectors → 200 (528.4ms)
+2026-06-26 11:23:02 | INFO     | ultron-trading | → GET /api/market/movers from 185.249.44.4
+2026-06-26 11:23:02 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (173.9ms)
+2026-06-26 11:23:02 | INFO     | ultron-trading.market | Fetching movers from universe of 94 symbols
+2026-06-26 11:23:04 | ERROR    | yfinance | $SQ: possibly delisted; no price data found  (period=5d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-26 11:23:10 | ERROR    | yfinance | 
+1 Failed download:
+2026-06-26 11:23:10 | ERROR    | yfinance | ['SQ']: possibly delisted; no price data found  (period=5d) (Yahoo error = "No data found, symbol may be delisted")
+2026-06-26 11:23:10 | INFO     | ultron-trading.market | Movers: 25 gainers, 25 losers, 25 actives
+2026-06-26 11:23:10 | INFO     | ultron-trading | → GET /api/version from 185.249.44.4
+2026-06-26 11:23:10 | INFO     | ultron-trading | → GET /api/market/fear-greed from 185.249.44.4
+2026-06-26 11:23:10 | INFO     | ultron-trading | ← GET /api/market/movers → 200 (7614.3ms)
+2026-06-26 11:23:10 | INFO     | ultron-trading | ← GET /api/version → 200 (57.2ms)
+2026-06-26 11:23:10 | INFO     | ultron-trading | ← GET /api/market/fear-greed → 200 (57.0ms)
+2026-06-26 11:23:18 | INFO     | ultron-trading | → GET /api/stocks/DIA/history from 185.249.44.4
+2026-06-26 11:23:18 | INFO     | ultron-trading.stocks | History requested for DIA (period=6mo, interval=1d)
+2026-06-26 11:23:18 | INFO     | ultron-trading.stocks | History for DIA: 124 data points returned
+2026-06-26 11:23:18 | INFO     | ultron-trading | → GET /api/stocks/DIA/quote from 185.249.44.4
+2026-06-26 11:23:18 | INFO     | ultron-trading.stocks | Quote requested for DIA
+2026-06-26 11:23:19 | INFO     | ultron-trading.stocks | Quote for DIA: $519.26 (+0.14%)
+2026-06-26 11:23:19 | INFO     | ultron-trading | ← GET /api/stocks/DIA/history → 200 (432.2ms)
+2026-06-26 11:23:19 | INFO     | ultron-trading | ← GET /api/stocks/DIA/quote → 200 (320.1ms)
+2026-06-26 11:23:19 | INFO     | ultron-trading | → GET /api/stocks/DIA/related from 185.249.44.4
+2026-06-26 11:23:19 | INFO     | ultron-trading.stocks | Related stocks requested for DIA
+2026-06-26 11:23:19 | INFO     | ultron-trading.stocks | Related stocks for DIA (): 20 found
+2026-06-26 11:23:19 | INFO     | ultron-trading | ← GET /api/stocks/DIA/related → 200 (477.6ms)
+2026-06-26 11:23:19 | INFO     | ultron-trading | → GET /api/stocks/MSFT/history from 185.249.44.4
+2026-06-26 11:23:19 | INFO     | ultron-trading.stocks | History requested for MSFT (period=1mo, interval=1d)
+2026-06-26 11:23:19 | INFO     | ultron-trading.stocks | History for MSFT: 22 data points returned
+2026-06-26 11:23:19 | INFO     | ultron-trading | → GET /api/stocks/AAPL/history from 185.249.44.4
+2026-06-26 11:23:19 | INFO     | ultron-trading.stocks | History requested for AAPL (period=1mo, interval=1d)
+2026-06-26 11:23:19 | INFO     | ultron-trading.stocks | History for AAPL: 22 data points returned
+2026-06-26 11:23:19 | INFO     | ultron-trading | → GET /api/stocks/AMZN/history from 185.249.44.4
+2026-06-26 11:23:19 | INFO     | ultron-trading | ← GET /api/stocks/MSFT/history → 200 (171.8ms)
+2026-06-26 11:23:19 | INFO     | ultron-trading.stocks | History requested for AMZN (period=1mo, interval=1d)
+2026-06-26 11:23:20 | INFO     | ultron-trading.stocks | History for AMZN: 22 data points returned
+2026-06-26 11:23:20 | INFO     | ultron-trading | → GET /api/stocks/META/history from 185.249.44.4
+2026-06-26 11:23:20 | INFO     | ultron-trading | ← GET /api/stocks/AAPL/history → 200 (147.6ms)
+2026-06-26 11:23:20 | INFO     | ultron-trading.stocks | History requested for META (period=1mo, interval=1d)
+2026-06-26 11:23:20 | INFO     | ultron-trading.stocks | History for META: 22 data points returned
+2026-06-26 11:23:20 | INFO     | ultron-trading | → GET /api/stocks/SCHW/history from 185.249.44.4
+2026-06-26 11:23:20 | INFO     | ultron-trading | ← GET /api/stocks/AMZN/history → 200 (115.2ms)
+2026-06-26 11:23:20 | INFO     | ultron-trading.stocks | History requested for SCHW (period=1mo, interval=1d)
+2026-06-26 11:23:20 | INFO     | ultron-trading.stocks | History for SCHW: 22 data points returned
+2026-06-26 11:23:20 | INFO     | ultron-trading | → GET /api/stocks/NVDA/history from 185.249.44.4
+2026-06-26 11:23:20 | INFO     | ultron-trading | ← GET /api/stocks/META/history → 200 (149.4ms)
+2026-06-26 11:23:20 | INFO     | ultron-trading.stocks | History requested for NVDA (period=1mo, interval=1d)
+2026-06-26 11:23:20 | INFO     | ultron-trading.stocks | History for NVDA: 22 data points returned
+2026-06-26 11:23:20 | INFO     | ultron-trading | ← GET /api/stocks/SCHW/history → 200 (163.2ms)
+2026-06-26 11:23:20 | INFO     | ultron-trading | ← GET /api/stocks/NVDA/history → 200 (72.6ms)
+2026-06-26 11:23:32 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:23:32 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:23:32 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:23:32 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (200.0ms)
+2026-06-26 11:24:02 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:24:02 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:24:02 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:24:02 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (227.4ms)
+2026-06-26 11:24:32 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:24:32 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:24:32 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:24:32 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (188.2ms)
+2026-06-26 11:25:02 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:25:02 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:25:02 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:25:02 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (200.9ms)
+2026-06-26 11:25:32 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:25:32 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:25:32 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:25:32 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (202.7ms)
+2026-06-26 11:26:02 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:26:02 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:26:02 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:26:02 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (181.0ms)
+2026-06-26 11:27:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:27:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:27:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:27:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (205.6ms)
+2026-06-26 11:28:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:28:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:28:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:28:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (187.2ms)
+2026-06-26 11:29:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:29:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:29:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:29:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (201.0ms)
+2026-06-26 11:30:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:30:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:30:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:30:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (194.0ms)
+2026-06-26 11:31:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:31:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:31:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:31:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (185.8ms)
+2026-06-26 11:32:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 11:32:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 11:32:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 11:32:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (220.8ms)
