@@ -445,6 +445,80 @@ ANALYSIS_METADATA: dict[str, dict] = {
             },
         ],
     },
+    "dcf_valuation": {
+        "how_it_works": (
+            "Le DCF (Discounted Cash Flow) estune méthode de valorisation qui estime la valeur intrinsèque "
+            "d'une entreprise en actualisant les flux de trésorerie libres (FCF) futurs à leur valeur actuelle. "
+            "Le modèle projette les FCF sur 5 ans, calcule la valeur terminale (croissance perpétuelle), "
+            "et soustrait la dette pour obtenir la valeur des capitaux propres par action. "
+            "La différence entre la valeur intrinsèque et le prix actuel donne la marge de sécurité."
+        ),
+        "pros": [
+            "Basé sur les fondamentaux réels (cash-flows, pas de multiples de marché)",
+            "Indépendant des fluctuations émotionnelles du marché",
+            "Fournit une marge de sécurité chiffrée (Graham/Buffett)",
+            "Prend en compte la croissance future et la structure du capital",
+        ],
+        "cons": [
+            "Très sensible aux hypothèses de croissance et de taux d'actualisation",
+            "Ne fonctionne pas pour les entreprises sans FCF positif",
+            "Suppose que les FCF futurs sont prévisibles (pas de disruption)",
+            "Les données yfinance peuvent être incomplètes pour certains marchés",
+        ],
+        "interpretation_guide": {
+            "buy_signal": "Marge de sécurité > 5% — le prix est inférieur à la valeur intrinsèque",
+            "sell_signal": "Marge de sécurité < -10% — le prix dépasse la valeur intrinsèque",
+            "hold_signal": "Marge de sécurité entre -10% et 5% — correctement valorisé",
+            "confidence_meaning": "Basée sur la qualité des données FCF et la stabilité des fondamentaux",
+        },
+        "example_scenarios": [
+            {
+                "scenario": "DCF value $150, prix actuel $120 (marge 20%)",
+                "outcome": "Action sous-évaluée — opportunité d'achat si les fondamentaux sont stables",
+            },
+            {
+                "scenario": "DCF value $80, prix actuel $120 (marge -50%)",
+                "outcome": "Action surévaluée — le prix intègre des attentes de croissance irréalistes",
+            },
+        ],
+    },
+    "comps_analysis": {
+        "how_it_works": (
+            "L'analyse par comparables (Comps) compare les multiples de valorisation d'une action "
+            "(PE, PB, PS, EV/EBITDA) aux moyennes de son secteur. Si les multiples sont inférieurs "
+            "à la moyenne sectorielle, l'action peut être sous-évaluée. Si ils sont supérieurs, "
+            "elle peut être surévaluée. La valeur implicite est dérivée des multiples sectoriels "
+            "appliqués aux métriques de l'entreprise."
+        ),
+        "pros": [
+            "Basé sur des données de marché réelles (multiples observés)",
+            "Permet une comparaison rapide avec les pairs du secteur",
+            "Fournit une valeur implicite chiffrée",
+            "Utile pour identifier les anomalies de valorisation dans un secteur",
+        ],
+        "cons": [
+            "Suppose que le secteur est correctement valorisé (peut ne pas l'être en bulle)",
+            "Les multiples varient selon les modèles de croissance — comparaison imparfaite",
+            "Ne tient pas compte des avantages compétitifs uniques (moat)",
+            "Les données sectorielles sont des moyennes qui masquent les extrêmes",
+        ],
+        "interpretation_guide": {
+            "buy_signal": "Sous-évaluation > 15% vs pairs du secteur — anomalie de valorisation",
+            "sell_signal": "Sur-évaluation > 10% vs pairs du secteur — prime injustifiée",
+            "hold_signal": "Valorisation dans ±10% du secteur — correctement valorisé",
+            "confidence_meaning": "Basée sur le nombre de multiples disponibles et la cohérence du secteur",
+        },
+        "example_scenarios": [
+            {
+                "scenario": "PE de 12 alors que le secteur est à 25 (implied value 2x le prix)",
+                "outcome": "Sous-évaluation majeure — investiguer si c'est un piège de valeur ou une opportunité",
+            },
+            {
+                "scenario": "PE de 80 alors que le secteur est à 20",
+                "outcome": "Surévaluation significative — le prix suppose une croissance exceptionnelle",
+            },
+        ],
+    },
     "trend_classification": {
         "how_it_works": (
             "La classification de tendance utilise des algorithmes de Machine Learning "

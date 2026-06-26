@@ -121,6 +121,7 @@ def _register_all():
     )
     from app.services.analysis.fundamental import (
         PERatioMethod, ROEMethod, DebtToEquityMethod, ProfitMarginMethod,
+        DCFValuationMethod, CompsAnalysisMethod,
     )
     from app.services.analysis.sentiment import (
         NewsSentimentMethod, SocialMediaSentimentMethod,
@@ -139,6 +140,8 @@ def _register_all():
     registry.register("fundamental", ROEMethod)
     registry.register("fundamental", DebtToEquityMethod)
     registry.register("fundamental", ProfitMarginMethod)
+    registry.register("fundamental", DCFValuationMethod)
+    registry.register("fundamental", CompsAnalysisMethod)
 
     registry.register("sentiment", NewsSentimentMethod)
     registry.register("sentiment", SocialMediaSentimentMethod)
