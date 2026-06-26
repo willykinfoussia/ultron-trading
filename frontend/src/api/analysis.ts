@@ -47,16 +47,21 @@ export async function runAnalysis(
 
 export async function runAllAnalysis(
   symbol: string,
-  category: string,
+  category?: string,
   params?: Record<string, unknown>
 ): Promise<AnalysisResult[]> {
+  if (category && category !== "all") {
+    return fetchJSON<AnalysisResult[]>(
+      `${API_BASE}/analysis/${symbol}/run-all`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, params }),
+      }
+    )
+  }
   return fetchJSON<AnalysisResult[]>(
-    `${API_BASE}/analysis/${symbol}/run-all`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ category, params }),
-    }
+    `${API_BASE}/analysis/${symbol}/all`
   )
 }
 
