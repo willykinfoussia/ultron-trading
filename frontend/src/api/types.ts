@@ -11,6 +11,7 @@ export interface StockQuote {
   regular_market_change_percent: number
   regular_market_time: string | null
   message?: string
+  history_data?: { date: string; open: number; high: number; low: number; close: number; volume: number }[]
 }
 
 export interface StockHistory {

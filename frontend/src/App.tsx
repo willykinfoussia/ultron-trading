@@ -7,6 +7,7 @@ import { Toast, type ToastKind, type ToastState } from "./components/Toast";
 import Stocks from "./pages/Stocks";
 import Market from "./pages/Market";
 import Analysis from './pages/Analysis';
+import Watchlist from "./pages/Watchlist";
 import "./styles.css";
 
 async function checkApiHealth(): Promise<"ok" | "error" | "loading"> {
@@ -89,7 +90,7 @@ export default function App() {
       case "analysis":
         return <Analysis symbol={selectedSymbol} />;
       case "watchlist":
-        return <WatchlistPlaceholder />;
+        return <Watchlist onNavigateToStock={navigateToStock} />;
       case "system":
         return <SystemPage apiStatus={apiStatus} version={version} />;
       case "settings":
@@ -145,33 +146,6 @@ export default function App() {
 }
 
 
-function WatchlistPlaceholder() {
-  return (
-    <div className="page">
-      <div className="placeholder-hero">
-        <span className="placeholder-icon">⭐</span>
-        <h1 className="placeholder-title">Watchlist</h1>
-        <p className="placeholder-desc">
-          Track your favorite stocks and get alerts on price movements.
-        </p>
-      </div>
-      <div className="card">
-        <div className="card-header">
-          <span className="card-title">Your watchlist</span>
-        </div>
-        <div className="card-body">
-          <div className="empty-state">
-            <span className="empty-state-icon">📋</span>
-            <span className="empty-state-title">No stocks yet</span>
-            <span className="empty-state-desc">
-              Add symbols from the Stocks or Market page to build your watchlist.
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function SystemPage({ apiStatus, version }: { apiStatus: string; version: string }) {
   const ok = apiStatus === "ok";
