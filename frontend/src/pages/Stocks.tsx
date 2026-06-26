@@ -16,6 +16,8 @@ import NewsFeed from "../components/NewsFeed";
 import EmbeddedAnalysis from "../components/EmbeddedAnalysis";
 import RelatedStocks from "../components/RelatedStocks";
 import AnalysisDetailPage from "../pages/AnalysisDetailPage";
+import StarToggle from "../components/StarToggle";
+import useWatchlist from "../hooks/useWatchlist";
 
 
 const STAGGER = {
@@ -38,6 +40,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
   const [period, setPeriod] = useState("6mo");
   const [activeTab, setActiveTab] = useState<StockTabId>("overview");
   const [analysisDetailMethodId, setAnalysisDetailMethodId] = useState<string | null>(null);
+  const { toggle, isWatched } = useWatchlist();
 
   const handleNavigateToAnalysisDetail = (methodId: string) => {
     setAnalysisDetailMethodId(methodId);
@@ -146,7 +149,16 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
                 <div className="card-body">
                   <div className="quote-header">
                     <div>
-                      <h2 className="quote-symbol">{quote.long_name || quote.short_name || quote.symbol} <span className="quote-symbol-ticker">({quote.symbol})</span></h2>
+                      <h2 className="quote-symbol">
+                        {quote.long_name || quote.short_name || quote.symbol}{" "}
+                        <span className="quote-symbol-ticker">({quote.symbol})</span>
+                        <StarToggle
+                          symbol={quote.symbol}
+                          isWatched={isWatched(quote.symbol)}
+                          onToggle={() => toggle(quote.symbol)}
+                          size="md"
+                        />
+                      </h2>
                       <div className="quote-meta">
                         {quote.exchange} · {quote.currency} · {quote.market_state}
                       </div>

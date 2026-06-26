@@ -6,6 +6,8 @@ import { KPICard, DashboardGrid, MiniChart, DonutChart, BarChart, TreemapHeatmap
 import AutocompleteSearch from "../components/AutocompleteSearch";
 import Spinner from "../components/Spinner";
 import PageHeader from "../components/PageHeader";
+import StarToggle from "../components/StarToggle";
+import useWatchlist from "../hooks/useWatchlist";
 
 interface Props {
   onSelectStock: (symbol: string) => void;
@@ -44,6 +46,7 @@ function buildSparkline(current: number, change: number, points = 20): number[] 
 }
 
 export default function MarketPage({ onSelectStock }: Props) {
+  const { toggle, isWatched } = useWatchlist();
   const [indices, setIndices] = useState<MarketIndex[]>([]);
   const [movers, setMovers] = useState<MoversData>({ gainers: [], losers: [], actives: [] });
   const [sectors, setSectors] = useState<SectorPerf[]>([]);
@@ -173,6 +176,9 @@ export default function MarketPage({ onSelectStock }: Props) {
                         <div key={idx.symbol} className="index-sparkline-card" onClick={() => onSelectStock(idx.symbol)} role="button" tabIndex={0}>
                           <div className="index-sparkline-top">
                             <span className="index-sparkline-name">{idx.name}</span>
+                            <StarToggle symbol={idx.symbol} isWatched={isWatched(idx.symbol)} onToggle={() => toggle(idx.symbol)} size="sm" />
+                          </div>
+                          <div className="index-sparkline-change-block">
                             <span className={`index-sparkline-change ${pos ? "positive" : "negative"}`}>
                               {pos ? "+" : ""}{idx.change_percent.toFixed(2)}%
                             </span>

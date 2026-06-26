@@ -5,6 +5,7 @@ import type { StockQuote } from "../api/types";
 import WatchlistRow from "../components/WatchlistRow";
 import PageHeader from "../components/PageHeader";
 import Spinner from "../components/Spinner";
+import AutocompleteSearch from "../components/AutocompleteSearch";
 
 type SortKey = "symbol" | "price" | "change_pct" | "added_at";
 type SortDir = "asc" | "desc";
@@ -14,11 +15,20 @@ interface Props {
 }
 
 export default function Watchlist({ onNavigateToStock }: Props) {
-  const { items, remove, updateNote, clear } = useWatchlist();
+  const { items, remove, updateNote, clear, add } = useWatchlist();
   const [quotes, setQuotes] = useState<Record<string, StockQuote>>({});
   const [loading, setLoading] = useState(false);
   const [sortKey, setSortKey] = useState<SortKey>("added_at");
   const [sortDir, setSortDir] = useState<SortDir>("desc");
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  const handleAddStock = useCallback(
+    (symbol: string) => {
+      add(symbol);
+      setShowAddModal(false);
+    },
+    [add]
+  );
 
   const fetchAllQuotes = useCallback(async () => {
     if (items.length === 0) return;
@@ -32,7 +42,6 @@ export default function Watchlist({ onNavigateToStock }: Props) {
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
 
-            // Also fetch history for sparkline (1mo)
             let history_data: { close: number }[] = [];
             try {
               const histRes = await fetch(`/api/stocks/${sym}/history?period=1mo`);
@@ -46,10 +55,7 @@ export default function Watchlist({ onNavigateToStock }: Props) {
               // ignore
             }
 
-            return {
-              symbol: sym,
-              quote: { ...data, history_data },
-            };
+            return { symbol: sym, quote: { ...data, history_data } };
           } catch {
             return null;
           }
@@ -166,9 +172,11 @@ export default function Watchlist({ onNavigateToStock }: Props) {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
         >
-          {/* Toolbar */}
           <div className="watchlist-toolbar">
             <div className="watchlist-toolbar-left">
+              <button className="btn-sm btn-primary" onClick={() => setShowAddModal(true)}>
+                + Add stock
+              </button>
               <button className="btn-sm" onClick={fetchAllQuotes} disabled={loading}>
                 {loading ? <Spinner size="sm" /> : "↻ Refresh"}
               </button>
@@ -182,10 +190,8 @@ export default function Watchlist({ onNavigateToStock }: Props) {
             </div>
           </div>
 
-          {/* Table */}
           <div className="watchlist-table-wrapper">
             <div className="watchlist-table">
-              {/* Header */}
               <div className="watchlist-header">
                 <SortHeader label="Symbol" keyName="symbol" />
                 <SortHeader label="Chart" keyName="added_at" />
@@ -194,7 +200,6 @@ export default function Watchlist({ onNavigateToStock }: Props) {
                 <th className="watchlist-th">Actions</th>
               </div>
 
-              {/* Rows */}
               <AnimatePresence mode="popLayout">
                 {sortedItems.map((item) => (
                   <WatchlistRow
@@ -211,6 +216,40 @@ export default function Watchlist({ onNavigateToStock }: Props) {
               </AnimatePresence>
             </div>
           </div>
+
+          <AnimatePresence>
+            {showAddModal && (
+              <motion.div
+                className="watchlist-add-overlay"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowAddModal(false)}
+              >
+                <motion.div
+                  className="watchlist-add-modal"
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <h3 className="watchlist-add-title">Add stock to watchlist</h3>
+                  <AutocompleteSearch
+                    onSelect={handleAddStock}
+                    loading={false}
+                    placeholder="Search a stock symbol or name..."
+                  />
+                  <button
+                    className="watchlist-add-close"
+                    onClick={() => setShowAddModal(false)}
+                  >
+                    Cancel
+                  </button>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       )}
     </div>

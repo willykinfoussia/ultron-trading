@@ -743,6 +743,9 @@ select:focus-visible {
   font-size: var(--text-2xl);
   font-weight: 700;
   margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   line-height: var(--lh-tight);
 }
 
@@ -6343,6 +6346,9 @@ textarea.editor {
   color: var(--text-2);
   cursor: pointer;
   transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .btn-sm:hover {
@@ -6353,6 +6359,17 @@ textarea.editor {
 .btn-sm:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.btn-sm.btn-primary {
+  color: var(--primary);
+  border-color: var(--primary-border);
+  background: var(--primary-sub);
+}
+
+.btn-sm.btn-primary:hover {
+  background: var(--primary);
+  color: var(--surface);
 }
 
 .btn-danger {
@@ -6584,6 +6601,54 @@ textarea.editor {
 
 .star-toggle.watched {
   filter: drop-shadow(0 0 3px rgba(251, 191, 36, 0.4));
+}
+
+/* Add stock modal */
+.watchlist-add-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--sp-4);
+}
+
+.watchlist-add-modal {
+  background: var(--surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-lg);
+  padding: var(--sp-6);
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+}
+
+.watchlist-add-title {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: var(--sp-4);
+}
+
+.watchlist-add-close {
+  display: block;
+  margin-top: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-2);
+  font-size: var(--text-sm);
+  color: var(--text-2);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.watchlist-add-close:hover {
+  background: var(--surface);
+  color: var(--text);
 }
 
 /* Responsive */
