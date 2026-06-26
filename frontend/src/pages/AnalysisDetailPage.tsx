@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import type { AnalysisMethod, AnalysisResult } from "../api/types";
 import SignalBadge from "../components/analysis/SignalBadge";

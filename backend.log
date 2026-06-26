@@ -14204,3 +14204,51 @@ ValueError: Out of range float values are not JSON compliant
 2026-06-26 12:10:25 | INFO     | ultron-trading.market | Fetching market indices
 2026-06-26 12:10:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
 2026-06-26 12:10:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (225.0ms)
+2026-06-26 12:11:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 12:11:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 12:11:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 12:11:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (199.9ms)
+2026-06-26 12:12:06 | INFO     | ultron-trading | → GET /api/analysis/ from 127.0.0.1
+2026-06-26 12:12:06 | INFO     | ultron-trading | ← GET /api/analysis/ → 200 (12.0ms)
+2026-06-26 12:12:21 | INFO     | ultron-trading | → GET /api/analysis/ from 127.0.0.1
+2026-06-26 12:12:21 | INFO     | ultron-trading | ← GET /api/analysis/ → 200 (12.5ms)
+2026-06-26 12:12:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 12:12:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 12:12:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 12:12:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (403.8ms)
+2026-06-26 12:12:45 | INFO     | ultron-trading | → GET /api/analysis/ from 127.0.0.1
+2026-06-26 12:12:45 | INFO     | ultron-trading | ← GET /api/analysis/ → 200 (12.4ms)
+2026-06-26 12:13:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 12:13:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 12:13:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 12:13:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (377.1ms)
+2026-06-26 12:14:21 | INFO     | ultron-trading | → GET /api/analysis/ from 127.0.0.1
+2026-06-26 12:14:21 | INFO     | ultron-trading | ← GET /api/analysis/ → 200 (0.9ms)
+2026-06-26 12:14:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 12:14:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 12:14:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 12:14:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (182.8ms)
+2026-06-26 12:16:05 | INFO     | ultron-trading | → GET /api/analysis/ from 127.0.0.1
+2026-06-26 12:16:05 | INFO     | ultron-trading | ← GET /api/analysis/ → 200 (12.6ms)
+2026-06-26 12:16:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 12:16:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 12:16:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 12:16:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (352.0ms)
+2026-06-26 12:17:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 12:17:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 12:17:26 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 12:17:26 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (442.3ms)
+2026-06-26 12:17:32 | INFO     | ultron-trading | → GET /api/analysis/ from 127.0.0.1
+2026-06-26 12:17:32 | INFO     | ultron-trading | ← GET /api/analysis/ → 200 (1.3ms)
+2026-06-26 12:18:09 | INFO     | ultron-trading | → GET /api/analysis/ from 127.0.0.1
+2026-06-26 12:18:09 | INFO     | ultron-trading | ← GET /api/analysis/ → 200 (0.9ms)
+2026-06-26 12:18:25 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 12:18:25 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 12:18:25 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 12:18:25 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (234.5ms)
+2026-06-26 12:19:12 | INFO     | ultron-trading | → GET /api/analysis/ from 127.0.0.1
+2026-06-26 12:19:12 | INFO     | ultron-trading | ← GET /api/analysis/ → 200 (12.8ms)
+2026-06-26 12:19:18 | INFO     | ultron-trading | → GET /api/version from 127.0.0.1
+2026-06-26 12:19:19 | INFO     | ultron-trading | ← GET /api/version → 200 (2.4ms)
+2026-06-26 12:19:40 | INFO     | ultron-trading | → GET /api/analysis/ from 127.0.0.1
+2026-06-26 12:19:40 | INFO     | ultron-trading | ← GET /api/analysis/ → 200 (12.5ms)

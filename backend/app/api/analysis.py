@@ -31,6 +31,11 @@ class MethodSummary(BaseModel):
     category: str
     description: str
     parameters: Dict[str, Any]
+    how_it_works: str = ""
+    pros: List[str] = []
+    cons: List[str] = []
+    interpretation_guide: Dict[str, str] = {}
+    example_scenarios: List[Dict[str, str]] = []
 
 
 # Endpoints

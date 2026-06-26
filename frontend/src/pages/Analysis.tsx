@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getAnalysisMethods, getAnalysisCategories } from "../api/analysis";
 import type { AnalysisMethod } from "../api/types";
@@ -47,9 +47,9 @@ export default function Analysis({ symbol = "AAPL" }: Props) {
   }, []);
 
   // Fetch on mount
-  useState(() => {
+  useEffect(() => {
     fetchMethods();
-  });
+  }, [fetchMethods]);
 
   const filteredMethods =
     activeCategory === "all"
