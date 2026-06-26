@@ -4746,6 +4746,37 @@ textarea.editor {
   border-radius: var(--r-sm);
 }
 
+.btn-view-details-sm {
+  margin-top: var(--sp-2);
+  font-size: var(--text-xs);
+  color: var(--primary);
+  background: var(--primary-sub);
+  border: 1px solid var(--primary-border);
+  border-radius: var(--r-sm);
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-view-details-sm:hover {
+  background: var(--primary);
+  color: var(--surface);
+}
+
+.analysis-results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--sp-3);
+  margin-top: var(--sp-3);
+}
+
+.analysis-results-title {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text);
+  margin: var(--sp-4) 0 var(--sp-2) 0;
+}
+
 .analysis-method-desc {
   font-size: var(--text-xs);
   color: var(--text-2);

@@ -60,16 +60,13 @@ export default function Analysis({ symbol = "AAPL" }: Props) {
 
   // Detail view
   if (selectedMethodId) {
-    const method = methods.find((m) => m.method_id === selectedMethodId);
-    if (method) {
-      return (
-        <AnalysisDetailPage
-          symbol={symbol}
-          method={method}
-          onBack={() => setSelectedMethodId(null)}
-        />
-      );
-    }
+  return (
+  <AnalysisDetailPage
+    symbol={symbol}
+    methodId={selectedMethodId}
+    onBack={() => setSelectedMethodId(null)}
+  />
+  );
   }
 
   // Overview

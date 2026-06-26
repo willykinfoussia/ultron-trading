@@ -1,22 +1,45 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import type { AnalysisMethod, AnalysisResult } from "../api/types";
+import { getAnalysisMethods } from "../api/analysis";
 import SignalBadge from "../components/analysis/SignalBadge";
 import ConfidenceMeter from "../components/analysis/ConfidenceMeter";
 import Spinner from "../components/Spinner";
 
+
 interface Props {
   symbol: string;
-  method: AnalysisMethod;
+  methodId: string;
   onBack: () => void;
 }
 
-export default function AnalysisDetailPage({ symbol, method, onBack }: Props) {
+export default function AnalysisDetailPage({ symbol, methodId, onBack }: Props) {
+  const [method, setMethod] = useState<AnalysisMethod | null>(null);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [running, setRunning] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchMethod = useCallback(async () => {
+    setLoading(true);
+    try {
+      const methods = await getAnalysisMethods();
+      const found = methods.find(m => m.method_id === methodId);
+      setMethod(found || null);
+      if (!found) setError(`Method '${methodId}' not found`);
+    } catch (err) {
+      setError(String(err));
+    } finally {
+      setLoading(false);
+    }
+  }, [methodId]);
+
+  useEffect(() => {
+    fetchMethod();
+  }, [fetchMethod]);
+
   async function runAnalysis() {
+    if (!method) return;
     setRunning(true);
     setError(null);
     try {
@@ -29,6 +52,35 @@ export default function AnalysisDetailPage({ symbol, method, onBack }: Props) {
     } finally {
       setRunning(false);
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="page page-analysis-detail">
+        <div className="loading-center" style={{ padding: "var(--sp-10)" }}>
+          <Spinner size="lg" />
+          <p style={{ color: "var(--text-2)", marginTop: "var(--sp-3)" }}>
+            Loading method details...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!method) {
+    return (
+      <div className="page page-analysis-detail">
+        <button className="btn-back" onClick={onBack}>← Back to Analysis</button>
+        <div className="error-state" style={{ marginTop: "var(--sp-6)" }}>
+          <span className="error-state-icon">⚠️</span>
+          <span className="error-state-title">Method Not Found</span>
+          <span className="error-state-desc">{error || "Unknown method"}</span>
+          <div className="error-state-actions">
+            <button className="btn-retry" onClick={onBack}>← Go Back</button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

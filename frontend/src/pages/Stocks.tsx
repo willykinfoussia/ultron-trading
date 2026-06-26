@@ -15,6 +15,8 @@ import HoldersChart from "../components/HoldersChart";
 import NewsFeed from "../components/NewsFeed";
 import EmbeddedAnalysis from "../components/EmbeddedAnalysis";
 import RelatedStocks from "../components/RelatedStocks";
+import AnalysisDetailPage from "../pages/AnalysisDetailPage";
+
 
 const STAGGER = {
   initial: { opacity: 0, y: 12 },
@@ -35,12 +37,18 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("6mo");
   const [activeTab, setActiveTab] = useState<StockTabId>("overview");
+  const [analysisDetailMethodId, setAnalysisDetailMethodId] = useState<string | null>(null);
+
+  const handleNavigateToAnalysisDetail = (methodId: string) => {
+    setAnalysisDetailMethodId(methodId);
+  };
 
   const fetchStock = useCallback(
     async (symbol: string, historyPeriod = period) => {
       setError(null);
       setLoading(true);
       setActiveTab("overview");
+      setAnalysisDetailMethodId(null);
       try {
         const [q, h] = await Promise.all([
           getStockQuote(symbol),
@@ -231,7 +239,23 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
             </motion.div>
           )}
 
-          {activeTab === "analysis" && (
+          {activeTab === "analysis" && analysisDetailMethodId && (
+            <motion.div
+              key="analysis-detail"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
+            >
+              <AnalysisDetailPage
+                symbol={selectedSymbol}
+                methodId={analysisDetailMethodId}
+                onBack={() => setAnalysisDetailMethodId(null)}
+              />
+            </motion.div>
+          )}
+
+          {activeTab === "analysis" && !analysisDetailMethodId && (
             <motion.div
               key="analysis"
               initial={{ opacity: 0, y: 8 }}
@@ -239,7 +263,10 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] as const }}
             >
-              <EmbeddedAnalysis symbol={selectedSymbol} />
+              <EmbeddedAnalysis
+                symbol={selectedSymbol}
+                onViewMethodDetail={handleNavigateToAnalysisDetail}
+              />
             </motion.div>
           )}
 

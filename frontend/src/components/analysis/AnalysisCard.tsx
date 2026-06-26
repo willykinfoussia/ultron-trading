@@ -6,9 +6,10 @@ import ConfidenceMeter from './ConfidenceMeter'
 
 interface Props {
   result: AnalysisResult
+  onViewDetails?: () => void
 }
 
-export default function AnalysisCard({ result }: Props) {
+export default function AnalysisCard({ result, onViewDetails }: Props) {
   const [expanded, setExpanded] = useState(false)
 
   return (
@@ -116,11 +117,24 @@ export default function AnalysisCard({ result }: Props) {
 
         <div style={{
           marginTop: 'var(--sp-2)',
-          fontSize: 'var(--text-xs)',
-          color: 'var(--text-3)',
-          textAlign: 'right',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
         }}>
-          {expanded ? '▲ Collapse' : '▼ Expand for details'}
+          <span style={{
+            fontSize: 'var(--text-xs)',
+            color: 'var(--text-3)',
+          }}>
+            {expanded ? '▲ Collapse' : '▼ Expand for details'}
+          </span>
+          {onViewDetails && (
+            <button
+              className="btn-view-details-sm"
+              onClick={(e) => { e.stopPropagation(); onViewDetails(); }}
+            >
+              View Full Analysis →
+            </button>
+          )}
         </div>
       </div>
     </motion.div>
