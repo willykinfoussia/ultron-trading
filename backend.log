@@ -14951,3 +14951,7 @@ ValueError: Out of range float values are not JSON compliant
 2026-06-26 13:29:13 | INFO     | ultron-trading.market | Fetching market indices
 2026-06-26 13:29:13 | INFO     | ultron-trading.market | Indices fetched: 11 results
 2026-06-26 13:29:13 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (239.4ms)
+2026-06-26 13:30:24 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-06-26 13:30:24 | INFO     | ultron-trading.market | Fetching market indices
+2026-06-26 13:30:32 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-06-26 13:30:32 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (8178.3ms)
