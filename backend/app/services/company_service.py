@@ -414,25 +414,70 @@ def get_company_news(symbol: str) -> list:
             logger.warning(f"No data (for news) returned for {sym}")
             return []
 
+        from datetime import datetime
+
+        def parse_news_item(item: dict) -> dict | None:
+            """Parse a single news item, handling both flat and nested (content) structures."""
+            if not isinstance(item, dict):
+                return None
+            # yfinance now wraps data in a 'content' key
+            content = item.get("content", item)
+            if not isinstance(content, dict):
+                return None
+            # publisher can be nested
+            provider = content.get("provider", {})
+            publisher_name = ""
+            if isinstance(provider, dict):
+                publisher_name = provider.get("displayName", provider.get("name", ""))
+            if not publisher_name:
+                publisher_name = content.get("publisher", "")
+
+            # link — try multiple locations
+            link = ""
+            for key in ("canonicalUrl", "clickThroughUrl", "url"):
+                val = content.get(key)
+                if isinstance(val, dict):
+                    link = val.get("url", "")
+                    break
+                elif isinstance(val, str) and val:
+                    link = val
+                    break
+            if not link:
+                link = content.get("link", "")
+
+            # pub date
+            pub_time = content.get("pubDate", content.get("providerPublishTime", content.get("date", "")))
+            if isinstance(pub_time, (int, float)) and pub_time > 0:
+                try:
+                    pub_time = datetime.fromtimestamp(pub_time).isoformat()
+                except (OSError, OverflowError):
+                    pub_time = ""
+            elif isinstance(pub_time, str):
+                # Keep ISO string as-is
+                pass
+
+            title = content.get("title", "")
+            summary = content.get("summary", content.get("description", ""))
+
+            if not title:
+                return None  # skip empty items
+
+            return {
+                "title": title,
+                "publisher": publisher_name,
+                "link": link,
+                "providerPublishTime": str(pub_time) if pub_time else "",
+                "summary": summary,
+            }
+
         news_items = []
         try:
             news = ticker.news
             if news and isinstance(news, list):
                 for item in news:
-                    if isinstance(item, dict):
-                        # Handle providerPublishTime — could be unix timestamp or string
-                        pub_time = item.get("providerPublishTime", item.get("pubDate", item.get("date", "")))
-                        if isinstance(pub_time, (int, float)) and pub_time > 0:
-                            from datetime import datetime
-                            pub_time = datetime.fromtimestamp(pub_time).isoformat()
-
-                        news_items.append({
-                            "title": item.get("title", ""),
-                            "publisher": item.get("publisher", ""),
-                            "link": item.get("link", item.get("url", "")),
-                            "providerPublishTime": str(pub_time) if pub_time else "",
-                            "summary": item.get("summary", item.get("description", "")),
-                        })
+                    parsed = parse_news_item(item)
+                    if parsed:
+                        news_items.append(parsed)
         except Exception as e:
             logger.debug(f"Error processing news for {sym}: {e}")
 
@@ -442,19 +487,9 @@ def get_company_news(symbol: str) -> list:
                 info_news = info.get("news", [])
                 if isinstance(info_news, list):
                     for item in info_news:
-                        if isinstance(item, dict):
-                            pub_time = item.get("providerPublishTime", item.get("pubDate", ""))
-                            if isinstance(pub_time, (int, float)) and pub_time > 0:
-                                from datetime import datetime
-                                pub_time = datetime.fromtimestamp(pub_time).isoformat()
-
-                            news_items.append({
-                                "title": item.get("title", ""),
-                                "publisher": item.get("publisher", ""),
-                                "link": item.get("link", item.get("url", "")),
-                                "providerPublishTime": str(pub_time) if pub_time else "",
-                                "summary": item.get("summary", item.get("description", "")),
-                            })
+                        parsed = parse_news_item(item)
+                        if parsed:
+                            news_items.append(parsed)
             except Exception:
                 pass
 
