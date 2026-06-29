@@ -53,13 +53,16 @@ def _rsi_signal(rsi_val: float) -> tuple:
         return "neutral", confidence, f"RSI at {rsi_val:.1f} is in neutral territory"
 
 
-def _macd_signal(macd_val: float, signal_val: float, hist_val: float) -> tuple:
-    """Determine signal and confidence from MACD values."""
+def _macd_signal(macd_val: float, signal_val: float, hist_val: float, price: float = 100.0) -> tuple:
+    """Determine signal and confidence from MACD values. Confidence normalized by price."""
     if macd_val > signal_val and hist_val > 0:
-        confidence = min(1.0, 0.5 + abs(hist_val) / (abs(macd_val) + 1e-10) * 0.3)
+        # Normalize histogram as % of price for confidence calibration
+        normalized_hist = abs(hist_val) / price * 100 if price > 0 else 0
+        confidence = min(0.90, 0.5 + normalized_hist * 3)
         return "buy", confidence, f"MACD ({macd_val:.3f}) above signal ({signal_val:.3f}), positive histogram ({hist_val:.3f})"
     elif macd_val < signal_val and hist_val < 0:
-        confidence = min(1.0, 0.5 + abs(hist_val) / (abs(macd_val) + 1e-10) * 0.3)
+        normalized_hist = abs(hist_val) / price * 100 if price > 0 else 0
+        confidence = min(0.90, 0.5 + normalized_hist * 3)
         return "sell", confidence, f"MACD ({macd_val:.3f}) below signal ({signal_val:.3f}), negative histogram ({hist_val:.3f})"
     else:
         return "neutral", 0.3, f"MACD ({macd_val:.3f}) near signal ({signal_val:.3f}), histogram ({hist_val:.3f})"
@@ -191,8 +194,9 @@ class MACDMethod(AnalysisMethod):
         macd_val = _safe_float(macd_indicator.macd().iloc[-1])
         signal_val = _safe_float(macd_indicator.macd_signal().iloc[-1])
         hist_val = _safe_float(macd_indicator.macd_diff().iloc[-1])
+        current_price = _safe_float(hist["Close"].iloc[-1])
 
-        signal, confidence, explanation = _macd_signal(macd_val, signal_val, hist_val)
+        signal, confidence, explanation = _macd_signal(macd_val, signal_val, hist_val, price=current_price)
 
         # Chart data: MACD line, signal line, histogram (last 60 days)
         macd_series = macd_indicator.macd().tail(60)

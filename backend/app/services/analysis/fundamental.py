@@ -56,10 +56,10 @@ def _pe_signal(pe_ratio: float, sector_pe: float) -> tuple:
         return "neutral", 0.3, f"PE ratio is negative ({pe_ratio:.2f}) - company may have negative earnings"
     ratio_to_sector = pe_ratio / sector_pe if sector_pe > 0 else 1.0
     if ratio_to_sector < 0.7:
-        confidence = min(1.0, 0.5 + (1 - ratio_to_sector) * 0.5)
+        confidence = min(0.95, 0.5 + (1 - ratio_to_sector) * 0.5)
         return "buy", confidence, f"PE {pe_ratio:.1f} is {ratio_to_sector:.0%} of sector avg ({sector_pe:.1f}) - potentially undervalued"
-    elif ratio_to_sector > 1.4:
-        confidence = min(1.0, 0.5 + (ratio_to_sector - 1) * 0.3)
+    elif ratio_to_sector > 1.3:
+        confidence = min(0.95, 0.5 + (ratio_to_sector - 1) * 0.4)
         return "sell", confidence, f"PE {pe_ratio:.1f} is {ratio_to_sector:.0%} of sector avg ({sector_pe:.1f}) - potentially overvalued"
     else:
         return "neutral", 0.3, f"PE {pe_ratio:.1f} near sector avg ({sector_pe:.1f}) - fairly valued"
@@ -141,33 +141,41 @@ class ROEMethod(AnalysisMethod):
 
     async def run(self, symbol: str, **params) -> AnalysisResult:
         info = _get_info(symbol)
-        roe = _safe_float(info.get("returnOnEquity", 0))
+        roe_raw = _safe_float(info.get("returnOnEquity", 0))
 
-        # Convert to percentage if in decimal form
-        if roe < 1.0 and roe > -1.0:
-            roe_pct = roe * 100
+        # BUG FIX: yfinance can return ROE in different formats:
+        # - As a ratio (1.41 = 141%) for most large caps (AAPL, NVDA)
+        # - As a percentage (0.397 = 39.7%) for others
+        # Heuristic: if |roe| is between 1 and 200, assume it's already in percentage points
+        # (e.g. 40 = 40%). If between 0.01 and 1.0, assume decimal form (multiply by 100).
+        # If between 1.0 and 2.0, assume ratio for high-ROE companies (still percentage = 141%).
+        if 1.0 <= abs(roe_raw) <= 200.0:
+            roe_pct = roe_raw  # Already percentage (e.g. 141 → 141%, or 40 → 40%)
+        elif 0.01 < abs(roe_raw) < 1.0:
+            roe_pct = roe_raw * 100  # Decimal form: 0.25 → 25%
         else:
-            roe_pct = roe
+            # For negative or near-zero values, use as-is (may be already percentage or unknown)
+            roe_pct = roe_raw if abs(roe_raw) > 1.0 else roe_raw * 100
 
-        if roe_pct >= 20:
+        if roe_pct >= 25:
             signal = "buy"
-            confidence = min(1.0, 0.5 + (roe_pct - 20) / 30)
-            explanation = f"ROE of {roe_pct:.1f}% is excellent (above 20%)"
+            confidence = min(0.95, 0.5 + (roe_pct - 25) / 100)
+            explanation = f"ROE of {roe_pct:.1f}% is excellent (above 25% - strong competitive advantage)"
         elif roe_pct >= 15:
             signal = "buy"
-            confidence = 0.5 + (roe_pct - 15) / 10
-            explanation = f"ROE of {roe_pct:.1f}% is strong (15-20%)"
+            confidence = min(0.85, 0.5 + (roe_pct - 15) / 20)
+            explanation = f"ROE of {roe_pct:.1f}% is strong (15-25%)"
         elif roe_pct >= 10:
             signal = "neutral"
             confidence = 0.3
             explanation = f"ROE of {roe_pct:.1f}% is moderate (10-15%)"
         elif roe_pct > 0:
             signal = "sell"
-            confidence = 0.4
+            confidence = 0.5
             explanation = f"ROE of {roe_pct:.1f}% is below average (under 10%)"
         else:
             signal = "sell"
-            confidence = 0.6
+            confidence = 0.7
             explanation = f"ROE of {roe_pct:.1f}% is negative - company is destroying shareholder value"
 
         return AnalysisResult(
@@ -210,24 +218,31 @@ class DebtToEquityMethod(AnalysisMethod):
 
     async def run(self, symbol: str, **params) -> AnalysisResult:
         info = _get_info(symbol)
-        de_ratio = _safe_float(info.get("debtToEquity", 0))
+        # BUG FIX: yfinance returns debtToEquity as a PERCENTAGE (e.g. 79.55 = 79.55% = 0.795x ratio)
+        # Convert to actual ratio by dividing by 100
+        de_ratio_raw = _safe_float(info.get("debtToEquity", 0))
+        de_ratio = de_ratio_raw / 100.0 if de_ratio_raw > 10 else de_ratio_raw
 
         if de_ratio <= 0:
             signal = "neutral"
             confidence = 0.3
             explanation = f"No debt-to-equity data available for {symbol.upper()}"
+        elif de_ratio < 0.5:
+            signal = "buy"
+            confidence = min(0.95, 0.5 + (0.5 - de_ratio) * 0.5)
+            explanation = f"D/E of {de_ratio:.2f}x is very conservative (below 0.5x) - minimal leverage"
         elif de_ratio < 1.0:
             signal = "buy"
-            confidence = min(1.0, 0.5 + (1.0 - de_ratio) * 0.3)
-            explanation = f"D/E of {de_ratio:.1f} is conservative (below 1.0) - low leverage"
+            confidence = min(0.85, 0.4 + (1.0 - de_ratio) * 0.3)
+            explanation = f"D/E of {de_ratio:.2f}x is conservative (below 1.0x) - low leverage"
         elif de_ratio < 2.0:
             signal = "neutral"
             confidence = 0.3
-            explanation = f"D/E of {de_ratio:.1f} is moderate (1.0-2.0) - manageable leverage"
+            explanation = f"D/E of {de_ratio:.2f}x is moderate (1.0-2.0x) - manageable leverage"
         else:
             signal = "sell"
-            confidence = min(1.0, 0.4 + (de_ratio - 2.0) / 5.0)
-            explanation = f"D/E of {de_ratio:.1f} is high (above 2.0) - elevated financial risk"
+            confidence = min(0.95, 0.4 + (de_ratio - 2.0) / 10.0)
+            explanation = f"D/E of {de_ratio:.2f}x is high (above 2.0x) - elevated financial risk"
 
         return AnalysisResult(
             method_id=self.method_id,
@@ -279,11 +294,11 @@ class ProfitMarginMethod(AnalysisMethod):
 
         if margin_pct >= 20:
             signal = "buy"
-            confidence = min(1.0, 0.5 + (margin_pct - 20) / 30)
+            confidence = min(0.95, 0.5 + (margin_pct - 20) / 80)
             explanation = f"Profit margin of {margin_pct:.1f}% is excellent (above 20%)"
         elif margin_pct >= 10:
             signal = "buy"
-            confidence = 0.5 + (margin_pct - 10) / 20
+            confidence = min(0.85, 0.5 + (margin_pct - 10) / 40)
             explanation = f"Profit margin of {margin_pct:.1f}% is healthy (10-20%)"
         elif margin_pct >= 5:
             signal = "neutral"
@@ -436,11 +451,11 @@ class DCFValuationMethod(AnalysisMethod):
             explanation = f"DCF cannot be computed — insufficient data (FCF={dcf_result['fcf']}, price={current_price})"
         elif margin > 20:
             signal = "buy"
-            confidence = min(1.0, 0.5 + margin / 60)
+            confidence = min(0.95, 0.5 + margin / 100)
             explanation = f"Intrinsic value ${fair_value:.2f} vs current ${current_price:.2f} — {margin:.0f}% undervalued (margin of safety)"
         elif margin > 5:
             signal = "buy"
-            confidence = 0.4 + (margin - 5) / 30
+            confidence = min(0.85, 0.4 + (margin - 5) / 50)
             explanation = f"Intrinsic value ${fair_value:.2f} vs current ${current_price:.2f} — slightly undervalued ({margin:.0f}% margin)"
         elif margin > -10:
             signal = "neutral"
@@ -448,11 +463,11 @@ class DCFValuationMethod(AnalysisMethod):
             explanation = f"Intrinsic value ${fair_value:.2f} near current price ${current_price:.2f} — fairly valued ({margin:.0f}%)"
         elif margin > -25:
             signal = "sell"
-            confidence = 0.4 + (abs(margin) - 10) / 30
+            confidence = min(0.90, 0.4 + (abs(margin) - 10) / 50)
             explanation = f"Intrinsic value ${fair_value:.2f} below current ${current_price:.2f} — {abs(margin):.0f}% overvalued"
         else:
             signal = "sell"
-            confidence = min(1.0, 0.5 + abs(margin) / 50)
+            confidence = min(0.95, 0.5 + abs(margin) / 150)
             explanation = f"Intrinsic value ${fair_value:.2f} far below current ${current_price:.2f} — significantly overvalued ({abs(margin):.0f}%)"
 
         return AnalysisResult(
@@ -588,11 +603,11 @@ class CompsAnalysisMethod(AnalysisMethod):
             explanation = f"Comps analysis not available — insufficient data for {symbol.upper()}"
         elif undervaluation > 15:
             signal = "buy"
-            confidence = min(1.0, 0.5 + undervaluation / 50)
+            confidence = min(0.95, 0.5 + undervaluation / 150)
             explanation = f"Implied value ${implied:.2f} vs current ${current:.2f} — {undervaluation:.0f}% undervalued vs sector peers"
         elif undervaluation > 5:
             signal = "buy"
-            confidence = 0.4 + undervaluation / 20
+            confidence = min(0.85, 0.4 + undervaluation / 50)
             explanation = f"Slightly undervalued — implied ${implied:.2f} vs ${current:.2f} ({undervaluation:.0f}% below sector-derived value)"
         elif undervaluation > -10:
             signal = "neutral"
@@ -600,11 +615,11 @@ class CompsAnalysisMethod(AnalysisMethod):
             explanation = f"Fairly valued — implied ${implied:.2f} near current ${current:.2f} (within 10% of sector peers)"
         elif undervaluation > -20:
             signal = "sell"
-            confidence = 0.4 + (abs(undervaluation) - 10) / 25
+            confidence = min(0.90, 0.4 + (abs(undervaluation) - 10) / 60)
             explanation = f"Overvalued — implied ${implied:.2f} below current ${current:.2f} ({abs(undervaluation):.0f}% above sector-derived value)"
         else:
             signal = "sell"
-            confidence = min(1.0, 0.5 + abs(undervaluation) / 40)
+            confidence = min(0.95, 0.5 + abs(undervaluation) / 200)
             explanation = f"Significantly overvalued — implied ${implied:.2f} vs current ${current:.2f} ({abs(undervaluation):.0f}% premium to sector)"
 
         return AnalysisResult(
