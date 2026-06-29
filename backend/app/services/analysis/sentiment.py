@@ -16,7 +16,7 @@ logger = logging.getLogger("ultron-trading.analysis.sentiment")
 
 
 class NewsSentimentMethod(AnalysisMethod):
-    """News sentiment analysis (placeholder)."""
+    """Real news sentiment analysis via yfinance + Hermes LLM."""
 
     @property
     def method_id(self) -> str:
@@ -32,35 +32,41 @@ class NewsSentimentMethod(AnalysisMethod):
 
     @property
     def description(self) -> str:
-        return "Analyzes recent news headlines for positive/negative sentiment about the stock."
+        return "Analyzes recent news headlines and summaries using LLM to determine market sentiment."
 
     @property
     def parameters(self) -> Dict[str, Dict[str, Any]]:
         return {
             "lookback_days": {"type": "int", "default": 7, "min": 1, "max": 30},
+            "max_articles": {"type": "int", "default": 10, "min": 3, "max": 25},
         }
 
     async def run(self, symbol: str, **params) -> AnalysisResult:
+        from app.services.analysis.sentiment_scorer import analyze_sentiment
+        
         lookback_days = int(params.get("lookback_days", 7))
+        max_articles = int(params.get("max_articles", 10))
 
-        # Placeholder: realistic stub data
-        import random
-        random.seed(hash(symbol.upper()) % 2**31)
-        sentiment_score = round(random.uniform(-0.6, 0.6), 2)
-        article_count = random.randint(5, 50)
+        sentiment = await analyze_sentiment(
+            symbol=symbol,
+            days=lookback_days,
+            max_articles=max_articles,
+            use_llm=True,
+        )
 
-        if sentiment_score > 0.2:
+        # Convert overall_sentiment (-1.0 to 1.0) to signal + confidence
+        overall = sentiment.get("overall_sentiment", 0.0)
+        conviction = sentiment.get("conviction", 0.3)
+        
+        if overall > 0.15:
             signal = "buy"
-            confidence = min(1.0, 0.4 + abs(sentiment_score) * 0.5)
-            explanation = f"News sentiment is positive ({sentiment_score:+.2f}) based on {article_count} articles"
-        elif sentiment_score < -0.2:
+            confidence = min(0.95, 0.4 + abs(overall) * 0.4 + conviction * 0.2)
+        elif overall < -0.15:
             signal = "sell"
-            confidence = min(1.0, 0.4 + abs(sentiment_score) * 0.5)
-            explanation = f"News sentiment is negative ({sentiment_score:+.2f}) based on {article_count} articles"
+            confidence = min(0.95, 0.4 + abs(overall) * 0.4 + conviction * 0.2)
         else:
             signal = "neutral"
-            confidence = 0.3
-            explanation = f"News sentiment is neutral ({sentiment_score:+.2f}) based on {article_count} articles"
+            confidence = max(0.2, 0.4 - abs(overall) * 0.5)
 
         return AnalysisResult(
             method_id=self.method_id,
@@ -68,24 +74,42 @@ class NewsSentimentMethod(AnalysisMethod):
             category=self.category,
             symbol=symbol.upper(),
             result={
-                "sentiment_score": sentiment_score,
-                "article_count": article_count,
+                "sentiment_score": round(overall, 3),
+                "scores": sentiment.get("scores", {}),
+                "article_count": sentiment.get("article_count", 0),
+                "key_themes": sentiment.get("key_themes", []),
+                "bull_case": sentiment.get("bull_case", ""),
+                "bear_case": sentiment.get("bear_case", ""),
+                "source": sentiment.get("source", "unknown"),
+                "conviction": round(conviction, 3),
                 "lookback_days": lookback_days,
-                "positive_articles": int(article_count * (0.5 + sentiment_score / 2)),
-                "negative_articles": int(article_count * (0.5 - sentiment_score / 2)),
-                "source": "placeholder",
             },
             signal=signal,
             confidence=round(confidence, 3),
-            explanation=explanation,
+            explanation=self._build_explanation(sentiment, symbol),
             chart_data={
                 "type": "sentiment",
-                "sentiment_score": sentiment_score,
-                "timeline": [
-                    {"day": f"Day {i+1}", "score": round(sentiment_score + random.uniform(-0.2, 0.2), 2)}
-                    for i in range(min(lookback_days, 7))
-                ],
+                "sentiment_score": overall,
+                "scores": sentiment.get("scores", {}),
+                "articles": sentiment.get("article_count", 0),
+                "themes": sentiment.get("key_themes", []),
             },
+        )
+
+    def _build_explanation(self, sentiment: dict, symbol: str) -> str:
+        """Build human-readable explanation from sentiment result."""
+        overall = sentiment.get("overall_sentiment", 0.0)
+        direction = "positive" if overall > 0.15 else "negative" if overall < -0.15 else "neutral"
+        themes = sentiment.get("key_themes", [])
+        themes_str = ", ".join(themes[:3]) if themes else "general market news"
+        source = sentiment.get("source", "unknown")
+        articles = sentiment.get("article_count", 0)
+        
+        return (
+            f"News sentiment for {symbol.upper()} is {direction} "
+            f"({overall:+.2f}) across {articles} articles. "
+            f"Key themes: {themes_str}. "
+            f"Analysis: {source}."
         )
 
 

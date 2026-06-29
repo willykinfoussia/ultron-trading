@@ -9,6 +9,21 @@ interface Props {
   onViewDetails?: () => void
 }
 
+interface SentimentResultData {
+  scores: Record<string, number>
+  sentiment_score: number
+  article_count: number
+  key_themes: string[]
+  bull_case: string
+  bear_case: string
+  source: string
+  conviction: number
+}
+
+function isSentimentResult(result: Record<string, unknown>): boolean {
+  return typeof result.source === 'string' && result.source !== 'placeholder'
+}
+
 export default function AnalysisCard({ result, onViewDetails }: Props) {
   const [expanded, setExpanded] = useState(false)
 
@@ -52,6 +67,55 @@ export default function AnalysisCard({ result, onViewDetails }: Props) {
         }}>
           {result.explanation}
         </p>
+
+        {result.method_id === 'news_sentiment' && isSentimentResult(result.result) && (() => {
+          const data = result.result as unknown as SentimentResultData
+              return (
+              <div className="sentiment-breakdown">
+                <div className="sentiment-scores-grid">
+                  {Object.entries(data.scores).map(([key, val]) => (
+                    <div key={key} className="sentiment-score-item">
+                      <span className="sentiment-score-label">
+                        {key.replace(/_/g, ' ')}
+                      </span>
+                      <div className="sentiment-score-bar">
+                        <div
+                          className={`sentiment-score-fill ${val >= 0 ? 'positive' : 'negative'}`}
+                          style={{ width: `${Math.abs(val) * 50}%` }}
+                        />
+                        <div className="sentiment-score-center" />
+                      </div>
+                      <span className="sentiment-score-value">
+                        {val > 0 ? '+' : ''}{val.toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                {data.key_themes.length > 0 && (
+                  <div className="sentiment-themes">
+                    {data.key_themes.map((t) => (
+                      <span key={t} className="sentiment-theme-tag">{t}</span>
+                    ))}
+                  </div>
+                )}
+                {(data.bull_case || data.bear_case) && (
+                  <div className="sentiment-cases">
+                    {data.bull_case && (
+                      <div className="sentiment-bull">🟢 {data.bull_case}</div>
+                    )}
+                    {data.bear_case && (
+                      <div className="sentiment-bear">🔴 {data.bear_case}</div>
+                    )}
+                  </div>
+                )}
+                {data.source && (
+                  <div className="sentiment-source">
+                    Source: {data.source} · {data.article_count} articles
+                  </div>
+                )}
+              </div>
+              )
+            })()}
 
         <AnimatePresence>
           {expanded && (
