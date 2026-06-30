@@ -7,6 +7,7 @@ import {
   BarSeries,
   LineSeries,
   AreaSeries,
+  HistogramSeries,
 } from "lightweight-charts";
 import type { StockHistory } from "../api/types";
 import Spinner from "../components/Spinner";
@@ -68,6 +69,13 @@ interface Props {
   period: string;
   onPeriodChange: (period: string) => void;
   loading?: boolean;
+  /** Indicator data to overlay on the chart */
+  indicators?: {
+    id: string;
+    data: { time: number; value: number }[];
+    type: 'line' | 'histogram';
+    options?: any;
+  }[];
 }
 
 export default function StockChart({
@@ -75,10 +83,14 @@ export default function StockChart({
   period,
   onPeriodChange,
   loading,
+  indicators = [],
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [chart, setChart] = useState<IChartApi | null>(null);
-  const [series, setSeries] = useState<ISeriesApi<any> | null>(null);
+  // Main series (price) - candlestick, bar, line, area, or heikin-ashi
+  const [priceSeries, setPriceSeries] = useState<ISeriesApi<any> | null>(null);
+  // Map of overlay series by id
+  const overlaySeriesMap = useRef<Map<string, ISeriesApi<any>>>(new Map());
   const [chartType, setChartType] = useState<ChartType>("candlestick");
 
   // Memoized data for each chart type to avoid recomputation on every render
@@ -154,33 +166,36 @@ export default function StockChart({
       });
       setChart(chartInstance);
 
-      // Create initial series based on default type
-      let seriesInstance: ISeriesApi<any>;
+      // Create initial price series based on default type
+      let priceSeriesInstance: ISeriesApi<any>;
       switch (chartType) {
         case "candlestick":
-          seriesInstance = chartInstance.addSeries(CandlestickSeries);
+          priceSeriesInstance = chartInstance.addSeries(CandlestickSeries);
           break;
         case "bar":
-          seriesInstance = chartInstance.addSeries(BarSeries);
+          priceSeriesInstance = chartInstance.addSeries(BarSeries);
           break;
         case "line":
-          seriesInstance = chartInstance.addSeries(LineSeries);
+          priceSeriesInstance = chartInstance.addSeries(LineSeries);
           break;
         case "area":
-          seriesInstance = chartInstance.addSeries(AreaSeries);
+          priceSeriesInstance = chartInstance.addSeries(AreaSeries);
           break;
         case "heikin-ashi":
-          seriesInstance = chartInstance.addSeries(CandlestickSeries); // HA also uses candlestick style
+          priceSeriesInstance = chartInstance.addSeries(CandlestickSeries); // HA also uses candlestick style
           break;
       }
-      setSeries(seriesInstance);
+      setPriceSeries(priceSeriesInstance);
 
-      // Set initial data
-      updateSeriesData();
+      // Set initial price data
+      updatePriceSeriesData();
     } else {
-      // Chart exists, just update data
-      updateSeriesData();
+      // Chart exists, just update price data
+      updatePriceSeriesData();
     }
+
+    // Update overlay series when indicators change
+    updateOverlaySeries();
 
     // Resize observer
     const resizeObserver = new ResizeObserver(() => {
@@ -198,17 +213,26 @@ export default function StockChart({
     // Cleanup
     return () => {
       if (chart) {
+        // Remove all series
+        if (priceSeries) {
+          chart.removeSeries(priceSeries);
+          setPriceSeries(null);
+        }
+        overlaySeriesMap.current.forEach((series) => {
+          chart.removeSeries(series);
+        });
+        overlaySeriesMap.current.clear();
         chart.remove();
         setChart(null);
-        setSeries(null);
+        setPriceSeries(null);
       }
       resizeObserver.disconnect();
     };
-  }, [chart, chartType, data, containerRef]);
+  }, [chart, chartType, data, containerRef, indicators]);
 
-  // Update series data when data or chartType changes
-  const updateSeriesData = useCallback(() => {
-    if (!series) return;
+  // Update price series data when data or chartType changes
+  const updatePriceSeriesData = useCallback(() => {
+    if (!priceSeries) return;
 
     let dataToSet: any[] = [];
     switch (chartType) {
@@ -228,15 +252,65 @@ export default function StockChart({
         dataToSet = haData();
         break;
     }
-    series.setData(dataToSet);
-  }, [chartType, series, candleData, haData, barData, lineData, areaData]);
+    priceSeries.setData(dataToSet);
+  }, [chartType, priceSeries, candleData, haData, barData, lineData, areaData]);
+
+  // Update overlay series when indicators change
+  const updateOverlaySeries = useCallback(() => {
+    if (!chart) return;
+
+    const currentIds = new Set(indicators.map((ind) => ind.id));
+    const existingIds = new Set(overlaySeriesMap.current.keys());
+
+    // Remove indicators that are no longer present
+    existingIds.forEach((id) => {
+      if (!currentIds.has(id)) {
+        const series = overlaySeriesMap.current.get(id);
+        if (series) {
+          chart.removeSeries(series);
+          overlaySeriesMap.current.delete(id);
+        }
+      }
+    });
+
+    // Add or update existing indicators
+    indicators.forEach((ind) => {
+      const existingSeries = overlaySeriesMap.current.get(ind.id);
+      if (existingSeries) {
+        // Update data
+        existingSeries.setData(ind.data);
+      } else {
+        // Create new series
+        let newSeries: ISeriesApi<any>;
+        switch (ind.type) {
+          case "line":
+            newSeries = chart.addSeries(LineSeries);
+            break;
+          case "histogram":
+            newSeries = chart.addSeries(HistogramSeries);
+            break;
+          default:
+            // Default to line
+            newSeries = chart.addSeries(LineSeries);
+        }
+        // Apply options if provided
+        if (ind.options) {
+          newSeries.applyOptions(ind.options);
+        }
+        // Set data
+        newSeries.setData(ind.data);
+        // Store in map
+        overlaySeriesMap.current.set(ind.id, newSeries);
+      }
+    });
+  }, [chart, indicators]);
 
   // Change chart type
   const handleChartTypeChange = (type: ChartType) => {
     setChartType(type);
     // If chart exists, we need to replace series
-    if (chart && series) {
-      chart.removeSeries(series);
+    if (chart && priceSeries) {
+      chart.removeSeries(priceSeries);
       let newSeries: ISeriesApi<any>;
       switch (type) {
         case "candlestick":
@@ -255,8 +329,8 @@ export default function StockChart({
           newSeries = chart.addSeries(CandlestickSeries);
           break;
       }
-      setSeries(newSeries);
-      updateSeriesData();
+      setPriceSeries(newSeries);
+      updatePriceSeriesData();
     }
   };
 
