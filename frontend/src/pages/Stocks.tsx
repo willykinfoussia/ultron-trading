@@ -118,7 +118,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
             id: 'sma20',
             paneGroup: 'price',
             seriesType: 'line',
-            data: toLineData(sma),
+            data: (toLineData(sma) as { time: UTCTimestamp; value: number }[]),
             options: { color: '#ff9800', lineWidth: 2 }
           });
           break;
@@ -129,7 +129,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
             id: 'sma50',
             paneGroup: 'price',
             seriesType: 'line',
-            data: toLineData(sma),
+            data: (toLineData(sma) as { time: UTCTimestamp; value: number }[]),
             options: { color: '#9ccc65', lineWidth: 2 }
           });
           break;
@@ -140,7 +140,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
             id: 'sma200',
             paneGroup: 'price',
             seriesType: 'line',
-            data: toLineData(sma),
+            data: (toLineData(sma) as { time: UTCTimestamp; value: number }[]),
             options: { color: '#ef5350', lineWidth: 2 }
           });
           break;
@@ -151,7 +151,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
             id: 'ema9',
             paneGroup: 'price',
             seriesType: 'line',
-            data: toLineData(ema),
+            data: (toLineData(ema) as { time: UTCTimestamp; value: number }[]),
             options: { color: '#ce93d8', lineWidth: 2 }
           });
           break;
@@ -162,7 +162,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
             id: 'ema20',
             paneGroup: 'price',
             seriesType: 'line',
-            data: toLineData(ema),
+            data: (toLineData(ema) as { time: UTCTimestamp; value: number }[]),
             options: { color: '#bcaaa4', lineWidth: 2 }
           });
           break;
@@ -173,21 +173,21 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
             id: 'bbands-upper',
             paneGroup: 'price',
             seriesType: 'line',
-            data: toLineData(upper),
+            data: (toLineData(upper) as { time: UTCTimestamp; value: number }[]),
             options: { color: '#90caf9', lineWidth: 1, lineStyle: 2 }
           });
           result.push({
             id: 'bbands-middle',
             paneGroup: 'price',
             seriesType: 'line',
-            data: toLineData(middle),
+            data: (toLineData(middle) as { time: UTCTimestamp; value: number }[]),
             options: { color: '#64b5f6', lineWidth: 2 }
           });
           result.push({
             id: 'bbands-lower',
             paneGroup: 'price',
             seriesType: 'line',
-            data: toLineData(lower),
+            data: (toLineData(lower) as { time: UTCTimestamp; value: number }[]),
             options: { color: '#90caf9', lineWidth: 1, lineStyle: 2 }
           });
           break;
@@ -216,7 +216,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
             id: 'rsi',
             paneGroup: 'rsi',
             seriesType: 'line',
-            data: toLineData(rsi),
+            data: (toLineData(rsi) as { time: UTCTimestamp; value: number }[]),
             options: { color: '#ab47bc', lineWidth: 2 },
             priceLines: [
               { price: 30, color: 'rgba(38, 166, 154, 0.8)', title: '30' },
@@ -231,21 +231,21 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
             id: 'macd-line',
             paneGroup: 'macd',
             seriesType: 'line',
-            data: toLineData(macdLine),
+            data: (toLineData(macdLine) as { time: UTCTimestamp; value: number }[]),
             options: { color: '#42a5f5', lineWidth: 2 },
           });
           result.push({
             id: 'macd-signal',
             paneGroup: 'macd',
             seriesType: 'line',
-            data: toLineData(signalLine),
+            data: (toLineData(signalLine) as { time: UTCTimestamp; value: number }[]),
             options: { color: '#ff7043', lineWidth: 2 },
           });
           result.push({
             id: 'macd-hist',
             paneGroup: 'macd',
             seriesType: 'histogram',
-            data: toLineData(histogram).map((point) => ({
+            data: (toLineData(histogram) as { time: UTCTimestamp; value: number }[]).map((point) => ({
               ...point,
               color: point.value >= 0
                 ? 'rgba(38, 166, 154, 0.8)'
