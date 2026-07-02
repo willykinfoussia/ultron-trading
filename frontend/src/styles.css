@@ -787,8 +787,44 @@ select:focus-visible {
 }
 
 .chart-card-body {
+  position: relative;
   padding: var(--sp-4);
   height: 380px;
+}
+
+.chart-loading-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(19, 23, 34, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.chart-card .card-header {
+  flex-wrap: wrap;
+}
+
+.chart-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  margin-left: auto;
+}
+
+.indicator-panel-container {
+  margin-top: var(--sp-4);
+  margin-bottom: var(--sp-2);
+}
+
+.indicator-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
 }
 
 /* ── Related Stocks ─────────────────────────────────────── */

@@ -163,7 +163,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
             id: 'bbands-upper',
             data: upperData,
             type: 'line' as const,
-            options: { color: '#90caf9', lineWidth: 1, lineStyle: [2, 2] }
+            options: { color: '#90caf9', lineWidth: 1, lineStyle: 2 }
           });
           // Middle band (SMA)
           const middleData = dates.map((d, i) => ({
@@ -185,7 +185,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
             id: 'bbands-lower',
             data: lowerData,
             type: 'line' as const,
-            options: { color: '#90caf9', lineWidth: 1, lineStyle: [2, 2] }
+            options: { color: '#90caf9', lineWidth: 1, lineStyle: 2 }
           });
           break;
         }

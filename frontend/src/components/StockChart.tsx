@@ -8,11 +8,11 @@ import {
   LineSeries,
   AreaSeries,
   HistogramSeries,
+  type UTCTimestamp,
 } from "lightweight-charts";
 import type { StockHistory } from "../api/types";
 import Spinner from "../components/Spinner";
 
-// Chart types
 type ChartType =
   | "candlestick"
   | "bar"
@@ -20,7 +20,6 @@ type ChartType =
   | "area"
   | "heikin-ashi";
 
-// Period options (matching those used elsewhere)
 const PERIODS = [
   { id: "1mo", label: "1M" },
   { id: "3mo", label: "3M" },
@@ -30,12 +29,18 @@ const PERIODS = [
   { id: "5y", label: "5Y" },
 ];
 
-// Helper: convert string date to Unix timestamp (seconds)
-const parseTime = (dateStr: string): number => {
-  return Math.floor(new Date(dateStr).getTime() / 1000);
+const CHART_TYPES: { id: ChartType; label: string }[] = [
+  { id: "candlestick", label: "Candle" },
+  { id: "bar", label: "OHLC" },
+  { id: "line", label: "Line" },
+  { id: "area", label: "Area" },
+  { id: "heikin-ashi", label: "HA" },
+];
+
+const parseTime = (dateStr: string): UTCTimestamp => {
+  return Math.floor(new Date(dateStr).getTime() / 1000) as UTCTimestamp;
 };
 
-// Helper: compute Heikin-Ashi candles from OHLC
 const computeHeikinAshi = (
   data: { date: string; open: number; high: number; low: number; close: number }[]
 ) => {
@@ -69,285 +74,193 @@ interface Props {
   period: string;
   onPeriodChange: (period: string) => void;
   loading?: boolean;
-  /** Indicator data to overlay on the chart */
   indicators?: {
     id: string;
-    data: { time: number; value: number }[];
-    type: 'line' | 'histogram';
-    options?: any;
+    data: { time: UTCTimestamp; value: number }[];
+    type: "line" | "histogram";
+    options?: Record<string, unknown>;
   }[];
+}
+
+function createPriceSeries(
+  chart: IChartApi,
+  chartType: ChartType
+): ISeriesApi<"Candlestick" | "Bar" | "Line" | "Area"> {
+  switch (chartType) {
+    case "candlestick":
+      return chart.addSeries(CandlestickSeries);
+    case "bar":
+      return chart.addSeries(BarSeries);
+    case "line":
+      return chart.addSeries(LineSeries);
+    case "area":
+      return chart.addSeries(AreaSeries);
+    case "heikin-ashi":
+      return chart.addSeries(CandlestickSeries);
+  }
 }
 
 export default function StockChart({
   data,
   period,
   onPeriodChange,
-  loading,
+  loading = false,
   indicators = [],
 }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [chart, setChart] = useState<IChartApi | null>(null);
-  // Main series (price) - candlestick, bar, line, area, or heikin-ashi
-  const [priceSeries, setPriceSeries] = useState<ISeriesApi<any> | null>(null);
-  // Map of overlay series by id
-  const overlaySeriesMap = useRef<Map<string, ISeriesApi<any>>>(new Map());
+  const chartRef = useRef<IChartApi | null>(null);
+  const priceSeriesRef = useRef<ISeriesApi<"Candlestick" | "Bar" | "Line" | "Area"> | null>(null);
+  const overlaySeriesMapRef = useRef<Map<string, ISeriesApi<"Line" | "Histogram">>>(new Map());
+  const chartTypeRef = useRef<ChartType>("candlestick");
   const [chartType, setChartType] = useState<ChartType>("candlestick");
 
-  // Memoized data for each chart type to avoid recomputation on every render
-  const candleData = useCallback(() => {
-    return data.data.map((d) => ({
-      time: parseTime(d.date),
-      open: d.open,
-      high: d.high,
-      low: d.low,
-      close: d.close,
-    }));
-  }, [data.data]);
-
-  const haData = useCallback(() => {
-    return computeHeikinAshi(data.data);
-  }, [data.data]);
-
-  // Bar data (OHLC) - same as candle for now; could be different if we want HLC
-  const barData = useCallback(() => {
-    return data.data.map((d) => ({
-      time: parseTime(d.date),
-      open: d.open,
-      high: d.high,
-      low: d.low,
-      close: d.close,
-    }));
-  }, [data.data]);
-
-  // Line data (close only)
-  const lineData = useCallback(() => {
-    return data.data.map((d) => ({
-      time: parseTime(d.date),
-      value: d.close,
-    }));
-  }, [data.data]);
-
-  // Area data (same as line)
-  const areaData = useCallback(() => {
-    return data.data.map((d) => ({
-      time: parseTime(d.date),
-      value: d.close,
-    }));
-  }, [data.data]);
-
-  // Initialize or update chart
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    // Create chart if not exists
-    if (!chart) {
-      const chartInstance = createChart(containerRef.current, {
-        width: containerRef.current.clientWidth,
-        height: 400,
-        layout: {
-          background: { color: "#131722" },
-          textColor: "#d1d4dc",
-        },
-        grid: {
-          vertLines: { color: "#1f2329" },
-          horzLines: { color: "#1f2329" },
-        },
-        crosshair: {
-          mode: 0,
-        },
-        rightPriceScale: {
-          borderColor: "rgba(197, 203, 206, 0.5)",
-        },
-        timeScale: {
-          borderColor: "rgba(197, 203, 206, 0.5)",
-          visible: true,
-          secondsVisible: false,
-        },
-      });
-      setChart(chartInstance);
-
-      // Create initial price series based on default type
-      let priceSeriesInstance: ISeriesApi<any>;
-      switch (chartType) {
+  const getPriceData = useCallback(
+    (type: ChartType) => {
+      switch (type) {
         case "candlestick":
-          priceSeriesInstance = chartInstance.addSeries(CandlestickSeries);
-          break;
+          return data.data.map((d) => ({
+            time: parseTime(d.date),
+            open: d.open,
+            high: d.high,
+            low: d.low,
+            close: d.close,
+          }));
         case "bar":
-          priceSeriesInstance = chartInstance.addSeries(BarSeries);
-          break;
+          return data.data.map((d) => ({
+            time: parseTime(d.date),
+            open: d.open,
+            high: d.high,
+            low: d.low,
+            close: d.close,
+          }));
         case "line":
-          priceSeriesInstance = chartInstance.addSeries(LineSeries);
-          break;
         case "area":
-          priceSeriesInstance = chartInstance.addSeries(AreaSeries);
-          break;
+          return data.data.map((d) => ({
+            time: parseTime(d.date),
+            value: d.close,
+          }));
         case "heikin-ashi":
-          priceSeriesInstance = chartInstance.addSeries(CandlestickSeries); // HA also uses candlestick style
-          break;
+          return computeHeikinAshi(data.data);
       }
-      setPriceSeries(priceSeriesInstance);
+    },
+    [data.data]
+  );
 
-      // Set initial price data
-      updatePriceSeriesData();
-    } else {
-      // Chart exists, just update price data
-      updatePriceSeriesData();
-    }
+  chartTypeRef.current = chartType;
 
-    // Update overlay series when indicators change
-    updateOverlaySeries();
+  // Effect 1: create chart once on mount
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-    // Resize observer
-    const resizeObserver = new ResizeObserver(() => {
-      if (chart) {
-        chart.applyOptions({
-          width: containerRef.current?.clientWidth ?? 0,
-          height: 400,
-        });
-      }
+    const chart = createChart(container, {
+      width: container.clientWidth,
+      height: 400,
+      layout: {
+        background: { color: "#131722" },
+        textColor: "#d1d4dc",
+      },
+      grid: {
+        vertLines: { color: "#1f2329" },
+        horzLines: { color: "#1f2329" },
+      },
+      crosshair: {
+        mode: 0,
+      },
+      rightPriceScale: {
+        borderColor: "rgba(197, 203, 206, 0.5)",
+      },
+      timeScale: {
+        borderColor: "rgba(197, 203, 206, 0.5)",
+        visible: true,
+        secondsVisible: false,
+      },
     });
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
 
-    // Cleanup
+    chartRef.current = chart;
+
+    const resizeObserver = new ResizeObserver(() => {
+      chart.applyOptions({
+        width: container.clientWidth,
+        height: 400,
+      });
+    });
+    resizeObserver.observe(container);
+
     return () => {
-      if (chart) {
-        // Remove all series
-        if (priceSeries) {
-          chart.removeSeries(priceSeries);
-          setPriceSeries(null);
-        }
-        overlaySeriesMap.current.forEach((series) => {
-          chart.removeSeries(series);
-        });
-        overlaySeriesMap.current.clear();
-        chart.remove();
-        setChart(null);
-        setPriceSeries(null);
-      }
       resizeObserver.disconnect();
+      overlaySeriesMapRef.current.clear();
+      priceSeriesRef.current = null;
+      chart.remove();
+      chartRef.current = null;
     };
-  }, [chart, chartType, data, containerRef, indicators]);
+  }, []);
 
-  // Update price series data when data or chartType changes
-  const updatePriceSeriesData = useCallback(() => {
-    if (!priceSeries) return;
+  // Effect 2: create or replace price series when chart type changes
+  useEffect(() => {
+    const chart = chartRef.current;
+    if (!chart) return;
 
-    let dataToSet: any[] = [];
-    switch (chartType) {
-      case "candlestick":
-        dataToSet = candleData();
-        break;
-      case "bar":
-        dataToSet = barData();
-        break;
-      case "line":
-        dataToSet = lineData();
-        break;
-      case "area":
-        dataToSet = areaData();
-        break;
-      case "heikin-ashi":
-        dataToSet = haData();
-        break;
+    const previousSeries = priceSeriesRef.current;
+    if (previousSeries) {
+      chart.removeSeries(previousSeries);
     }
-    priceSeries.setData(dataToSet);
-  }, [chartType, priceSeries, candleData, haData, barData, lineData, areaData]);
 
-  // Update overlay series when indicators change
-  const updateOverlaySeries = useCallback(() => {
+    const nextSeries = createPriceSeries(chart, chartType);
+    nextSeries.setData(getPriceData(chartType));
+    priceSeriesRef.current = nextSeries;
+    chart.timeScale().fitContent();
+    // getPriceData is read for the initial series payload; ongoing updates are handled in Effect 3.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chartType]);
+
+  // Effect 3: update price data when history changes (same chart type)
+  useEffect(() => {
+    const chart = chartRef.current;
+    const priceSeries = priceSeriesRef.current;
+    if (!chart || !priceSeries) return;
+
+    priceSeries.setData(getPriceData(chartTypeRef.current));
+    chart.timeScale().fitContent();
+  }, [data, getPriceData]);
+
+  // Effect 4: sync overlay indicator series
+  useEffect(() => {
+    const chart = chartRef.current;
     if (!chart) return;
 
     const currentIds = new Set(indicators.map((ind) => ind.id));
-    const existingIds = new Set(overlaySeriesMap.current.keys());
+    const overlayMap = overlaySeriesMapRef.current;
 
-    // Remove indicators that are no longer present
-    existingIds.forEach((id) => {
+    overlayMap.forEach((series, id) => {
       if (!currentIds.has(id)) {
-        const series = overlaySeriesMap.current.get(id);
-        if (series) {
-          chart.removeSeries(series);
-          overlaySeriesMap.current.delete(id);
-        }
+        chart.removeSeries(series);
+        overlayMap.delete(id);
       }
     });
 
-    // Add or update existing indicators
     indicators.forEach((ind) => {
-      const existingSeries = overlaySeriesMap.current.get(ind.id);
+      const existingSeries = overlayMap.get(ind.id);
       if (existingSeries) {
-        // Update data
         existingSeries.setData(ind.data);
-      } else {
-        // Create new series
-        let newSeries: ISeriesApi<any>;
-        switch (ind.type) {
-          case "line":
-            newSeries = chart.addSeries(LineSeries);
-            break;
-          case "histogram":
-            newSeries = chart.addSeries(HistogramSeries);
-            break;
-          default:
-            // Default to line
-            newSeries = chart.addSeries(LineSeries);
-        }
-        // Apply options if provided
         if (ind.options) {
-          newSeries.applyOptions(ind.options);
+          existingSeries.applyOptions(ind.options);
         }
-        // Set data
-        newSeries.setData(ind.data);
-        // Store in map
-        overlaySeriesMap.current.set(ind.id, newSeries);
+        return;
       }
+
+      const newSeries =
+        ind.type === "histogram"
+          ? chart.addSeries(HistogramSeries)
+          : chart.addSeries(LineSeries);
+
+      if (ind.options) {
+        newSeries.applyOptions(ind.options);
+      }
+      newSeries.setData(ind.data);
+      overlayMap.set(ind.id, newSeries);
     });
-  }, [chart, indicators]);
-
-  // Change chart type
-  const handleChartTypeChange = (type: ChartType) => {
-    setChartType(type);
-    // If chart exists, we need to replace series
-    if (chart && priceSeries) {
-      chart.removeSeries(priceSeries);
-      let newSeries: ISeriesApi<any>;
-      switch (type) {
-        case "candlestick":
-          newSeries = chart.addSeries(CandlestickSeries);
-          break;
-        case "bar":
-          newSeries = chart.addSeries(BarSeries);
-          break;
-        case "line":
-          newSeries = chart.addSeries(LineSeries);
-          break;
-        case "area":
-          newSeries = chart.addSeries(AreaSeries);
-          break;
-        case "heikin-ashi":
-          newSeries = chart.addSeries(CandlestickSeries);
-          break;
-      }
-      setPriceSeries(newSeries);
-      updatePriceSeriesData();
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="chart-card chart-animate">
-        <div className="card-header">
-          <span className="card-title">Price History — {data.symbol}</span>
-        </div>
-        <div className="chart-card-body">
-          <div className="loading-center" style={{ padding: "var(--sp-6)" }}>
-            <Spinner size="lg" />
-          </div>
-        </div>
-      </div>
-    );
-  }
+  }, [indicators]);
 
   if (!data || !data.data || data.data.length === 0) {
     return (
@@ -366,41 +279,42 @@ export default function StockChart({
     <div className="chart-card chart-animate">
       <div className="card-header">
         <span className="card-title">Price History — {data.symbol}</span>
-        <div className="btn-group">
-          {PERIODS.map((p) => (
-            <button
-              key={p.id}
-              type="button"
-              className={period === p.id ? "active" : ""}
-              onClick={() => onPeriodChange(p.id)}
-              disabled={loading}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
-        <div className="btn-group chart-type-group">
-          {[
-            { id: "candlestick", label: "Candle" },
-            { id: "bar", label: "OHLC" },
-            { id: "line", label: "Line" },
-            { id: "area", label: "Area" },
-            { id: "heikin-ashi", label: "HA" },
-          ].map((t) => (
-            <button
-              key={t.id}
-              type="button"
-              className={chartType === t.id ? "active" : ""}
-              onClick={() => handleChartTypeChange(t.id as ChartType as any)}
-              disabled={loading}
-            >
-              {t.label}
-            </button>
-          ))}
+        <div className="chart-controls">
+          <div className="btn-group">
+            {PERIODS.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                className={period === p.id ? "active" : ""}
+                onClick={() => onPeriodChange(p.id)}
+                disabled={loading}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+          <div className="btn-group chart-type-group">
+            {CHART_TYPES.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                className={chartType === t.id ? "active" : ""}
+                onClick={() => setChartType(t.id)}
+                disabled={loading}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
       <div className="chart-card-body">
         <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
+        {loading && (
+          <div className="chart-loading-overlay" aria-hidden="true">
+            <Spinner size="lg" />
+          </div>
+        )}
       </div>
     </div>
   );
