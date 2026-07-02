@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { getStockQuote, getStockHistory } from "../api/stocks";
 import type { StockQuote, StockHistory } from "../api/types";
 import type { StockTabId } from "../components/StockTabs";
-import StockChart from "../components/StockChart";
+import StockChart, { type ChartIndicator } from "../components/StockChart";
 import StatGrid from "../components/StatGrid";
 import AutocompleteSearch from "../components/AutocompleteSearch";
 import StockTabs from "../components/StockTabs";
@@ -18,6 +18,8 @@ import AnalysisDetailPage from "../pages/AnalysisDetailPage";
 import StarToggle from "../components/StarToggle";
 import IndicatorPanel from "../components/analysis/IndicatorPanel";
 import useWatchlist from "../hooks/useWatchlist";
+
+type UTCTimestamp = number;
 
 export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
   const [quote, setQuote] = useState<StockQuote | null>(null);
@@ -91,107 +93,165 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
       close: d.close
     }));
 
-    const result: any[] = [];
+    const result: ChartIndicator[] = [];
+
+    const toLineData = (
+      values: (number | null)[]
+    ): { time: UTCTimestamp; value: number }[] => {
+      return dates
+        .map((d, i) => ({
+          time: d.time as UTCTimestamp,
+          value: values[i] ?? null,
+        }))
+        .filter((d): d is { time: UTCTimestamp; value: number } => d.value !== null);
+    };
 
     // Process each active indicator
     activeIndicators.forEach(id => {
       switch (id) {
         case 'sma20': {
           const sma = calculateSMA(closes, 20);
-          const data = dates.map((d, i) => ({
-            time: d.time,
-            value: sma[i] ?? null
-          })).filter(d => d.value !== null);
           result.push({
             id: 'sma20',
-            data,
-            type: 'line' as const,
+            paneGroup: 'price',
+            seriesType: 'line',
+            data: toLineData(sma),
             options: { color: '#ff9800', lineWidth: 2 }
           });
           break;
         }
         case 'sma50': {
           const sma = calculateSMA(closes, 50);
-          const data = dates.map((d, i) => ({
-            time: d.time,
-            value: sma[i] ?? null
-          })).filter(d => d.value !== null);
           result.push({
             id: 'sma50',
-            data,
-            type: 'line' as const,
+            paneGroup: 'price',
+            seriesType: 'line',
+            data: toLineData(sma),
             options: { color: '#9ccc65', lineWidth: 2 }
+          });
+          break;
+        }
+        case 'sma200': {
+          const sma = calculateSMA(closes, 200);
+          result.push({
+            id: 'sma200',
+            paneGroup: 'price',
+            seriesType: 'line',
+            data: toLineData(sma),
+            options: { color: '#ef5350', lineWidth: 2 }
           });
           break;
         }
         case 'ema9': {
           const ema = calculateEMA(closes, 9);
-          const data = dates.map((d, i) => ({
-            time: d.time,
-            value: ema[i] ?? null
-          })).filter(d => d.value !== null);
           result.push({
             id: 'ema9',
-            data,
-            type: 'line' as const,
+            paneGroup: 'price',
+            seriesType: 'line',
+            data: toLineData(ema),
             options: { color: '#ce93d8', lineWidth: 2 }
           });
           break;
         }
         case 'ema20': {
           const ema = calculateEMA(closes, 20);
-          const data = dates.map((d, i) => ({
-            time: d.time,
-            value: ema[i] ?? null
-          })).filter(d => d.value !== null);
           result.push({
             id: 'ema20',
-            data,
-            type: 'line' as const,
+            paneGroup: 'price',
+            seriesType: 'line',
+            data: toLineData(ema),
             options: { color: '#bcaaa4', lineWidth: 2 }
           });
           break;
         }
         case 'bbands': {
           const { upper, middle, lower } = calculateBollingerBands(highs, lows, closes, 20, 2);
-          // Upper band
-          const upperData = dates.map((d, i) => ({
-            time: d.time,
-            value: upper[i] ?? null
-          })).filter(d => d.value !== null);
           result.push({
             id: 'bbands-upper',
-            data: upperData,
-            type: 'line' as const,
+            paneGroup: 'price',
+            seriesType: 'line',
+            data: toLineData(upper),
             options: { color: '#90caf9', lineWidth: 1, lineStyle: 2 }
           });
-          // Middle band (SMA)
-          const middleData = dates.map((d, i) => ({
-            time: d.time,
-            value: middle[i] ?? null
-          })).filter(d => d.value !== null);
           result.push({
             id: 'bbands-middle',
-            data: middleData,
-            type: 'line' as const,
+            paneGroup: 'price',
+            seriesType: 'line',
+            data: toLineData(middle),
             options: { color: '#64b5f6', lineWidth: 2 }
           });
-          // Lower band
-          const lowerData = dates.map((d, i) => ({
-            time: d.time,
-            value: lower[i] ?? null
-          })).filter(d => d.value !== null);
           result.push({
             id: 'bbands-lower',
-            data: lowerData,
-            type: 'line' as const,
+            paneGroup: 'price',
+            seriesType: 'line',
+            data: toLineData(lower),
             options: { color: '#90caf9', lineWidth: 1, lineStyle: 2 }
           });
           break;
         }
-        // Add more indicators as needed
+        case 'volume': {
+          result.push({
+            id: 'volume',
+            paneGroup: 'volume',
+            seriesType: 'histogram',
+            data: history.data.map((d) => ({
+              time: Math.floor(new Date(d.date).getTime() / 1000) as UTCTimestamp,
+              value: d.volume,
+              color: d.close >= d.open
+                ? 'rgba(38, 166, 154, 0.8)'
+                : 'rgba(239, 83, 80, 0.8)',
+            })),
+            options: {
+              priceFormat: { type: 'volume' },
+            },
+          });
+          break;
+        }
+        case 'rsi': {
+          const rsi = calculateRSI(closes, 14);
+          result.push({
+            id: 'rsi',
+            paneGroup: 'rsi',
+            seriesType: 'line',
+            data: toLineData(rsi),
+            options: { color: '#ab47bc', lineWidth: 2 },
+            priceLines: [
+              { price: 30, color: 'rgba(38, 166, 154, 0.8)', title: '30' },
+              { price: 70, color: 'rgba(239, 83, 80, 0.8)', title: '70' },
+            ],
+          });
+          break;
+        }
+        case 'macd': {
+          const { macdLine, signalLine, histogram } = calculateMACD(closes, 12, 26, 9);
+          result.push({
+            id: 'macd-line',
+            paneGroup: 'macd',
+            seriesType: 'line',
+            data: toLineData(macdLine),
+            options: { color: '#42a5f5', lineWidth: 2 },
+          });
+          result.push({
+            id: 'macd-signal',
+            paneGroup: 'macd',
+            seriesType: 'line',
+            data: toLineData(signalLine),
+            options: { color: '#ff7043', lineWidth: 2 },
+          });
+          result.push({
+            id: 'macd-hist',
+            paneGroup: 'macd',
+            seriesType: 'histogram',
+            data: toLineData(histogram).map((point) => ({
+              ...point,
+              color: point.value >= 0
+                ? 'rgba(38, 166, 154, 0.8)'
+                : 'rgba(239, 83, 80, 0.8)',
+            })),
+          });
+          break;
+        }
         default:
-          // Ignore unknown identifiers
           break;
       }
     });
@@ -463,6 +523,74 @@ const calculateBollingerBands = (
   const upper = sma.map((v, i) => (v === null ? null : v + std[i] * stdDev));
   const lower = sma.map((v, i) => (v === null ? null : v - std[i] * stdDev));
   return { upper, middle: sma, lower };
+};
+
+// Relative Strength Index (Wilder's smoothing)
+const calculateRSI = (closes: number[], period = 14): (number | null)[] => {
+  const result: (number | null)[] = new Array(closes.length).fill(null);
+  if (closes.length <= period) return result;
+
+  let avgGain = 0;
+  let avgLoss = 0;
+  for (let i = 1; i <= period; i++) {
+    const change = closes[i] - closes[i - 1];
+    if (change >= 0) avgGain += change;
+    else avgLoss -= change;
+  }
+  avgGain /= period;
+  avgLoss /= period;
+  result[period] = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
+
+  for (let i = period + 1; i < closes.length; i++) {
+    const change = closes[i] - closes[i - 1];
+    const gain = change > 0 ? change : 0;
+    const loss = change < 0 ? -change : 0;
+    avgGain = (avgGain * (period - 1) + gain) / period;
+    avgLoss = (avgLoss * (period - 1) + loss) / period;
+    result[i] = avgLoss === 0 ? 100 : 100 - 100 / (1 + avgGain / avgLoss);
+  }
+
+  return result;
+};
+
+// MACD (12/26/9)
+const calculateMACD = (
+  closes: number[],
+  fastPeriod = 12,
+  slowPeriod = 26,
+  signalPeriod = 9
+) => {
+  const emaFast = calculateEMA(closes, fastPeriod);
+  const emaSlow = calculateEMA(closes, slowPeriod);
+  const macdLine: (number | null)[] = closes.map((_, i) => {
+    const fast = emaFast[i];
+    const slow = emaSlow[i];
+    if (fast == null || slow == null) return null;
+    return fast - slow;
+  });
+
+  const signalLine: (number | null)[] = new Array(closes.length).fill(null);
+  const macdValues: number[] = [];
+  const macdIndices: number[] = [];
+  for (let i = 0; i < macdLine.length; i++) {
+    if (macdLine[i] != null) {
+      macdValues.push(macdLine[i]!);
+      macdIndices.push(i);
+    }
+  }
+
+  if (macdValues.length >= signalPeriod) {
+    const signalEma = calculateEMA(macdValues, signalPeriod);
+    for (let j = signalPeriod - 1; j < macdValues.length; j++) {
+      signalLine[macdIndices[j]] = signalEma[j];
+    }
+  }
+
+  const histogram = macdLine.map((value, i) =>
+    value != null && signalLine[i] != null ? value - signalLine[i]! : null
+  );
+
+  return { macdLine, signalLine, histogram };
 };
 
 const STAGGER = {

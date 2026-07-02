@@ -789,7 +789,8 @@ select:focus-visible {
 .chart-card-body {
   position: relative;
   padding: var(--sp-4);
-  height: 380px;
+  min-height: 380px;
+  height: auto;
 }
 
 .chart-loading-overlay {
@@ -822,6 +823,12 @@ select:focus-visible {
 }
 
 .indicator-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.indicator-panel-group {
   display: flex;
   flex-direction: column;
   gap: var(--sp-2);
@@ -1764,7 +1771,7 @@ select:focus-visible {
   .stat-grid { grid-template-columns: repeat(2, 1fr); gap: var(--sp-2); }
   .stat-cell { padding: var(--sp-2); }
   .stat-cell-value { font-size: var(--text-base); }
-  .chart-card-body { height: 220px; padding: var(--sp-2); }
+  .chart-card-body { min-height: 220px; height: auto; padding: var(--sp-2); }
   .quote-header { flex-direction: column; gap: var(--sp-2); }
   .quote-price-block { text-align: left; }
   .quote-price { font-size: var(--text-2xl); }
@@ -1794,7 +1801,7 @@ select:focus-visible {
   .topbar-nav { display: none; }
   .page { padding: var(--sp-3); }
   .stat-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
-  .chart-card-body { height: 280px; }
+  .chart-card-body { min-height: 280px; height: auto; }
   .index-card { min-width: 130px; }
   .heatmap-cell { width: 60px; height: 40px; }
   .sector-grid-cards { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }

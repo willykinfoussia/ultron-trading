@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useMemo } from "react";
 import {
   createChart,
   IChartApi,
   ISeriesApi,
+  IPriceLine,
   CandlestickSeries,
   BarSeries,
   LineSeries,
@@ -20,6 +21,17 @@ type ChartType =
   | "area"
   | "heikin-ashi";
 
+export type PaneGroup = "price" | "volume" | "rsi" | "macd";
+
+export interface ChartIndicator {
+  id: string;
+  paneGroup: PaneGroup;
+  seriesType: "line" | "histogram";
+  data: { time: UTCTimestamp; value: number; color?: string }[];
+  options?: Record<string, unknown>;
+  priceLines?: { price: number; color: string; title: string }[];
+}
+
 const PERIODS = [
   { id: "1mo", label: "1M" },
   { id: "3mo", label: "3M" },
@@ -36,6 +48,10 @@ const CHART_TYPES: { id: ChartType; label: string }[] = [
   { id: "area", label: "Area" },
   { id: "heikin-ashi", label: "HA" },
 ];
+
+const SUB_PANE_ORDER: PaneGroup[] = ["volume", "rsi", "macd"];
+const BASE_CHART_HEIGHT = 400;
+const SUB_PANE_HEIGHT = 130;
 
 const parseTime = (dateStr: string): UTCTimestamp => {
   return Math.floor(new Date(dateStr).getTime() / 1000) as UTCTimestamp;
@@ -74,12 +90,13 @@ interface Props {
   period: string;
   onPeriodChange: (period: string) => void;
   loading?: boolean;
-  indicators?: {
-    id: string;
-    data: { time: UTCTimestamp; value: number }[];
-    type: "line" | "histogram";
-    options?: Record<string, unknown>;
-  }[];
+  indicators?: ChartIndicator[];
+}
+
+interface OverlayEntry {
+  series: ISeriesApi<"Line" | "Histogram">;
+  paneIndex: number;
+  priceLines: IPriceLine[];
 }
 
 function createPriceSeries(
@@ -100,6 +117,66 @@ function createPriceSeries(
   }
 }
 
+function getActiveSubPaneGroups(indicators: ChartIndicator[]): PaneGroup[] {
+  return SUB_PANE_ORDER.filter((group) =>
+    indicators.some((ind) => ind.paneGroup === group)
+  );
+}
+
+function computePaneIndexMap(indicators: ChartIndicator[]): Map<PaneGroup, number> {
+  const map = new Map<PaneGroup, number>();
+  map.set("price", 0);
+  getActiveSubPaneGroups(indicators).forEach((group, index) => {
+    map.set(group, index + 1);
+  });
+  return map;
+}
+
+function getLayoutSignature(indicators: ChartIndicator[]): string {
+  return getActiveSubPaneGroups(indicators).join(",");
+}
+
+function computeChartHeight(indicators: ChartIndicator[]): number {
+  return BASE_CHART_HEIGHT + SUB_PANE_HEIGHT * getActiveSubPaneGroups(indicators).length;
+}
+
+function addIndicatorSeries(
+  chart: IChartApi,
+  ind: ChartIndicator,
+  paneIndex: number
+): ISeriesApi<"Line" | "Histogram"> {
+  const series =
+    ind.seriesType === "histogram"
+      ? chart.addSeries(HistogramSeries, ind.options ?? {}, paneIndex)
+      : chart.addSeries(LineSeries, ind.options ?? {}, paneIndex);
+
+  if (ind.paneGroup === "rsi") {
+    series.priceScale().applyOptions({
+      scaleMargins: { top: 0.1, bottom: 0.1 },
+    });
+  }
+
+  series.setData(ind.data);
+  return series;
+}
+
+function applyPriceLines(
+  series: ISeriesApi<"Line" | "Histogram">,
+  priceLines: ChartIndicator["priceLines"]
+): IPriceLine[] {
+  if (!priceLines?.length) return [];
+  return priceLines.map((line) =>
+    series.createPriceLine({
+      price: line.price,
+      color: line.color,
+      lineWidth: 1,
+      lineStyle: 2,
+      axisLabelVisible: true,
+      title: line.title,
+    })
+  );
+}
+
 export default function StockChart({
   data,
   period,
@@ -110,9 +187,12 @@ export default function StockChart({
   const containerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const priceSeriesRef = useRef<ISeriesApi<"Candlestick" | "Bar" | "Line" | "Area"> | null>(null);
-  const overlaySeriesMapRef = useRef<Map<string, ISeriesApi<"Line" | "Histogram">>>(new Map());
+  const overlaySeriesMapRef = useRef<Map<string, OverlayEntry>>(new Map());
+  const layoutSignatureRef = useRef("");
   const chartTypeRef = useRef<ChartType>("candlestick");
   const [chartType, setChartType] = useState<ChartType>("candlestick");
+
+  const chartHeight = useMemo(() => computeChartHeight(indicators), [indicators]);
 
   const getPriceData = useCallback(
     (type: ChartType) => {
@@ -155,7 +235,7 @@ export default function StockChart({
 
     const chart = createChart(container, {
       width: container.clientWidth,
-      height: 400,
+      height: BASE_CHART_HEIGHT,
       layout: {
         background: { color: "#131722" },
         textColor: "#d1d4dc",
@@ -180,9 +260,10 @@ export default function StockChart({
     chartRef.current = chart;
 
     const resizeObserver = new ResizeObserver(() => {
+      const currentHeight = container.clientHeight || BASE_CHART_HEIGHT;
       chart.applyOptions({
         width: container.clientWidth,
-        height: 400,
+        height: currentHeight,
       });
     });
     resizeObserver.observe(container);
@@ -190,6 +271,7 @@ export default function StockChart({
     return () => {
       resizeObserver.disconnect();
       overlaySeriesMapRef.current.clear();
+      layoutSignatureRef.current = "";
       priceSeriesRef.current = null;
       chart.remove();
       chartRef.current = null;
@@ -210,11 +292,10 @@ export default function StockChart({
     nextSeries.setData(getPriceData(chartType));
     priceSeriesRef.current = nextSeries;
     chart.timeScale().fitContent();
-    // getPriceData is read for the initial series payload; ongoing updates are handled in Effect 3.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartType]);
 
-  // Effect 3: update price data when history changes (same chart type)
+  // Effect 3: update price data when history changes
   useEffect(() => {
     const chart = chartRef.current;
     const priceSeries = priceSeriesRef.current;
@@ -224,43 +305,80 @@ export default function StockChart({
     chart.timeScale().fitContent();
   }, [data, getPriceData]);
 
-  // Effect 4: sync overlay indicator series
+  // Effect 4: sync indicator series across panes
   useEffect(() => {
     const chart = chartRef.current;
     if (!chart) return;
 
-    const currentIds = new Set(indicators.map((ind) => ind.id));
-    const overlayMap = overlaySeriesMapRef.current;
+    chart.applyOptions({ height: chartHeight });
 
-    overlayMap.forEach((series, id) => {
+    const paneIndexMap = computePaneIndexMap(indicators);
+    const layoutSignature = getLayoutSignature(indicators);
+    const overlayMap = overlaySeriesMapRef.current;
+    const currentIds = new Set(indicators.map((ind) => ind.id));
+    const layoutChanged = layoutSignatureRef.current !== layoutSignature;
+
+    const removeOverlayEntry = (id: string, entry: OverlayEntry) => {
+      entry.priceLines.forEach((line) => {
+        try {
+          entry.series.removePriceLine(line);
+        } catch {
+          // Price line may already be removed with the series.
+        }
+      });
+      chart.removeSeries(entry.series);
+      overlayMap.delete(id);
+    };
+
+    if (layoutChanged) {
+      overlayMap.forEach((entry, id) => removeOverlayEntry(id, entry));
+
+      while (chart.panes().length > 1) {
+        chart.removePane(chart.panes().length - 1);
+      }
+
+      indicators.forEach((ind) => {
+        const paneIndex = paneIndexMap.get(ind.paneGroup) ?? 0;
+        const series = addIndicatorSeries(chart, ind, paneIndex);
+        const priceLines = applyPriceLines(series, ind.priceLines);
+        overlayMap.set(ind.id, { series, paneIndex, priceLines });
+      });
+
+      layoutSignatureRef.current = layoutSignature;
+      return;
+    }
+
+    overlayMap.forEach((entry, id) => {
       if (!currentIds.has(id)) {
-        chart.removeSeries(series);
-        overlayMap.delete(id);
+        removeOverlayEntry(id, entry);
       }
     });
 
     indicators.forEach((ind) => {
-      const existingSeries = overlayMap.get(ind.id);
-      if (existingSeries) {
-        existingSeries.setData(ind.data);
+      const paneIndex = paneIndexMap.get(ind.paneGroup) ?? 0;
+      const existing = overlayMap.get(ind.id);
+
+      if (existing) {
+        if (existing.paneIndex !== paneIndex) {
+          removeOverlayEntry(ind.id, existing);
+          const series = addIndicatorSeries(chart, ind, paneIndex);
+          const priceLines = applyPriceLines(series, ind.priceLines);
+          overlayMap.set(ind.id, { series, paneIndex, priceLines });
+          return;
+        }
+
+        existing.series.setData(ind.data);
         if (ind.options) {
-          existingSeries.applyOptions(ind.options);
+          existing.series.applyOptions(ind.options);
         }
         return;
       }
 
-      const newSeries =
-        ind.type === "histogram"
-          ? chart.addSeries(HistogramSeries)
-          : chart.addSeries(LineSeries);
-
-      if (ind.options) {
-        newSeries.applyOptions(ind.options);
-      }
-      newSeries.setData(ind.data);
-      overlayMap.set(ind.id, newSeries);
+      const series = addIndicatorSeries(chart, ind, paneIndex);
+      const priceLines = applyPriceLines(series, ind.priceLines);
+      overlayMap.set(ind.id, { series, paneIndex, priceLines });
     });
-  }, [indicators]);
+  }, [indicators, chartHeight]);
 
   if (!data || !data.data || data.data.length === 0) {
     return (
@@ -308,8 +426,11 @@ export default function StockChart({
           </div>
         </div>
       </div>
-      <div className="chart-card-body">
-        <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
+      <div className="chart-card-body" style={{ minHeight: chartHeight }}>
+        <div
+          ref={containerRef}
+          style={{ width: "100%", height: chartHeight }}
+        />
         {loading && (
           <div className="chart-loading-overlay" aria-hidden="true">
             <Spinner size="lg" />
