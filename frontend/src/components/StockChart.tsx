@@ -45,7 +45,7 @@ const computeHeikinAshi = (
   data: { date: string; open: number; high: number; low: number; close: number }[]
 ) => {
   const ha: {
-    time: number;
+    time: UTCTimestamp;
     open: number;
     high: number;
     low: number;
