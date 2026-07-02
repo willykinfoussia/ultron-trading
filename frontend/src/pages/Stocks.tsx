@@ -18,8 +18,10 @@ import AnalysisDetailPage from "../pages/AnalysisDetailPage";
 import StarToggle from "../components/StarToggle";
 import IndicatorPanel from "../components/analysis/IndicatorPanel";
 import useWatchlist from "../hooks/useWatchlist";
+import type { UTCTimestamp } from "lightweight-charts";
 
-type UTCTimestamp = number;
+const parseTime = (dateStr: string): UTCTimestamp =>
+  Math.floor(new Date(dateStr).getTime() / 1000) as UTCTimestamp;
 
 export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
   const [quote, setQuote] = useState<StockQuote | null>(null);
@@ -89,7 +91,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
     const highs = history.data.map(d => d.high);
     const lows = history.data.map(d => d.low);
     const dates = history.data.map(d => ({
-      time: Math.floor(new Date(d.date).getTime() / 1000),
+      time: parseTime(d.date),
       close: d.close
     }));
 
@@ -97,13 +99,14 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
 
     const toLineData = (
       values: (number | null)[]
-    ): { time: UTCTimestamp; value: number }[] => {
+    ): ChartIndicator["data"] => {
       return dates
-        .map((d, i) => ({
-          time: d.time as UTCTimestamp,
-          value: values[i] ?? null,
-        }))
-        .filter((d): d is { time: UTCTimestamp; value: number } => d.value !== null);
+        .map((d, i) => {
+          const value = values[i];
+          if (value == null) return null;
+          return { time: d.time, value };
+        })
+        .filter((point): point is ChartIndicator["data"][number] => point !== null);
     };
 
     // Process each active indicator
@@ -195,7 +198,7 @@ export default function Stocks({ initialSymbol, onSymbolChange }: Props) {
             paneGroup: 'volume',
             seriesType: 'histogram',
             data: history.data.map((d) => ({
-              time: Math.floor(new Date(d.date).getTime() / 1000) as UTCTimestamp,
+              time: parseTime(d.date),
               value: d.volume,
               color: d.close >= d.open
                 ? 'rgba(38, 166, 154, 0.8)'
