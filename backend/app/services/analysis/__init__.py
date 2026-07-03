@@ -1,11 +1,5 @@
 """
 Analysis Registry - Central registry for all analysis methods.
-
-Usage:
-    from app.services.analysis import registry, AnalysisResult
-    # Methods are auto-registered on first import
-    all_methods = registry.list_all()
-    result = await registry.run("rsi", "AAPL", period=14)
 """
 
 import logging
@@ -42,6 +36,7 @@ class AnalysisRegistry:
     def get_method(self, method_id: str) -> Optional[AnalysisMethod]:
         """Get a registered method instance by its ID."""
         return self._methods.get(method_id)
+
     def get_methods(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
         """List method metadata, optionally filtered by category."""
         from .metadata import ANALYSIS_METADATA
@@ -114,8 +109,8 @@ class AnalysisRegistry:
 registry = AnalysisRegistry()
 
 
-# Auto-register all analysis methods
-def _register_all():
+def _register_all() -> None:
+    """Auto-register all analysis methods."""
     from app.services.analysis.technical import (
         RSIMethod, MACDMethod, BollingerBandsMethod, SMAMethod, EMAMethod,
     )
@@ -124,13 +119,20 @@ def _register_all():
         DCFValuationMethod, CompsAnalysisMethod,
     )
     from app.services.analysis.sentiment import NewsSentimentMethod
+    from app.services.analysis.quantitative import (
+        MarkowitzMethod, CAPMMethod,
+        BinomialTreeMethod, VasicekMethod, HullWhiteMethod,
+        HestonMethod, MertonCreditMethod, VaRMethod, MonteCarloMethod,
+    )
 
+    # Technical methods
     registry.register("technical", RSIMethod)
     registry.register("technical", MACDMethod)
     registry.register("technical", BollingerBandsMethod)
     registry.register("technical", SMAMethod)
     registry.register("technical", EMAMethod)
 
+    # Fundamental methods
     registry.register("fundamental", PERatioMethod)
     registry.register("fundamental", ROEMethod)
     registry.register("fundamental", DebtToEquityMethod)
@@ -138,8 +140,19 @@ def _register_all():
     registry.register("fundamental", DCFValuationMethod)
     registry.register("fundamental", CompsAnalysisMethod)
 
+    # Sentiment methods
     registry.register("sentiment", NewsSentimentMethod)
 
+    # Quantitative methods
+    registry.register("quant", MarkowitzMethod)
+    registry.register("quant", CAPMMethod)
+    registry.register("quant", BinomialTreeMethod)
+    registry.register("quant", VasicekMethod)
+    registry.register("quant", HullWhiteMethod)
+    registry.register("quant", HestonMethod)
+    registry.register("quant", MertonCreditMethod)
+    registry.register("quant", VaRMethod)
+    registry.register("quant", MonteCarloMethod)
 
     logger.info(
         f"Analysis engine initialized: {len(registry.list_all())} methods "
