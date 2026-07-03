@@ -127,8 +127,21 @@ class TestAnalysisSummary:
         response = await client.get("/api/analysis/AAPL/summary")
         assert response.status_code == 200
 
+    @pytest.mark.anyio
     async def test_summary_schema(self, client: AsyncClient):
         response = await client.get("/api/analysis/AAPL/summary")
         assert response.status_code == 200
         data = response.json()
-        assert "symbol" in data
+        # The endpoint returns a list of results, one per method
+        assert isinstance(data, list)
+        assert len(data) > 0
+        # Check that each result has the expected fields
+        for result in data:
+            assert "method_id" in result
+            assert "method_name" in result
+            assert "category" in result
+            assert "symbol" in result  # each result should include the symbol
+            assert "result" in result
+            assert "signal" in result
+            assert "confidence" in result
+            assert "explanation" in result

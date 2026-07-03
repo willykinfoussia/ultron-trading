@@ -112,26 +112,32 @@ class TestCompanyNews:
         response = await client.get("/api/stocks/AAPL/news")
         assert response.status_code == 200
 
-    async def test_news_schema(self, client: AsyncClient):
-        """News endpoint returns {symbol, news: [...]} not a plain list."""
+    async def test_news_returns_list(self, client: AsyncClient):
+        """News endpoint returns a list of news items."""
         response = await client.get("/api/stocks/AAPL/news")
         assert response.status_code == 200
         data = response.json()
-        # Actual format: {"symbol": "AAPL", "news": [...]}
-        assert "symbol" in data
-        assert "news" in data
-        assert isinstance(data["news"], list)
-
-    async def test_news_item_structure(self, client: AsyncClient):
-        response = await client.get("/api/stocks/AAPL/news")
-        assert response.status_code == 200
-        data = response.json()
-        if len(data["news"]) > 0:
-            item = data["news"][0]
+        assert isinstance(data, list)
+        # Optionally, check that each item has expected fields if list not empty
+        if data:
+            item = data[0]
             assert "title" in item
             assert "publisher" in item
             assert "link" in item
+            assert "providerPublishTime" in item
 
+    async def test_news_item_structure(self, client: AsyncClient):
+        """Check that a news item has the expected structure."""
+        response = await client.get("/api/stocks/AAPL/news")
+        assert response.status_code == 200
+        data = response.json()
+        assert isinstance(data, list)
+        if data:
+            item = data[0]
+            assert "title" in item
+            assert "publisher" in item
+            assert "link" in item
+            assert "providerPublishTime" in item
     async def test_news_invalid_symbol(self, client: AsyncClient):
         response = await client.get("/api/stocks/INVALIDQUOTE123XYZ/news")
         assert response.status_code in (404, 400)

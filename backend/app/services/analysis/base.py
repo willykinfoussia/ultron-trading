@@ -93,7 +93,7 @@ class AnalysisMethod(ABC):
             raise ValueError("method_id cannot be empty")
         if not self.method_name:
             raise ValueError("method_name cannot be empty")
-        valid_categories = ("technical", "fundamental", "sentiment", "ml")
+        valid_categories = ("technical", "fundamental", "sentiment", "ml", "quant")
         if self.category not in valid_categories:
             raise ValueError(f"category must be one of {valid_categories}, got '{self.category}'")
 
