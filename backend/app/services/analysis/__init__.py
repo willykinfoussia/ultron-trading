@@ -123,12 +123,7 @@ def _register_all():
         PERatioMethod, ROEMethod, DebtToEquityMethod, ProfitMarginMethod,
         DCFValuationMethod, CompsAnalysisMethod,
     )
-    from app.services.analysis.sentiment import (
-        NewsSentimentMethod, SocialMediaSentimentMethod,
-    )
-    from app.services.analysis.ml import (
-        MLPredictionMethod, TrendClassificationMethod,
-    )
+    from app.services.analysis.sentiment import NewsSentimentMethod
 
     registry.register("technical", RSIMethod)
     registry.register("technical", MACDMethod)
@@ -144,10 +139,7 @@ def _register_all():
     registry.register("fundamental", CompsAnalysisMethod)
 
     registry.register("sentiment", NewsSentimentMethod)
-    registry.register("sentiment", SocialMediaSentimentMethod)
 
-    registry.register("ml", MLPredictionMethod)
-    registry.register("ml", TrendClassificationMethod)
 
     logger.info(
         f"Analysis engine initialized: {len(registry.list_all())} methods "
