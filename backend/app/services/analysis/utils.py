@@ -27,3 +27,8 @@ def simulate_gbm_paths(S0: float, mu: float, sigma: float, T: float, steps: int,
     log_returns = np.vstack([np.zeros(n_paths), log_returns])
     paths = S0 * np.exp(log_returns)
     return paths
+
+
+def annualize(ret: float, periods_per_year: int = 252) -> float:
+    """Annualize a return."""
+    return annualize_ret(ret, periods_per_year)
