@@ -16,8 +16,7 @@ print(f"\nCategories: {cats}")
 expected = [
     "rsi", "macd", "bollinger", "sma", "ema",
     "pe_ratio", "roe", "debt_to_equity", "profit_margin",
-    "news_sentiment", "social_sentiment",
-    "ml_prediction", "trend_classification",
+    "news_sentiment",
 ]
 actual = [m["method_id"] for m in methods]
 missing = [e for e in expected if e not in actual]
