@@ -15544,3 +15544,106 @@ ValueError: Out of range float values are not JSON compliant
 2026-07-03 15:22:34 | INFO     | ultron-trading | → GET /api/charts/AAPL/historical from 127.0.0.1
 2026-07-03 15:22:34 | INFO     | ultron-trading | ← GET /api/charts/AAPL/historical → 200 (0.4ms)
 2026-07-03 15:22:34 | INFO     | httpx | HTTP Request: GET http://test/api/charts/AAPL/historical?period=3mo "HTTP/1.1 200 OK"
+2026-07-04 08:59:37 | INFO     | ultron-trading | → GET /api/analysis/ from 127.0.0.1
+2026-07-04 08:59:37 | INFO     | ultron-trading | ← GET /api/analysis/ → 200 (11.5ms)
+2026-07-04 08:59:37 | INFO     | httpx | HTTP Request: GET http://test/api/analysis/ "HTTP/1.1 200 OK"
+2026-07-04 08:59:37 | INFO     | ultron-trading | → GET /api/analysis/ from 127.0.0.1
+2026-07-04 08:59:37 | INFO     | ultron-trading | ← GET /api/analysis/ → 200 (0.8ms)
+2026-07-04 08:59:37 | INFO     | httpx | HTTP Request: GET http://test/api/analysis/ "HTTP/1.1 200 OK"
+2026-07-04 08:59:37 | INFO     | ultron-trading | → GET /api/analysis/ from 127.0.0.1
+2026-07-04 08:59:37 | INFO     | ultron-trading | ← GET /api/analysis/ → 200 (0.9ms)
+2026-07-04 08:59:37 | INFO     | httpx | HTTP Request: GET http://test/api/analysis/ "HTTP/1.1 200 OK"
+2026-07-04 08:59:37 | INFO     | ultron-trading | → GET /api/analysis/categories from 127.0.0.1
+2026-07-04 08:59:37 | INFO     | ultron-trading | ← GET /api/analysis/categories → 200 (2.9ms)
+2026-07-04 08:59:37 | INFO     | httpx | HTTP Request: GET http://test/api/analysis/categories "HTTP/1.1 200 OK"
+2026-07-04 08:59:37 | INFO     | ultron-trading | → GET /api/analysis/AAPL/run/rsi from 127.0.0.1
+2026-07-04 08:59:37 | INFO     | ultron-trading.analysis | Running rsi for AAPL with params={}
+2026-07-04 08:59:37 | INFO     | ultron-trading | ← GET /api/analysis/AAPL/run/rsi → 200 (267.0ms)
+2026-07-04 08:59:37 | INFO     | httpx | HTTP Request: GET http://test/api/analysis/AAPL/run/rsi "HTTP/1.1 200 OK"
+2026-07-04 08:59:37 | INFO     | ultron-trading | → GET /api/analysis/AAPL/run/macd from 127.0.0.1
+2026-07-04 08:59:37 | INFO     | ultron-trading.analysis | Running macd for AAPL with params={}
+2026-07-04 08:59:37 | INFO     | ultron-trading | ← GET /api/analysis/AAPL/run/macd → 200 (24.2ms)
+2026-07-04 08:59:37 | INFO     | httpx | HTTP Request: GET http://test/api/analysis/AAPL/run/macd "HTTP/1.1 200 OK"
+2026-07-04 08:59:37 | INFO     | ultron-trading | → GET /api/analysis/AAPL/run/nonexistent from 127.0.0.1
+2026-07-04 08:59:37 | INFO     | ultron-trading | ← GET /api/analysis/AAPL/run/nonexistent → 404 (0.8ms)
+2026-07-04 08:59:37 | INFO     | httpx | HTTP Request: GET http://test/api/analysis/AAPL/run/nonexistent "HTTP/1.1 404 Not Found"
+2026-07-04 08:59:37 | INFO     | ultron-trading | → GET /api/analysis/INVALIDQUOTE123XYZ/run/rsi from 127.0.0.1
+2026-07-04 08:59:37 | INFO     | ultron-trading.analysis | Running rsi for INVALIDQUOTE123XYZ with params={}
+2026-07-04 08:59:38 | ERROR    | yfinance | HTTP Error 404: {"quoteSummary":{"result":null,"error":{"code":"Not Found","description":"Quote not found for symbol: INVALIDQUOTE123XYZ"}}}
+2026-07-04 08:59:38 | ERROR    | yfinance | $INVALIDQUOTE123XYZ: possibly delisted; no price data found  (period=3mo) (Yahoo error = "No data found, symbol may be delisted")
+2026-07-04 08:59:38 | INFO     | ultron-trading | ← GET /api/analysis/INVALIDQUOTE123XYZ/run/rsi → 400 (869.6ms)
+2026-07-04 08:59:38 | INFO     | httpx | HTTP Request: GET http://test/api/analysis/INVALIDQUOTE123XYZ/run/rsi "HTTP/1.1 400 Bad Request"
+2026-07-04 08:59:38 | INFO     | ultron-trading | → POST /api/analysis/AAPL/run-all from 127.0.0.1
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running rsi for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running macd for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running bollinger for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running sma for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running ema for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading | ← POST /api/analysis/AAPL/run-all → 200 (104.3ms)
+2026-07-04 08:59:38 | INFO     | httpx | HTTP Request: POST http://test/api/analysis/AAPL/run-all "HTTP/1.1 200 OK"
+2026-07-04 08:59:38 | INFO     | ultron-trading | → POST /api/analysis/AAPL/run-all from 127.0.0.1
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running rsi for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running macd for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running bollinger for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running sma for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running ema for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading | ← POST /api/analysis/AAPL/run-all → 200 (105.3ms)
+2026-07-04 08:59:38 | INFO     | httpx | HTTP Request: POST http://test/api/analysis/AAPL/run-all "HTTP/1.1 200 OK"
+2026-07-04 08:59:38 | INFO     | ultron-trading | → POST /api/analysis/AAPL/run-all from 127.0.0.1
+2026-07-04 08:59:38 | INFO     | ultron-trading | ← POST /api/analysis/AAPL/run-all → 400 (0.9ms)
+2026-07-04 08:59:38 | INFO     | httpx | HTTP Request: POST http://test/api/analysis/AAPL/run-all "HTTP/1.1 400 Bad Request"
+2026-07-04 08:59:38 | INFO     | ultron-trading | → POST /api/analysis/AAPL/run-all from 127.0.0.1
+2026-07-04 08:59:38 | INFO     | ultron-trading | ← POST /api/analysis/AAPL/run-all → 422 (0.7ms)
+2026-07-04 08:59:38 | INFO     | httpx | HTTP Request: POST http://test/api/analysis/AAPL/run-all "HTTP/1.1 422 Unprocessable Entity"
+2026-07-04 08:59:38 | INFO     | ultron-trading | → GET /api/analysis/AAPL/summary from 127.0.0.1
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running rsi for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running macd for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running bollinger for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running sma for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running ema for AAPL with params={}
+2026-07-04 08:59:38 | INFO     | ultron-trading.analysis | Running pe_ratio for AAPL with params={}
+2026-07-04 08:59:39 | INFO     | ultron-trading.analysis | Running roe for AAPL with params={}
+2026-07-04 08:59:39 | INFO     | ultron-trading.analysis | Running debt_to_equity for AAPL with params={}
+2026-07-04 08:59:39 | INFO     | ultron-trading.analysis | Running profit_margin for AAPL with params={}
+2026-07-04 08:59:39 | INFO     | ultron-trading.analysis | Running dcf_valuation for AAPL with params={}
+2026-07-04 08:59:39 | INFO     | ultron-trading.analysis | Running comps_analysis for AAPL with params={}
+2026-07-04 08:59:39 | INFO     | ultron-trading.analysis | Running news_sentiment for AAPL with params={}
+2026-07-04 08:59:39 | INFO     | ultron-trading.analysis.news | Fetched 10 news articles for AAPL
+2026-07-04 08:59:47 | INFO     | httpx | HTTP Request: POST http://localhost:9000/api/hermes_api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-04 08:59:47 | INFO     | ultron-trading.analysis | Running markowitz for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running capm for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running binomial_tree for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running vasicek for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running hull_white for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running heston for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running merton_credit for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running var for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running monte_carlo for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading | ← GET /api/analysis/AAPL/summary → 200 (9895.0ms)
+2026-07-04 08:59:48 | INFO     | httpx | HTTP Request: GET http://test/api/analysis/AAPL/summary "HTTP/1.1 200 OK"
+2026-07-04 08:59:48 | INFO     | ultron-trading | → GET /api/analysis/AAPL/summary from 127.0.0.1
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running rsi for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running macd for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running bollinger for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running sma for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running ema for AAPL with params={}
+2026-07-04 08:59:48 | INFO     | ultron-trading.analysis | Running pe_ratio for AAPL with params={}
+2026-07-04 08:59:49 | INFO     | ultron-trading.analysis | Running roe for AAPL with params={}
+2026-07-04 08:59:49 | INFO     | ultron-trading.analysis | Running debt_to_equity for AAPL with params={}
+2026-07-04 08:59:49 | INFO     | ultron-trading.analysis | Running profit_margin for AAPL with params={}
+2026-07-04 08:59:49 | INFO     | ultron-trading.analysis | Running dcf_valuation for AAPL with params={}
+2026-07-04 08:59:49 | INFO     | ultron-trading.analysis | Running comps_analysis for AAPL with params={}
+2026-07-04 08:59:49 | INFO     | ultron-trading.analysis | Running news_sentiment for AAPL with params={}
+2026-07-04 08:59:49 | INFO     | ultron-trading.analysis.news | Fetched 10 news articles for AAPL
+2026-07-04 08:59:57 | INFO     | httpx | HTTP Request: POST http://localhost:9000/api/hermes_api/v1/chat/completions "HTTP/1.1 200 OK"
+2026-07-04 08:59:57 | INFO     | ultron-trading.analysis | Running markowitz for AAPL with params={}
+2026-07-04 08:59:57 | INFO     | ultron-trading.analysis | Running capm for AAPL with params={}
+2026-07-04 08:59:57 | INFO     | ultron-trading.analysis | Running binomial_tree for AAPL with params={}
+2026-07-04 08:59:57 | INFO     | ultron-trading.analysis | Running vasicek for AAPL with params={}
+2026-07-04 08:59:57 | INFO     | ultron-trading.analysis | Running hull_white for AAPL with params={}
+2026-07-04 08:59:57 | INFO     | ultron-trading.analysis | Running heston for AAPL with params={}
+2026-07-04 08:59:57 | INFO     | ultron-trading.analysis | Running merton_credit for AAPL with params={}
+2026-07-04 08:59:57 | INFO     | ultron-trading.analysis | Running var for AAPL with params={}
+2026-07-04 08:59:57 | INFO     | ultron-trading.analysis | Running monte_carlo for AAPL with params={}
+2026-07-04 08:59:57 | INFO     | ultron-trading | ← GET /api/analysis/AAPL/summary → 200 (8734.3ms)
+2026-07-04 08:59:57 | INFO     | httpx | HTTP Request: GET http://test/api/analysis/AAPL/summary "HTTP/1.1 200 OK"

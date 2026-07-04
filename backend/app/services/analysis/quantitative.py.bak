@@ -1,0 +1,125 @@
+# Quantitative Analysis Methods
+# To be implemented: Markowitz, CAPM, Black-Scholes, Binomial Tree,
+# Vasicek, Hull-White, Heston, Merton Credit, VaR, Monte Carlo
+
+import numpy as np
+import pandas as pd
+from .base import AnalysisMethod, AnalysisResult
+from .utils import cov_matrix, annualize_ret, annualize_vol
+
+
+class MarkowitzMethod(AnalysisMethod):
+    """Mean-variance portfolio optimization (Markowitz)."""
+
+    @property
+    def method_id(self) -> str:
+        return "markowitz"
+
+    @property
+    def method_name(self) -> str:
+        return "Markowitz Mean-Variance Optimization"
+
+    @property
+    def category(self) -> str:
+        return "quant"
+
+    @property
+    def description(self) -> str:
+        return ("Computes optimal portfolio weights for a target return or "
+                "minimum volatility using historical returns.")
+
+    @property
+    def parameters(self) -> dict:
+        return {
+            "target_return": {
+                "type": "float",
+                "default": 0.1,
+                "min": -1.0,
+                "max": 2.0,
+            },
+            "risk_free_rate": {
+                "type": "float",
+                "default": 0.02,
+                "min": 0.0,
+                "max": 0.1,
+            },
+            "lookback_days": {
+                "type": "int",
+                "default": 252,
+                "min": 30,
+                "max": 1000,
+            },
+        }
+
+    async def run(self, symbol: str, **params) -> AnalysisResult:
+        # symbol is ignored; we treat it as a placeholder
+        # for a portfolio ticker list.
+        lookback = int(params.get("lookback_days", 252))
+        target_ret = float(params.get("target_return", 0.1))
+        rf = float(params.get("risk_free_rate", 0.02))
+
+        # For demo, use random returns; in production fetch a basket
+        returns = pd.DataFrame({
+            "A": np.random.normal(0.001, 0.02, lookback),
+            "B": np.random.normal(0.0008, 0.015, lookback)
+        })
+        Sigma = cov_matrix(returns)
+        mu = returns.mean().values
+
+        # Minimize w'Σw subject to w'μ = target, sum(w)=1, w>=0 (long-only)
+        from scipy.optimize import minimize
+        n = len(mu)
+        def port_var(w): return w @ Sigma @ w
+        def port_ret(w): return w @ mu
+        constraints = [
+            {"type": "eq", "fun": lambda w: np.sum(w) - 1},
+            {"type": "eq", "fun": lambda w: port_ret(w) - target_ret}
+        ]
+        bounds = tuple((0, 1) for _ in range(n))
+        w0 = np.ones(n) / n
+        res = minimize(
+            port_var, w0, bounds=bounds, constraints=constraints
+        )
+        weights = res.x if res.success else w0
+        port_mu = port_ret(weights)
+        port_vol = np.sqrt(port_var(weights))
+        sharpe = (port_mu - rf) / port_vol if port_vol > 0 else 0
+
+        # Prepare weights dictionary for explanation
+        weights_dict = dict(
+            zip(returns.columns, map(lambda x: round(x, 3), weights))
+        )
+
+        return AnalysisResult(
+            method_id=self.method_id,
+            method_name=self.method_name,
+            category=self.category,
+            symbol=symbol.upper(),
+            result={
+                "weights": dict(zip(returns.columns, map(float, weights))),
+                "expected_return": float(port_mu),
+                "volatility": float(port_vol),
+                "sharpe_ratio": float(sharpe),
+                "target_return": target_ret,
+                "risk_free_rate": rf,
+            },
+            signal=(
+                "buy" if sharpe > 1 else
+                "neutral" if sharpe > 0 else
+                "sell"
+            ),
+            confidence=min(
+                0.95,
+                0.5 + abs(sharpe) * 0.2
+            ),
+            explanation=(
+                f"Markowitz optimization yields weights {weights_dict} "
+                f"with expected annual return {annualize_ret(port_mu):.2%} "
+                f"and volatility {annualize_vol(port_vol):.2%}."
+            ),
+            chart_data={
+                "type": "pie",
+                "labels": list(returns.columns),
+                "data": list(map(float, weights)),
+            },
+        )
