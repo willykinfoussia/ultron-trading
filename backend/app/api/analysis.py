@@ -82,8 +82,86 @@ async def run_analysis(
         raise HTTPException(
             status_code=404,
             detail=f"Unknown method '{method_id}'. Available: {[m['method_id'] for m in registry.list_all()]}",
+        )
 
-<tool_call>
-<function=terminal>
-<parameter=command>
-cd /home/opc/ultron-trading/backend && wc -l app/api/analysis.py
+    params = {}
+    for key, value in {
+        "period": period, "fast": fast, "slow": slow, "signal": signal,
+        "std_dev": std_dev, "period_data": period_data,
+        "lookback_days": lookback_days, "lookback_hours": lookback_hours,
+        "horizon_days": horizon_days,
+    }.items():
+        if value is not None:
+            params[key] = value
+
+    try:
+        result = await registry.run(method_id, sym, **params)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error(f"Error running {method_id} for {sym}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+
+@router.post("/{symbol}/run-all")
+async def run_all_category(symbol: str, body: RunAllRequest):
+    """Run all analysis methods for a given category, or all categories if none specified."""
+    sym = symbol.upper()
+    category = body.category
+
+    try:
+        if category is None:
+            # Run all methods across all categories
+            results = await registry.run_all(sym, **body.params)
+            return {
+                "symbol": sym,
+                "category": "all",
+                "results": [r.model_dump() for r in results],
+                "count": len(results),
+            }
+        else:
+            # Run all methods for the specified category
+            available_categories = registry.get_categories()
+            if category not in available_categories:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Unknown category '{category}'. Available: {list(available_categories.keys())}",
+                )
+
+            results = await registry.run_category(category, sym, **body.params)
+            return {
+                "symbol": sym,
+                "category": category,
+                "results": [r.model_dump() for r in results],
+                "count": len(results),
+            }
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error running category {category} for {sym}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+
+@router.get("/{symbol}/all")
+async def run_all_analysis(symbol: str):
+    """Run all analysis methods across all categories. Returns flat list of results."""
+    sym = symbol.upper()
+    try:
+        results = await registry.run_all(sym)
+        return [r.model_dump() for r in results]
+    except Exception as e:
+        logger.error(f"Error running all analysis for {sym}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+
+@router.get("/{symbol}/summary")
+async def run_summary(symbol: str):
+    """Run all analysis methods across all categories and return a flat list."""
+    sym = symbol.upper()
+    try:
+        results = await registry.run_all(sym)
+        return [r.model_dump() for r in results]
+    except Exception as e:
+        logger.error(f"Error running summary for {sym}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
