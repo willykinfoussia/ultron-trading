@@ -553,6 +553,332 @@ ANALYSIS_METADATA: dict[str, dict] = {
                 "scenario": "Classification 'latérale' après une longue hausse",
                 "outcome": "La tendance haussière s'essouffle — prendre des profits",
             },
-        ],
-    },
-}
+            ],
+            },
+            "markowitz": {
+            "how_it_works": (
+             "La méthode de Markowitz (optimisation moyenne-variance) calcule les poids optimaux d'un portefeuille "
+             "pour maximiser le rendement attendu pour un niveau de risque donné, ou minimiser le risque pour un "
+             "rendement attendu donné. Elle utilise la matrice de covariance des rendements historiques et le "
+             "rendement attendu de chaque actif pour trouver la frontière efficace."
+            ),
+            "pros": [
+             "Formalise mathématiquement le compromis rendement/risque",
+             "Identifie les portefeuilles efficaces (frontière efficiente)",
+             "Permet la diversification optimale basée sur les corrélations",
+             "Fondement théorique de la théorie moderne du portefeuille"
+            ],
+            "cons": [
+             "Sensible aux erreurs d'estimation des entrées (rendements, covariance)",
+             "Suppose que les rendements suivent une distribution normale",
+             "Peut produire des portefeuilles concentrés en cas d'estimations biaisées",
+             "Ne tient pas compte des coûts de transaction ni des contraintes de liquidité"
+            ],
+            "interpretation_guide": {
+             "buy_signal": "Ratio de Sharpe > 1 = portefeuille efficace avec bon rendement ajusté au risque",
+             "sell_signal": "Ratio de Sharpe < 0 = performance inférieure au taux sans risque",
+             "hold_signal": "Ratio de Sharpe entre 0 et 1 = efficacité modérée à améliorer",
+             "confidence_meaning": "Basée sur la stabilité de la frontière efficace et la qualité des données d'entrée"
+            },
+            "example_scenarios": [
+             {
+                 "scenario": "Deux actifs avec rendement annuel de 8% et 12%, volatilité de 15% et 25%, corrélation de 0.3",
+                 "outcome": "Portefeuille optimal avec ~60% dans l'actif le plus risqué pour maximiser le ratio de Sharpe"
+             },
+             {
+                 "scenario": "Actifs fortement corrélés (corrélation > 0.8) avec rendements similaires",
+                 "outcome": "Diversification limitée bénéfice - les poids se rapprochent de la répartition égale"
+             }
+            ]
+            },
+            "capm": {
+            "how_it_works": (
+             "Le Modèle d'Évaluation des Actifs Financiers (CAPM) estime le rendement attendu d'un actif en fonction "
+             "de son risque systématique (beta) par rapport au marché. La formule est : E(R) = Rf + β × (Rm - Rf), "
+             "où Rf est le taux sans risque, β mesure la sensibilité aux mouvements du marché, et (Rm - Rf) est la "
+             "prime de risque du marché."
+            ),
+            "pros": [
+             "Fournit une théorie économique du risque et du rendement",
+             "Sépare le risque systématique (non diversifiable) du risque spécifique",
+             "Utilisé comme référence pour l'évaluation de la performance des gestionnaires",
+             "Simple à mettre en œuvre avec des données publiques"
+            ],
+            "cons": [
+             "Suppose des marchés efficaces et des investisseurs rationnels",
+             "Le beta historique peut ne pas prédire le beta futur",
+             "Ne prend pas en compte d'autres facteurs de risque (taille, valeur, momentum)",
+             "Le taux sans risque et la prime de risque du marché sont difficiles à estimer précisément"
+            ],
+            "interpretation_guide": {
+             "buy_signal": "Alpha positif et significatif = surperformance après ajustement pour le risque de marché",
+             "sell_signal": "Alpha négatif et significatif = sous-performance après ajustement pour le risque de marché",
+             "hold_signal": "Alpha non significatif = performance conforme au CAPM",
+             "confidence_meaning": "Basée sur la significativité statistique de l'alpha et la qualité de l'ajustement du modèle"
+            },
+            "example_scenarios": [
+             {
+                 "scenario": "Action avec beta de 1.2, taux sans risque de 2%, rendement du marché de 8%",
+                 "outcome": "Rendement attendu selon CAPM = 2% + 1.2 × (8% - 2%) = 9.2%"
+             },
+             {
+                 "scenario": "Action avec rendement réel de 12% et rendement attendu CAPM de 9%",
+                 "outcome": "Alpha positif de 3% = surperformance après ajustement pour le risque de marché"
+             }
+            ]
+            },
+            "binomial_tree": {
+            "how_it_works": (
+             "Le modèle binomial évalue les options en modélisant l'évolution du prix de l'actif sous-jacent sur un "
+             "arbre binomial où à chaque période, le prix peut monter ou descendre de facteurs déterminés. La valeur "
+             "de l'obtention est calculée par induction rétrograde depuis l'expiration jusqu'à aujourd'hui, en "
+             "prenant en compte la possibilité d'exercice anticipé pour les options américaines."
+            ),
+            "pros": [
+             "Flexible - peut modéliser diverses structures de paiement et conditions d'exercice",
+             "Intuitif et facile à comprendre conceptuellement",
+             "Peut gérer les options américaines (exercice anticipé)",
+             "Converge vers le modèle de Black-Scholes lorsque le nombre de pas augmente"
+            ],
+            "cons": [
+             "Computationnellement intensif pour un grand nombre de pas",
+             "Less précis que les méthodes de diffusion pour certaines structures de paiement",
+             "Require des estimations de volatilité et de taux d'intérêt sans risque",
+             "La précision dépend du nombre de pas dans l'arbre"
+            ],
+            "interpretation_guide": {
+             "buy_signal": "Prix de l'option théorique < prix de marché = option potentiellement sous-évaluée",
+             "sell_signal": "Prix de l'option théorique > prix de marché = option potentiellement surévaluée",
+             "hold_signal": "Prix théorique ≈ prix de marché = option correctement évaluée",
+             "confidence_meaning": "Augmente avec le nombre de pas dans l'arbre (plus de pas = plus de précision)"
+            },
+            "example_scenarios": [
+             {
+                 "scenario": "Option d'achat européenne: S=100, K=100, T=1 an, r=5%, σ=20%, 100 pas",
+                 "outcome": "Prix de l'option ≈ 7.96 (proche de la valeur de Black-Scholes de 7.96)"
+             },
+             {
+                 "scenario": "Option de put américaine identique, permettant l'exercice anticipé",
+                 "outcome": "Prix légèrement supérieur à l'option européenne en raison de la prime d'exercice anticipé"
+             }
+            ]
+            },
+            "vasicek": {
+            "how_it_works": (
+             "Le modèle de Vasicek décrit l'évolution des taux d'intérêt par un processus de retour à la moyenne "
+             "Ornstein-Uhlenbeck : dr = a(b - r)dt + σ dW, où 'a' est la vitesse de retour à la moyenne, 'b' est "
+             "le niveau moyen à long terme, 'σ' est la volatilité, et dW est un mouvement brownien. Il permet de "
+             "calculer le prix des obligations zéro-coupon sous la formule fermée."
+            ),
+            "pros": [
+             "Modèle analytiquement tractable avec formule fermée pour les prix des obligations",
+             "Capture le retour à la moyenne des taux d'intérêt",
+             "Peut générer des simulations de trajectoires de taux d'intérêt",
+             "Foundation for more advanced interest rate models"
+            ],
+            "cons": [
+             "Permet des taux d'intérêt négatifs (peu réaliste dans certains régimes)",
+             "Volatilité constante indépendamment du niveau des taux",
+             "La courbe des termes générée peut être trop plate ou trop inclinée",
+             "Supporte une dynamique linéaire qui peut ne pas capturer toutes les complexités du marché"
+            ],
+            "interpretation_guide": {
+             "buy_signal": "Prix de l'obligation théorique > prix de marché = obligation potentiellement sous-évaluée",
+             "sell_signal": "Prix de l'obligation théorique < prix de marché = obligation potentiellement surévaluée",
+             "hold_signal": "Prix théorique ≈ prix de marché = obligation correctement évaluée",
+             "confidence_meaning": "Basée sur la stabilité des paramètres estimés et l'ajustement à la courbe des termes observée"
+            },
+            "example_scenarios": [
+             {
+                 "scenario": "Paramètres: a=0.1, b=0.05, σ=0.01, r0=0.03, T=10 ans",
+                 "outcome": "Prix de l'obligation zéro-coupon ≈ 0.48 (48% de la valeur nominale)"
+             },
+             {
+                 "scenario": "Augmentation de la vitesse de retour à la moyenne 'a'",
+                 "outcome": "Les taux reviennent plus rapidement à leur moyenne à long terme, réduisant la volatilité à long terme"
+             }
+            ]
+            },
+            "hull_white": {
+            "how_it_works": (
+             "Le modèle de Hull-White étend le modèle de Vasicek en rendant les paramètres dépendants du temps, "
+             "spécifiquement le niveau moyen à long terme 'b(t)', permettant une adaptation parfaite à la courbe "
+             "des termes initiale. L'équation différentielle est : dr = [θ(t) - a·r]dt + σ dW, où θ(t) est choisi "
+             "pour ajuster exactement la courbe des termes zéro-coupon observée."
+            ),
+            "pros": [
+             "S'ajuste exactement à la courbe des termes initiale (calibration parfaite)",
+             "Conserve la traction analytique du modèle de Vasicek pour de nombreux calculs",
+             "Permet une volatilité constante tout en s'ajustant à la structure des termes",
+             "Large utilisation dans la pratique pour la tarification des dérivés de taux d'intérêt"
+            ],
+            "cons": [
+             "Suppose toujours une volatilité constante (pas de sourire de volatilité des taux)",
+             "Les paramètres dépendants du temps rendent l'interprétation économique moins intuitive",
+             "Peut nécessiter une recalibration fréquente lorsque la courbe des termes évolue",
+             "Comme Vasicek, permet des taux négatifs"
+            ],
+            "interpretation_guide": {
+             "buy_signal": "Prix de l'obligation théorique > prix de marché = obligation potentiellement sous-évaluée",
+             "sell_signal": "Prix de l'obligation théorique < prix de marché = obligation potentiellement surévaluée",
+             "hold_signal": "Prix théorique ≈ prix de marché = obligation correctement évaluée",
+             "confidence_meaning": "Basée sur la qualité de l'ajustement à la courbe des termes initiale et la stabilité des paramètres"
+            },
+            "example_scenarios": [
+             {
+                 "scenario": "Calibrage à une courbe des termes horizontale à 5%",
+                 "outcome": "Le modèle reproduira exactement les prix zéro-coupon de 5% pour toutes les échéances"
+             },
+             {
+                 "scenario": "Paramètres: a=0.1, σ=0.01, courbe des termes initiale: 3% à 1an, 5% à 10ans",
+                 "outcome": "θ(t) sera ajusté pour produire exactement ces rendements à zéro-coupon"
+             }
+            ]
+            },
+            "heston": {
+            "how_it_works": (
+             "Le modèle de Heston modélise à la fois le prix de l'actif et sa volatilité comme des processus "
+             "stochastiques corrélés. La volatilité suit un processus de Cox-Ingersoll-Ross (CIR) : dv = κ(θ - v)dt + "
+             "σ√v dWv, tandis que le prix de l'actif suit : dS = rS dt + √v S dWs, avec une corrélation ρ entre "
+             "les deux mouvements browniens. Les prix d'options sont obtenus par intégration numérique de la "
+             "fonction caractéristique."
+            ),
+            "pros": [
+             "Capture le sourire/la biseau de volatilité observé sur les marchés d'options",
+             "Modélise la volatilité comme un processus aléatoire moyen-révérent (plus réaliste)",
+             "Peut produire des prix d'options qui correspondent aux données de marché",
+             "Framework largement utilisé dans l'industrie financière pour la tarification des options"
+            ],
+            "cons": [
+             "Complexité computationnelle debido à l'intégration numérique nécessaire",
+             "Calibration des paramètres peut être difficile et non unique",
+             "Suppose des dynamics de volatilité spécifiques qui peuvent ne pas capturer tous les comportements de marché",
+             "Requiert des paramètres supplémentaires par rapport à Black-Scholes"
+            ],
+            "interpretation_guide": {
+             "buy_signal": "Prix de l'option théorique < prix de marché = option potentiellement sous-évaluée",
+             "sell_signal": "Prix de l'option théorique > prix de marché = option potentiellement surévaluée",
+             "hold_signal": "Prix théorique ≈ prix de marché = option correctement évaluée",
+             "confidence_meaning": "Basée sur la qualité de la calibration aux prix d'options de marché et la stabilité des paramètres"
+            },
+            "example_scenarios": [
+             {
+                 "scenario": "Paramètres typiques: v0=0.04, κ=2.0, θ=0.04, σ=0.3, ρ=-0.7, r=0.05, T=1, S0=K=100",
+                 "outcome": "Prix de l'option d'appel européen ≈ 7.90 (varie selon l'implémentation de l'intégration)"
+             },
+             {
+                 "scenario": "Augmentation de la volatilité de la volatilité 'σ'",
+                 "outcome": "Augmente généralement le prix des options hors de la monnaie et diminue celui des options dans la monnaie (augmente le sourire)"
+             }
+            ]
+            },
+            "merton_credit": {
+            "how_it_works": (
+             "Le modèle de crédit de Merton traite la valeur des capitaux propres d'une entreprise comme une option "
+             "d'achat sur la valeur de ses actifs, avec un prix d'exercice égal à la valeur nominale de sa dette. "
+             "Le défaut se produit lorsque la valeur des actifs tombe en dessous de la valeur de la dette à l'échéance. "
+             "Le modèle utilise la formule de Black-Scholes pour estimer la probabilité de défaut et la valeur de la dette."
+            ),
+            "pros": [
+             "Fournit un fondement théorique basé sur les options pour le risque de crédit",
+             "Lie le risque de crédit à la valeur des actifs et à la volatilité de l'entreprise",
+             "Permet de calculer à la fois la probabilité de défaut et la perte en cas de défaut",
+             "Intuitivement compréhensible : les capitaux propres sont une option d'achat sur les actifs de l'entreprise"
+            ],
+            "cons": [
+             "Suppose que la valeur des actifs suit un processus brownien géométrique (peut ne pas être réaliste)",
+             "Le défaut ne peut se produire qu'à l'échéance (pas de défaut intermédiaire)",
+             "Require des estimations de la valeur des actifs et de leur volatilité (non directement observables)",
+             "Ne tient pas compte de la structure de la dette ni des évents de défaut complexes"
+            ],
+            "interpretation_guide": {
+             "buy_signal": "Probabilité de défaut faible (<5%) et distance au défaut élevée (>3) = qualité de crédit élevée",
+             "sell_signal": "Probabilité de défaut élevée (>20%) ou distance au défaut faible (<1) = risque de crédit significatif",
+             "hold_signal": "Probabilité de défaut modérée (5-20%) = risque de crédit modéré à surveiller",
+             "confidence_meaning": "Basée sur la qualité des estimations de la valeur des actifs et de leur volatilité"
+            },
+            "example_scenarios": [
+             {
+                 "scenario": "Entreprise: V=100 (actifs), D=50 (dette), σ=0.2 (volatilité des actifs), T=1 an, r=0.03",
+                 "outcome": "Distance au défaut ≈ 3.09, Probabilité de défaut ≈ 0.10%"
+             },
+             {
+                 "scenario": "Même entreprise mais avec volatilité des actifs augmentée à σ=0.4",
+                 "outcome": "Distance au défaut ≈ 1.55, Probabilité de défaut ≈ 6.06% (augmentation significative du risque)"
+             }
+            ]
+            },
+            "var": {
+            "how_it_works": (
+             "La Valeur à Risque (VaR) estime la perte maximale potentielle d'un portefeuille sur un horizon de "
+             "temps donné et pour un niveau de confiance donné. Elle peut être calculée par trois méthodes principales : "
+             "(1) historique (simulation), (2) paramétrique (variance-covariance), et (3) Monte Carlo. Elle répond à la "
+             "question : 'Avec un niveau de confiance X%, quelle est la pire perte que nous pouvons attendre ?'"
+            ),
+            "pros": [
+             "Mesure agrégée et synthétique du risque de portefeuille",
+             "Facile à communiquer aux décideurs et aux régulateurs",
+             "Permet la comparaison du risque entre différents portefeuilles ou stratégies",
+             "Standard de l'industrie pour la mesure et le reporting du risque"
+            ],
+            "cons": [
+             "Ne fournit pas d'information sur la magnitude des pertes au-delà du seuil de VaR (risque de queue)",
+             "Peut donner un faux sentiment de sécurité si la distribution des pertes a des queues épaisses",
+             "Méthodologiquement dépendante du choix de la méthode et des paramètres",
+             "Pas sous-additive dans sa forme de base (la VaR d'un portefeuille combiné peut être supérieure à la somme des VaR individuelles)"
+            ],
+            "interpretation_guide": {
+             "buy_signal": "VaR faible en pourcentage de la valeur du portefeuille (<2% journalière) = risque relatif faible",
+             "sell_signal": "VaR élevée en pourcentage de la valeur du portefeuille (>5% journalière) = risque relatif élevé",
+             "hold_signal": "VaR modérée (2-5% journalière) = risque modéré nécessitant une surveillance",
+             "confidence_meaning": "Basée sur la stabilité de l'estimation dans le temps et l'adéquation de la méthode choisie"
+            },
+            "example_scenarios": [
+             {
+                 "scenario": "Portefeuille de 1 000 000 €, rendements journaliers historiques, horizon 1 jour, confiance 95%",
+                 "outcome": "VaR ≈ 20 000 € = perte maximale attendue de 2% sur un jour avec 95% de confiance"
+             },
+             {
+                 "scenario": "Même portefeuille mais avec horizon étendu à 10 jours",
+                 "outcome": "VaR ≈ 63 000 € (environ √10 fois la VaR journalière pour des rendements i.i.d.)"
+             }
+            ]
+            },
+            "monte_carlo": {
+            "how_it_works": (
+             "La simulation de Monte Carlo génère de nombreux chemins possibles futurs pour les variables "
+             "aléatoires (prix d'actifs, taux d'intérêt, volatilité, etc.) en utilisant des tirage aléatoires "
+             "à partir de distributions de probabilité spécifiées. Pour chaque chemin, le résultat financier est "
+             "calculé, et la distribution des résultats fournit une estimation du prix, du dérivé ou du portefeuille "
+             "en prenant la moyenne actualisée des paiements."
+            ),
+            "pros": [
+             "Extremement flexible - peut modéliser pratiquement tout produit financier dérivé",
+             "Peut gérer des caractéristiques complexes : dépendance au chemin, barrières, options asiatiques, etc.",
+             "Fournit non seulement un prix mais aussi une distribution complète des résultats possibles",
+             "Bien établi et largement utilisé dans l'industrie financière pour la valorisation des dérivés complexes"
+            ],
+            "cons": [
+             "Intensif en calcul - nécessite de nombreux tirages pour une précision adéquate",
+             "Erreur d'estimation qui diminue lentement avec la racine carrée du nombre de simulations",
+             "Require la spécification correcte des processus stochastiques sous-jacents",
+             "La qualité des résultats dépend fortement du générateur de nombres aléatoires et de la variance des techniques utilisées"
+            ],
+            "interpretation_guide": {
+             "buy_signal": "Prix théorique < prix de marché = instrument potentiellement sous-évalué",
+             "sell_signal": "Prix théorique > prix de marché = instrument potentiellement surévalué",
+             "hold_signal": "Prix théorique ≈ prix de marché = instrument correctement évalué",
+             "confidence_meaning": "Augmente avec le nombre de chemins de simulation et diminue avec l'erreur standard du prix estimé"
+            },
+            "example_scenarios": [
+             {
+                 "scenario": "Option d'achat européenne: S0=100, K=100, T=1, r=0.05, σ=0.2, 100 000 chemins, GBM",
+                 "outcome": "Prix ≈ 7.96 ± 0.02 (intervalle de confiance à 95%)"
+             },
+             {
+                 "scenario": "Même option mais avec modèle de volatilité stochastique Heston",
+                 "outcome": "Prix dépend des paramètres Heston, mais converge vers la vraie valeur avec suffisamment de chemins"
+             }
+            ]
+            }
+            }
