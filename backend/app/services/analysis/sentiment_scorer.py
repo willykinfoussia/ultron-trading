@@ -19,62 +19,24 @@ HERMES_API_URL = os.environ.get("HERMES_API_URL", "http://localhost:9000/api/her
 HERMES_MODEL = os.environ.get("SENTIMENT_MODEL", None)  # None = default model
 
 # Sentiment analysis system prompt
-SENTIMENT_SYSTEM_PROMPT = """You are a financial sentiment analyst.
-Analyze the provided news articles about a stock and determine the overall market sentiment.
+SENTIMENT_SYSTEM_PROMPT = """You are a financial sentiment analyst. Analyze news about a stock and output JSON only.
 
-Score each of the following criteria on a scale from -1.0 (extremely negative) to +1.0 (extremely positive), with 0.0 being neutral:
+Score criteria (-1.0 to +1.0, 0=neutral):
+1. fundamental_impact: revenue/earnings/margins impact
+2. competitive_position: vs rivals
+3. growth_prospects: future growth expectations
+4. risk_profile: regulation/litigation/debt/geopolitical risk
+5. management_quality: management decisions
+6. market_sentiment: emotional tone (fear/optimism)
+7. headline_sentiment: title-only sentiment
+8. momentum_signal: investor interest trend
 
-1. **fundamental_impact**: Does the news suggest improvement or deterioration of the company's fundamentals (revenue, earnings, margins, market share)?
-2. **competitive_position**: Does the news strengthen or weaken the company's competitive position vs rivals?
-3. **growth_prospects**: Does the news indicate upward or downward revision of future growth expectations?
-4. **risk_profile**: Does the news increase or decrease the investment risk (regulation, litigation, geopolitical, debt)?
-5. **management_quality**: Does the news reflect positively or negatively on management decisions and execution?
-6. **market_sentiment**: What is the emotional tone of the coverage (fear, optimism, uncertainty, enthusiasm)?
+Also provide: conviction (0-1), key_themes (3-5 topics), bull_case (1 sentence), bear_case (1 sentence), llm_explanation (2-3 sentences explaining overall score with criteria/article refs).
 
-Also provide:
-- **headline_sentiment**: Average sentiment of the article titles alone (-1.0 to +1.0)
-- **momentum_signal**: Whether this news flow suggests increasing or decreasing investor interest (scale -1.0 to +1.0)
-- **conviction**: How confident you are in this assessment (0.0 to 1.0), considering the quantity and quality of news
-- **key_themes**: List of 3-5 recurring themes/topics in the news
-- **bull_case**: One sentence summarizing the bullish argument from the news
-- **bear_case**: One sentence summarizing the bearish argument from the news
-- **llm_explanation**: A 2-3 sentence natural language explanation of WHY the overall_sentiment score was assigned, citing specific criteria and articles. Example: "The moderately positive score (+0.35) reflects a strong earnings beat and raised guidance (fundamental_impact: +0.6), partially offset by margin pressure warnings (risk_profile: -0.3). Management's confident tone on AI roadmap supports the bullish bias."
+JSON schema:
+{"scores": {"fundamental_impact": float, "competitive_position": float, "growth_prospects": float, "risk_profile": float, "management_quality": float, "market_sentiment": float, "headline_sentiment": float, "momentum_signal": float}, "overall_sentiment": float, "conviction": float, "key_themes": [string], "bull_case": string, "bear_case": string, "article_count": int, "source": "llm", "llm_explanation": string}
 
-Respond STRICTLY in JSON format with no additional text. Schema:
-{
-  "scores": {
-    "fundamental_impact": float (-1.0 to 1.0),
-    "competitive_position": float (-1.0 to 1.0),
-    "growth_prospects": float (-1.0 to 1.0),
-    "risk_profile": float (-1.0 to 1.0),
-    "management_quality": float (-1.0 to 1.0),
-    "market_sentiment": float (-1.0 to 1.0),
-    "headline_sentiment": float (-1.0 to 1.0),
-    "momentum_signal": float (-1.0 to 1.0)
-  },
-  "overall_sentiment": float (-1.0 to 1.0),
-  "conviction": float (0.0 to 1.0),
-  "key_themes": [string],
-  "bull_case": string,
-  "bear_case": string,
-  "article_count": int,
-  "source": "llm",
-  "llm_explanation": string
-}
-
-The overall_sentiment should be a weighted average of the individual scores:
-overall = (
-    fundamental_impact * 0.20 +
-    competitive_position * 0.15 +
-    growth_prospects * 0.20 +
-    (-risk_profile) * 0.15 +
-    management_quality * 0.10 +
-    market_sentiment * 0.10 +
-    headline_sentiment * 0.10
-)
-
-The momentum_signal is separate and measures the TREND of sentiment (improving vs deteriorating).
-"""
+overall = fundamental*0.20 + competitive*0.15 + growth*0.20 - risk*0.15 + mgmt*0.10 + market*0.10 + headline*0.10"""
 
 SENTIMENT_USER_PROMPT_TEMPLATE = """News articles about {symbol} from the last {days} days:
 
