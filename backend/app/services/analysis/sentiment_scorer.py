@@ -223,7 +223,7 @@ async def analyze_sentiment(
             result = await _llm_sentiment(symbol, articles, days)
             return result
         except Exception as e:
-            logger.warning(f"LLM sentiment failed for {symbol}: {e}. Falling back to keyword analysis.")
+            logger.warning(f"LLM sentiment failed for {symbol}: {type(e).__name__}: {e}. Falling back to keyword analysis.")
     
     # Step 3: Fallback to keyword analysis
     return _keyword_sentiment(articles)
@@ -252,13 +252,14 @@ async def _llm_sentiment(symbol: str, articles: List[Dict[str, Any]], days: int)
     # Remove None values
     payload = {k: v for k, v in payload.items() if v is not None}
 
-    async with httpx.AsyncClient(timeout=30.0) as client:
+    async with httpx.AsyncClient(timeout=60.0) as client:
         response = await client.post(HERMES_API_URL, json=payload)
         response.raise_for_status()
         data = response.json()
 
     # Parse LLM response
     content = data["choices"][0]["message"]["content"]
+    logger.debug(f"LLM raw response for {symbol}: {content[:200]}...")
     
     # Strip markdown code blocks if present (```json ... ```)
     content = content.strip()

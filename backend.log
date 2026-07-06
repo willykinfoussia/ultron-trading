@@ -17218,3 +17218,43 @@ ModuleNotFoundError: No module named 'scipy'
 2026-07-06 09:41:03 | INFO     | ultron-trading.market | Fetching market indices
 2026-07-06 09:41:03 | INFO     | ultron-trading.market | Indices fetched: 11 results
 2026-07-06 09:41:03 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (197.6ms)
+2026-07-06 09:42:03 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-07-06 09:42:03 | INFO     | ultron-trading.market | Fetching market indices
+2026-07-06 09:42:03 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-07-06 09:42:03 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (206.0ms)
+2026-07-06 09:42:48 | INFO     | ultron-trading | → GET /api/analysis/AAPL/run/news_sentiment from 127.0.0.1
+2026-07-06 09:42:48 | INFO     | ultron-trading.analysis | Running news_sentiment for AAPL with params={}
+2026-07-06 09:42:49 | INFO     | ultron-trading.analysis.news | Fetched 10 news articles for AAPL
+2026-07-06 09:43:03 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-07-06 09:43:03 | INFO     | ultron-trading.market | Fetching market indices
+2026-07-06 09:43:03 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-07-06 09:43:03 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (244.1ms)
+2026-07-06 09:43:19 | WARNING  | ultron-trading.analysis.sentiment_scorer | LLM sentiment failed for AAPL: . Falling back to keyword analysis.
+2026-07-06 09:43:19 | INFO     | ultron-trading | ← GET /api/analysis/AAPL/run/news_sentiment → 200 (30620.2ms)
+2026-07-06 09:43:32 | INFO     | ultron-trading | → GET /api/analysis/AAPL/run/news_sentiment from 127.0.0.1
+2026-07-06 09:43:32 | INFO     | ultron-trading.analysis | Running news_sentiment for AAPL with params={}
+2026-07-06 09:43:32 | INFO     | ultron-trading.analysis.news | Fetched 10 news articles for AAPL
+2026-07-06 09:44:02 | WARNING  | ultron-trading.analysis.sentiment_scorer | LLM sentiment failed for AAPL: . Falling back to keyword analysis.
+2026-07-06 09:44:02 | INFO     | ultron-trading | ← GET /api/analysis/AAPL/run/news_sentiment → 200 (30114.1ms)
+2026-07-06 09:44:03 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-07-06 09:44:03 | INFO     | ultron-trading.market | Fetching market indices
+2026-07-06 09:44:03 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-07-06 09:44:03 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (188.9ms)
+2026-07-06 09:45:02 | INFO     | ultron-trading | → GET /api/analysis/ from 127.0.0.1
+2026-07-06 09:45:02 | INFO     | ultron-trading | ← GET /api/analysis/ → 200 (1.5ms)
+2026-07-06 09:45:03 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-07-06 09:45:03 | INFO     | ultron-trading.market | Fetching market indices
+2026-07-06 09:45:03 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-07-06 09:45:03 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (196.6ms)
+2026-07-06 09:46:03 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-07-06 09:46:03 | INFO     | ultron-trading.market | Fetching market indices
+2026-07-06 09:46:03 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-07-06 09:46:03 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (202.7ms)
+2026-07-06 09:47:03 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-07-06 09:47:03 | INFO     | ultron-trading.market | Fetching market indices
+2026-07-06 09:47:04 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-07-06 09:47:04 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (328.6ms)
+2026-07-06 09:48:03 | INFO     | ultron-trading | → GET /api/market/indices from 185.249.44.4
+2026-07-06 09:48:03 | INFO     | ultron-trading.market | Fetching market indices
+2026-07-06 09:48:04 | INFO     | ultron-trading.market | Indices fetched: 11 results
+2026-07-06 09:48:04 | INFO     | ultron-trading | ← GET /api/market/indices → 200 (289.3ms)
