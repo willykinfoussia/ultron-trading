@@ -83,10 +83,11 @@ class NewsSentimentMethod(AnalysisMethod):
                 "source": sentiment.get("source", "unknown"),
                 "conviction": round(conviction, 3),
                 "lookback_days": lookback_days,
+                "llm_explanation": sentiment.get("llm_explanation", ""),
             },
             signal=signal,
             confidence=round(confidence, 3),
-            explanation=self._build_explanation(sentiment, symbol),
+            explanation=sentiment.get("llm_explanation") or self._build_explanation(sentiment, symbol),
             chart_data={
                 "type": "sentiment",
                 "sentiment_score": overall,

@@ -342,25 +342,31 @@ ANALYSIS_METADATA: dict[str, dict] = {
             "L'analyse de sentiment des news évalue le ton des articles de presse récents "
             "concernant l'entreprise. Un sentiment positif indique une couverture médiatique "
             "favorable, tandis qu'un sentiment négatif peut signaler des problèmes. "
-            "Le score est basé sur la fréquence des mots positifs vs négatifs dans les titres et résumés."
+            "Le score est basé sur 8 critères financiers (impact fondamental, position concurrentielle, "
+            "perspectives de croissance, profil de risque, qualité de gestion, sentiment de marché, "
+            "sentiment des titres, signal de momentum) pondérés et agrégés via un LLM. "
+            "Le LLM fournit aussi une explication textuelle (llm_explanation) justifiant le score global."
         ),
         "pros": [
             "Capture l'humeur du marché en temps réel",
             "Peut anticiper les mouvements de prix basés sur l'actualité",
             "Utile pour détecter les changements de narrative",
             "Complète l'analyse technique avec une dimension qualitative",
+            "Explication LLM détaillée justifiant le score (critères + articles)"
         ],
         "cons": [
             "Le sentiment peut être retardé par rapport au prix",
             "Les titres sarcastiques ou ambigus sont mal interprétés",
             "Ne distingue pas les nouvelles importantes des anecdotes",
             "Peut être manipulé par des relations publiques agressives",
+            "Dépend de la disponibilité et qualité de l'API LLM (fallback mots-clés)"
         ],
         "interpretation_guide": {
             "buy_signal": "Sentiment positif dominant (>60%) = couverture favorable",
             "sell_signal": "Sentiment négatif dominant (<40%) = couverture défavorable",
             "hold_signal": "Sentiment neutre (40-60%) = pas de tendance claire",
             "confidence_meaning": "Basée sur le nombre d'articles analysés et la cohérence du sentiment",
+            "llm_explanation": "Explication textuelle du LLM justifiant le score overall_sentiment (2-3 phrases citant les critères clés et articles)"
         },
         "example_scenarios": [
             {

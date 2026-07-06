@@ -19,7 +19,7 @@ HERMES_API_URL = os.environ.get("HERMES_API_URL", "http://localhost:9000/api/her
 HERMES_MODEL = os.environ.get("SENTIMENT_MODEL", None)  # None = default model
 
 # Sentiment analysis system prompt
-SENTIMENT_SYSTEM_PROMPT = """You are a financial sentiment analyst. 
+SENTIMENT_SYSTEM_PROMPT = """You are a financial sentiment analyst.
 Analyze the provided news articles about a stock and determine the overall market sentiment.
 
 Score each of the following criteria on a scale from -1.0 (extremely negative) to +1.0 (extremely positive), with 0.0 being neutral:
@@ -38,6 +38,7 @@ Also provide:
 - **key_themes**: List of 3-5 recurring themes/topics in the news
 - **bull_case**: One sentence summarizing the bullish argument from the news
 - **bear_case**: One sentence summarizing the bearish argument from the news
+- **llm_explanation**: A 2-3 sentence natural language explanation of WHY the overall_sentiment score was assigned, citing specific criteria and articles. Example: "The moderately positive score (+0.35) reflects a strong earnings beat and raised guidance (fundamental_impact: +0.6), partially offset by margin pressure warnings (risk_profile: -0.3). Management's confident tone on AI roadmap supports the bullish bias."
 
 Respond STRICTLY in JSON format with no additional text. Schema:
 {
@@ -57,7 +58,8 @@ Respond STRICTLY in JSON format with no additional text. Schema:
   "bull_case": string,
   "bear_case": string,
   "article_count": int,
-  "source": "llm"
+  "source": "llm",
+  "llm_explanation": string
 }
 
 The overall_sentiment should be a weighted average of the individual scores:
@@ -273,5 +275,12 @@ async def _llm_sentiment(symbol: str, articles: List[Dict[str, Any]], days: int)
     # Validate and enrich
     result["article_count"] = len(articles)
     result["source"] = "llm"
+    
+    # Ensure llm_explanation exists (fallback if LLM omits it)
+    if "llm_explanation" not in result or not result["llm_explanation"]:
+        overall = result.get("overall_sentiment", 0.0)
+        themes = result.get("key_themes", [])
+        themes_str = ", ".join(themes[:3]) if themes else "general news"
+        result["llm_explanation"] = f"Sentiment score ({overall:+.2f}) driven by {themes_str}. LLM explanation not provided."
     
     return result
