@@ -254,7 +254,7 @@ async def _llm_sentiment(symbol: str, articles: List[Dict[str, Any]], days: int)
     # Remove None values
     payload = {k: v for k, v in payload.items() if v is not None}
 
-    async with httpx.AsyncClient(timeout=45.0) as client:
+    async with httpx.AsyncClient(timeout=55.0) as client:
         response = await client.post(HERMES_API_URL, json=payload)
         response.raise_for_status()
         data = response.json()

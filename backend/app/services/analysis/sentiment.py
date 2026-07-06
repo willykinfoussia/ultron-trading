@@ -45,7 +45,7 @@ class NewsSentimentMethod(AnalysisMethod):
         from app.services.analysis.sentiment_scorer import analyze_sentiment
         
         lookback_days = int(params.get("lookback_days", 7))
-        max_articles = int(params.get("max_articles", 10))
+        max_articles = int(params.get("max_articles", 5))
 
         sentiment = await analyze_sentiment(
             symbol=symbol,
