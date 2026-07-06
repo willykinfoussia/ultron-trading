@@ -93,7 +93,9 @@ def _build_articles_block(articles: List[Dict[str, Any]]) -> str:
         lines.append(f"Publisher: {a.get('publisher', 'Unknown')}")
         lines.append(f"Title: {a['title']}")
         if a.get("summary"):
-            lines.append(f"Summary: {a['summary']}")
+            # Truncate summary to keep prompt small for faster LLM response
+            summary = a['summary'][:300]
+            lines.append(f"Summary: {summary}")
         lines.append("")
     return "\n".join(lines)
 
@@ -252,7 +254,7 @@ async def _llm_sentiment(symbol: str, articles: List[Dict[str, Any]], days: int)
     # Remove None values
     payload = {k: v for k, v in payload.items() if v is not None}
 
-    async with httpx.AsyncClient(timeout=60.0) as client:
+    async with httpx.AsyncClient(timeout=45.0) as client:
         response = await client.post(HERMES_API_URL, json=payload)
         response.raise_for_status()
         data = response.json()
