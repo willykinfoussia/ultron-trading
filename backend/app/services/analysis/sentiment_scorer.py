@@ -56,7 +56,7 @@ def _build_articles_block(articles: List[Dict[str, Any]]) -> str:
         lines.append(f"Title: {a['title']}")
         if a.get("summary"):
             # Truncate summary to keep prompt small for faster LLM response
-            summary = a['summary'][:300]
+            summary = a['summary'][:200]
             lines.append(f"Summary: {summary}")
         lines.append("")
     return "\n".join(lines)
