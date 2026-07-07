@@ -239,3 +239,12 @@ export interface ConsensusChartData {
   category_scores: { category: string; score: number }[]
   // Additional charts can be added here as needed
 }
+
+export interface MethodSummary {
+  method_id: string
+  method_name: string
+  category: string
+  signal: string
+  confidence: number
+  key_result: string
+}
