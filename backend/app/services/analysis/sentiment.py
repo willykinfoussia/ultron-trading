@@ -38,14 +38,14 @@ class NewsSentimentMethod(AnalysisMethod):
     def parameters(self) -> Dict[str, Dict[str, Any]]:
         return {
             "lookback_days": {"type": "int", "default": 7, "min": 1, "max": 30},
-            "max_articles": {"type": "int", "default": 3, "min": 3, "max": 25},
+            "max_articles": {"type": "int", "default": 10, "min": 3, "max": 25},
         }
 
     async def run(self, symbol: str, **params) -> AnalysisResult:
         from app.services.analysis.sentiment_scorer import analyze_sentiment
         
         lookback_days = int(params.get("lookback_days", 7))
-        max_articles = int(params.get("max_articles", 3))
+        max_articles = int(params.get("max_articles", 10))
 
         sentiment = await analyze_sentiment(
             symbol=symbol,
