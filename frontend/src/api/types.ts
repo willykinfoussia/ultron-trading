@@ -162,3 +162,80 @@ export interface AnalysisMethod {
     outcome: string
   }[]
 }
+
+// Consensus report types
+export interface ConsensusReport {
+  symbol: string
+  computed_at: string
+  overall: {
+    score: number
+    verdict: 'STRONG_BUY' | 'BUY' | 'HOLD' | 'SELL' | 'STRONG_SELL'
+    confidence: number
+    signal_distribution: { buy: number; sell: number; hold: number; neutral: number }
+  }
+  categories: CategoryConsensus[]
+  risk_metrics: RiskMetrics
+  key_metrics: KPI[]
+  insights: Insight[]
+  conflicts: Conflict[]
+  chart_data: ConsensusChartData
+  method_details: MethodDetail[]
+}
+
+export interface CategoryConsensus {
+  category: string
+  weight: number
+  score: number
+  confidence: number
+  signal_counts: { buy: number; sell: number; hold: number; neutral: number }
+  methods: MethodSummary[]
+}
+
+export interface RiskMetrics {
+  expected_return: number
+  volatility_estimate: number
+  sharpe_estimate: number
+  max_drawdown_estimate: number
+  var_95: number
+  risk_reward_ratio: number
+}
+
+export interface KPI {
+  label: string
+  value: string
+  trend?: 'up' | 'down' | 'neutral'
+  tooltip?: string
+}
+
+export interface Insight {
+  type: 'bullish' | 'bearish' | 'neutral' | 'risk' | 'opportunity'
+  title: string
+  description: string
+  confidence: number
+  supporting_methods: string[]
+}
+
+export interface Conflict {
+  type: 'divergence' | 'contradiction'
+  categories: string[]
+  description: string
+  severity: 'low' | 'medium' | 'high'
+}
+
+export interface MethodDetail {
+  method_id: string
+  method_name: string
+  category: string
+  signal: string
+  confidence: number
+  key_result: string
+  weight_in_consensus: number
+  chart_data_preview?: unknown
+}
+
+export interface ConsensusChartData {
+  signal_distribution: { buy: number; sell: number; hold: number; neutral: number }
+  method_confidences: number[]
+  category_scores: { category: string; score: number }[]
+  // Additional charts can be added here as needed
+}

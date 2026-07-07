@@ -7,6 +7,8 @@ import sys
 from pathlib import Path
 
 from app.api import stocks, charts, analysis, search, market
+from app.core.logging_config import setup_logging
+from app.core.middleware import CorrelationIdMiddleware
 
 # ── Read version from VERSION file ──────────────────────────────────────
 def _read_version() -> str:
@@ -19,14 +21,11 @@ def _read_version() -> str:
 VERSION = _read_version()
 
 # ── Logging configuration ──────────────────────────────────────────────
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)-8s | %(name)s | %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-    handlers=[
-        logging.StreamHandler(sys.stdout),
-        logging.FileHandler("/home/opc/ultron-trading/backend.log", mode="a"),
-    ],
+setup_logging(
+    log_level="INFO",
+    log_to_file=True,
+    log_file_path="/home/opc/ultron-trading/backend.log",
+    json_logs=False,
 )
 logger = logging.getLogger("ultron-trading")
 
@@ -37,6 +36,9 @@ app = FastAPI(
     version=VERSION,
 )
 
+# Add correlation ID middleware FIRST (so it's inner-most)
+app.add_middleware(CorrelationIdMiddleware, header_name="X-Request-ID")
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
@@ -46,21 +48,67 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Request/Response logging middleware ────────────────────────────────
+# ── Enhanced Request/Response logging middleware ────────────────────────
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
+    """Log incoming requests and outgoing responses with timing."""
+    # Get correlation ID from request state (set by CorrelationIdMiddleware)
+    correlation_id = getattr(request.state, "correlation_id", "unknown")
+    
     start = time.time()
     client = request.client.host if request.client else "unknown"
-    logger.info(f"→ {request.method} {request.url.path} from {client}")
+    method = request.method
+    path = request.url.path
+    query = str(request.url.query)
+    full_url = f"{path}?{query}" if query else path
+    
+    # Log request start
+    logger.info(
+        f"Request started",
+        extra={
+            "correlation_id": correlation_id,
+            "method": method,
+            "path": path,
+            "query": query,
+            "client_ip": client,
+            "user_agent": request.headers.get("user-agent", "unknown"),
+        }
+    )
 
     try:
         response = await call_next(request)
+        status_code = response.status_code
     except Exception as exc:
-        logger.exception(f"✖ Unhandled exception on {request.method} {request.url.path}: {exc}")
-        return JSONResponse(status_code=500, content={"detail": "Internal server error"})
+        # Log unhandled exceptions
+        logger.exception(
+            f"Unhandled exception during request processing",
+            extra={
+                "correlation_id": correlation_id,
+                "method": method,
+                "path": path,
+                "error": str(exc),
+                "error_type": type(exc).__name__,
+            }
+        )
+        # Re-raise to let FastAPI handle it (will return 500)
+        raise
 
-    elapsed = (time.time() - start) * 1000
-    logger.info(f"← {request.method} {request.url.path} → {response.status_code} ({elapsed:.1f}ms)")
+    # Calculate duration
+    elapsed_ms = (time.time() - start) * 1000
+
+    # Log response
+    logger.info(
+        f"Request completed",
+        extra={
+            "correlation_id": correlation_id,
+            "method": method,
+            "path": path,
+            "status_code": status_code,
+            "duration_ms": round(elapsed_ms, 2),
+            "client_ip": client,
+        }
+    )
+    
     return response
 
 # ── Routers ────────────────────────────────────────────────────────────

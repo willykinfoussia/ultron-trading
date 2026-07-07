@@ -9,10 +9,19 @@ import os
 from typing import Any, Dict, List, Optional
 
 import httpx
+from httpcore import TimeoutException
 
 from .news_fetcher import fetch_stock_news
 
 logger = logging.getLogger("ultron-trading.analysis.sentiment_scorer")
+
+
+# Add time import for timing measurements
+import time
+
+
+# Add correlation ID utility
+from app.core.logging_config import get_correlation_id, generate_correlation_id
 
 # Hermes API endpoint (via ultron-controller proxy)
 HERMES_API_URL = os.environ.get("HERMES_API_URL", "http://localhost:9000/api/hermes_api/v1/chat/completions")
@@ -161,11 +170,61 @@ async def analyze_sentiment(
 ) -> Dict[str, Any]:
     """
     Analyze sentiment for a stock based on recent news.
+    
+    Args:
+        symbol: Stock symbol to analyze
+        days: Number of days to look back for news
+        max_articles: Maximum number of articles to analyze
+        use_llm: Whether to use LLM for analysis (fallback to keyword if False or on failure)
+        
+    Returns:
+        Dictionary with sentiment analysis results
     """
+    # Generate or get correlation ID for this analysis request
+    correlation_id = get_correlation_id()
+    if correlation_id == "none":
+        # Generate a new one if not in request context
+        correlation_id = generate_correlation_id()
+        # Note: We don't set it here as we don't want to override request context
+    
+    logger.info(
+        "Starting sentiment analysis",
+        extra={
+            "symbol": symbol,
+            "days": days,
+            "max_articles": max_articles,
+            "use_llm": use_llm,
+            "correlation_id": correlation_id,
+        }
+    )
+    
+    start_time = time.time()
+    
     # Step 1: Fetch news
+    fetch_start = time.time()
     articles = fetch_stock_news(symbol, max_articles=max_articles)
+    fetch_duration_ms = (time.time() - fetch_start) * 1000
+    
+    logger.info(
+        "News fetching completed",
+        extra={
+            "symbol": symbol,
+            "articles_found": len(articles),
+            "fetch_duration_ms": round(fetch_duration_ms, 2),
+            "correlation_id": correlation_id,
+        }
+    )
     
     if not articles:
+        duration_ms = (time.time() - start_time) * 1000
+        logger.warning(
+                    "No articles found for sentiment analysis",
+                    extra={
+                        "symbol": symbol,
+                        "total_duration_ms": round(duration_ms, 2),
+                        "correlation_id": correlation_id,
+                    }
+                )
         return {
             "scores": {k: 0.0 for k in [
                 "fundamental_impact", "competitive_position", "growth_prospects",
@@ -183,18 +242,94 @@ async def analyze_sentiment(
 
     # Step 2: Try LLM if enabled
     if use_llm:
+        llm_start = time.time()
+        logger.info(
+            "Attempting LLM sentiment analysis",
+            extra={
+                "symbol": symbol,
+                "article_count": len(articles),
+                "correlation_id": correlation_id,
+            }
+        )
+        
         try:
             result = await _llm_sentiment(symbol, articles, days)
+            llm_duration_ms = (time.time() - llm_start) * 1000
+            
+            logger.info(
+                "LLM sentiment analysis completed successfully",
+                extra={
+                    "symbol": symbol,
+                    "llm_duration_ms": round(llm_duration_ms, 2),
+                    "result_source": result.get("source", "unknown"),
+                    "sentiment_score": result.get("overall_sentiment", 0),
+                    "correlation_id": correlation_id,
+                }
+            )
+            
+            total_duration_ms = (time.time() - start_time) * 1000
+            logger.info(
+                "Sentiment analysis completed via LLM",
+                extra={
+                    "symbol": symbol,
+                    "total_duration_ms": round(total_duration_ms, 2),
+                    "correlation_id": correlation_id,
+                }
+            )
             return result
+            
         except Exception as e:
-            logger.warning(f"LLM sentiment failed for {symbol}: {type(e).__name__}: {e}. Falling back to keyword analysis.")
-    
+            llm_duration_ms = (time.time() - llm_start) * 1000
+            total_duration_ms = (time.time() - start_time) * 1000
+            
+            logger.warning(
+                            f"LLM sentiment failed for {symbol}: {type(e).__name__}: {e}. Falling back to keyword analysis.",
+                            extra={
+                                "symbol": symbol,
+                                "error": str(e),
+                                "error_type": type(e).__name__,
+                                "llm_duration_ms": round(llm_duration_ms, 2),
+                                "total_duration_ms": round(total_duration_ms, 2),
+                                "correlation_id": correlation_id,
+                            },
+                            exc_info=True
+                        )
+            # Fall through to keyword analysis
+    else:
+        logger.info(
+            "Skipping LLM analysis (use_llm=False), using keyword analysis",
+            extra={
+                "symbol": symbol,
+                "correlation_id": correlation_id,
+            }
+        )
+
     # Step 3: Fallback to keyword analysis
-    return _keyword_sentiment(articles)
-
-
+    keyword_start = time.time()
+    result = _keyword_sentiment(articles)
+    keyword_duration_ms = (time.time() - keyword_start) * 1000
+    
+    total_duration_ms = (time.time() - start_time) * 1000
+    
+    logger.info(
+        "Sentiment analysis completed via keyword fallback",
+        extra={
+            "symbol": symbol,
+            "keyword_duration_ms": round(keyword_duration_ms, 2),
+            "total_duration_ms": round(total_duration_ms, 2),
+            "result_source": result.get("source", "keyword_fallback"),
+            "sentiment_score": result.get("overall_sentiment", 0),
+            "correlation_id": correlation_id,
+        }
+    )
+    
+    return result
 async def _llm_sentiment(symbol: str, articles: List[Dict[str, Any]], days: int) -> Dict[str, Any]:
-    """Call Hermes LLM API for structured sentiment analysis."""
+    """
+    Call Hermes LLM API for structured sentiment analysis.
+    """
+    # Get correlation ID
+    correlation_id = get_correlation_id()
     
     articles_block = _build_articles_block(articles)
     user_prompt = SENTIMENT_USER_PROMPT_TEMPLATE.format(
@@ -216,15 +351,94 @@ async def _llm_sentiment(symbol: str, articles: List[Dict[str, Any]], days: int)
     # Remove None values
     payload = {k: v for k, v in payload.items() if v is not None}
 
-    async with httpx.AsyncClient(timeout=55.0) as client:
-        response = await client.post(HERMES_API_URL, json=payload)
-        response.raise_for_status()
-        data = response.json()
+    # Log LLM request details (truncate for brevity)
+    prompt_length = len(json.dumps(payload))
+    logger.info(
+        "Sending request to LLM API",
+        extra={
+            "symbol": symbol,
+            "article_count": len(articles),
+            "prompt_size_chars": prompt_length,
+            "estimated_tokens": prompt_length // 4,  # Rough estimate
+            "model": HERMES_MODEL or "default",
+            "temperature": 0.1,
+            "timeout_seconds": 55.0,
+            "correlation_id": correlation_id,
+        }
+    )
+    
+    start_time = time.time()
+    try:
+        async with httpx.AsyncClient(timeout=55.0) as client:
+            response = await client.post(HERMES_API_URL, json=payload)
+            response.raise_for_status()
+            data = response.json()
+            
+        request_duration_ms = (time.time() - start_time) * 1000
+        
+        # Log response details
+        response_size = len(json.dumps(data))
+        logger.info(
+            "Received response from LLM API",
+            extra={
+                "symbol": symbol,
+                "status_code": response.status_code,
+                "response_size_chars": response_size,
+                "request_duration_ms": round(request_duration_ms, 2),
+                "correlation_id": correlation_id,
+            }
+        )
+        
+    except TimeoutException as e:
+        request_duration_ms = (time.time() - start_time) * 1000
+        logger.error(
+            f"LLM API timeout for {symbol}",
+            extra={
+                "symbol": symbol,
+                "error": "TimeoutException",
+                "error_type": "TimeoutException",
+                "request_duration_ms": round(request_duration_ms, 2),
+                "timeout_seconds": 55.0,
+                "correlation_id": correlation_id,
+            },
+            exc_info=True
+        )
+        raise
+    except httpx.HTTPStatusError as e:
+        request_duration_ms = (time.time() - start_time) * 1000
+        logger.error(
+            f"LLM API HTTP error for {symbol}: {e.response.status_code}",
+            extra={
+                "symbol": symbol,
+                "error": f"HTTP {e.response.status_code}",
+                "error_type": "HTTPStatusError",
+                "status_code": e.response.status_code,
+                "response_text": e.response.text[:200] if e.response.text else "",
+                "request_duration_ms": round(request_duration_ms, 2),
+                "correlation_id": correlation_id,
+            },
+            exc_info=True
+        )
+        raise
+    except Exception as e:
+        request_duration_ms = (time.time() - start_time) * 1000
+        logger.error(
+            f"LLM API request failed for {symbol}: {type(e).__name__}: {e}",
+            extra={
+                "symbol": symbol,
+                "error": str(e),
+                "error_type": type(e).__name__,
+                "request_duration_ms": round(request_duration_ms, 2),
+                "correlation_id": correlation_id,
+            },
+            exc_info=True
+        )
+        raise
 
     # Parse LLM response
     content = data["choices"][0]["message"]["content"]
     logger.debug(f"LLM raw response for {symbol}: {content[:200]}...")
-    
+
     # Strip markdown code blocks if present (```json ... ```)
     content = content.strip()
     if content.startswith("```"):
@@ -234,18 +448,45 @@ async def _llm_sentiment(symbol: str, articles: List[Dict[str, Any]], days: int)
         if content.endswith("```"):
             content = content[:-3]
         content = content.strip()
-    
-    result = json.loads(content)
-    
+
+    try:
+        result = json.loads(content)
+    except json.JSONDecodeError as e:
+        logger.error(
+            f"Failed to parse LLM response as JSON for {symbol}",
+            extra={
+                "symbol": symbol,
+                "error": str(e),
+                "error_type": "JSONDecodeError",
+                "response_preview": content[:200],
+                "correlation_id": correlation_id,
+            },
+            exc_info=True
+        )
+        raise
+
     # Validate and enrich
     result["article_count"] = len(articles)
     result["source"] = "llm"
-    
+
     # Ensure llm_explanation exists (fallback if LLM omits it)
     if "llm_explanation" not in result or not result["llm_explanation"]:
         overall = result.get("overall_sentiment", 0.0)
         themes = result.get("key_themes", [])
         themes_str = ", ".join(themes[:3]) if themes else "general news"
         result["llm_explanation"] = f"Sentiment score ({overall:+.2f}) driven by {themes_str}. LLM explanation not provided."
-    
+
+    llm_processing_duration_ms = (time.time() - start_time) * 1000
+    logger.info(
+        "LLM response processed successfully",
+        extra={
+            "symbol": symbol,
+            "processing_duration_ms": round(llm_processing_duration_ms, 2),
+            "overall_sentiment": result.get("overall_sentiment", 0),
+            "confidence": result.get("conviction", 0),
+            "source": result.get("source", "unknown"),
+            "correlation_id": correlation_id,
+        }
+    )
+
     return result

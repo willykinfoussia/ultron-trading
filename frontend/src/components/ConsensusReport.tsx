@@ -1,10 +1,12 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import type { AnalysisResult } from "../api/types";
+import type { ConsensusReport as BackendConsensusReport } from "../api/types";
 
 interface ConsensusReportProps {
-  symbol: string;
-  results: AnalysisResult[];
+  symbol?: string;
+  results?: AnalysisResult[];
+  report?: BackendConsensusReport;
 }
 
 interface CategorySummary {
@@ -18,6 +20,7 @@ interface CategorySummary {
   methods: AnalysisResult[];
 }
 
+// Fallback computation (unchanged)
 function computeConsensus(results: AnalysisResult[]) {
   const byCategory = new Map<string, AnalysisResult[]>();
   for (const r of results) {
@@ -124,10 +127,62 @@ const CATEGORY_LABELS: Record<string, string> = {
   fundamental: "💰 Fundamental",
   sentiment: "📰 Sentiment",
   ml: "🤖 Machine Learning",
+  quant: "📐 Quantitative",
 };
 
-export default function ConsensusReport({ symbol: _symbol, results }: ConsensusReportProps) {
-  const report = useMemo(() => computeConsensus(results), [results]);
+export default function ConsensusReport({ symbol, results, report }: ConsensusReportProps) {
+  // Determine which data to use
+  const data = useMemo(() => {
+    if (report) {
+      // Transform backend report to shape expected by the rest of component
+      // We'll map backend fields to the same shape as computeConsensus output
+      const backend = report;
+      // Build categories in the same format as CategorySummary
+      const catSummaries: CategorySummary[] = backend.categories.map(cat => ({
+        category: cat.category,
+        buyCount: cat.signal_counts.buy,
+        sellCount: cat.signal_counts.sell,
+        holdCount: cat.signal_counts.hold,
+        neutralCount: cat.signal_counts.neutral,
+        avgConfidence: cat.confidence,
+        weightedSignal: cat.score,
+        methods: cat.methods.map(m => ({
+          method_id: m.method_id,
+          method_name: m.method_name,
+          category: m.category,
+          symbol: symbol || "",
+          result: {}, // not needed for display
+          signal: m.signal,
+          confidence: m.confidence,
+          explanation: "", // not needed
+          chart_data: null,
+          computed_at: "",
+        } as AnalysisResult))
+      }));
+      return {
+        categories: catSummaries,
+        overallScore: backend.overall.score,
+        verdict: backend.overall.verdict,
+        conflicts: backend.conflicts.map(c => c.description),
+        insights: backend.insights.map(i => i.description),
+        totalMethods: backend.method_details.length,
+        avgConfidence: backend.overall.confidence,
+      };
+    } else if (results) {
+      return computeConsensus(results);
+    } else {
+      // empty
+      return {
+        categories: [],
+        overallScore: 0,
+        verdict: "HOLD",
+        conflicts: [],
+        insights: [],
+        totalMethods: 0,
+        avgConfidence: 0,
+      };
+    }
+  }, [report, results]);
 
   return (
     <motion.div
@@ -137,21 +192,21 @@ export default function ConsensusReport({ symbol: _symbol, results }: ConsensusR
       transition={{ duration: 0.4 }}
     >
       {/* Verdict Header */}
-      <div className="consensus-verdict" style={{ borderColor: VERDICT_COLORS[report.verdict] }}>
+      <div className="consensus-verdict" style={{ borderColor: VERDICT_COLORS[data.verdict] }}>
         <div className="consensus-verdict-header">
-          <h2 style={{ color: VERDICT_COLORS[report.verdict], marginBottom: 0 }}>
-            {VERDICT_LABELS[report.verdict]}
+          <h2 style={{ color: VERDICT_COLORS[data.verdict], marginBottom: 0 }}>
+            {VERDICT_LABELS[data.verdict]}
           </h2>
           <span className="consensus-score">
-            Score: {Math.round(report.overallScore)}
+            Score: {Math.round(data.overallScore)}
           </span>
         </div>
         <div className="consensus-meter">
           <div className="consensus-meter-fill"
             style={{
-              width: `${Math.min(Math.abs(report.overallScore), 100)}%`,
-              backgroundColor: VERDICT_COLORS[report.verdict],
-              marginLeft: report.overallScore < 0 ? `${50 - Math.abs(report.overallScore) / 2}%` : "50%",
+              width: `${Math.min(Math.abs(data.overallScore), 100)}%`,
+              backgroundColor: VERDICT_COLORS[data.verdict],
+              marginLeft: data.overallScore < 0 ? `${50 - Math.abs(data.overallScore) / 2}%` : "50%",
             }}
           />
           <div className="consensus-meter-center" />
@@ -166,24 +221,24 @@ export default function ConsensusReport({ symbol: _symbol, results }: ConsensusR
       {/* Summary Stats */}
       <div className="consensus-stats">
         <div className="consensus-stat">
-          <span className="consensus-stat-value">{report.totalMethods}</span>
+          <span className="consensus-stat-value">{data.totalMethods}</span>
           <span className="consensus-stat-label">Methods</span>
         </div>
         <div className="consensus-stat">
           <span className="consensus-stat-value" style={{ color: "#10b981" }}>
-            {results.filter(r => r.signal === "buy").length}
+            {Math.round(data.overallScore > 0 ? data.overallScore : 0)} Buy
           </span>
           <span className="consensus-stat-label">Buy</span>
         </div>
         <div className="consensus-stat">
           <span className="consensus-stat-value" style={{ color: "#ef4444" }}>
-            {results.filter(r => r.signal === "sell").length}
+            {Math.round(data.overallScore < 0 ? -data.overallScore : 0)} Sell
           </span>
           <span className="consensus-stat-label">Sell</span>
         </div>
-<div className="consensus-stat">
+        <div className="consensus-stat">
           <span className="consensus-stat-value" style={{ color: "#fbbf24" }}>
-            {results.filter(r => r.signal === "hold" || r.signal === "neutral").length}
+            {data.totalMethods - (data.overallScore > 0 ? Math.round(data.overallScore) : 0) - (data.overallScore < 0 ? Math.round(-data.overallScore) : 0)} Hold/Neutral
           </span>
           <span className="consensus-stat-label">Hold</span>
         </div>
@@ -192,7 +247,7 @@ export default function ConsensusReport({ symbol: _symbol, results }: ConsensusR
       {/* Per-Category Breakdown */}
       <div className="consensus-categories">
         <h3>Category Breakdown</h3>
-        {report.categories.map(cat => (
+        {data.categories.map(cat => (
           <div key={cat.category} className="consensus-category">
             <div className="consensus-category-header">
               <span className="consensus-category-name">
@@ -231,21 +286,21 @@ export default function ConsensusReport({ symbol: _symbol, results }: ConsensusR
       </div>
 
       {/* Conflicts */}
-      {report.conflicts.length > 0 && (
+      {data.conflicts.length > 0 && (
         <div className="consensus-conflicts">
           <h3>⚠️ Conflicts Detected</h3>
-          {report.conflicts.map((c, i) => (
+          {data.conflicts.map((c, i) => (
             <div key={i} className="consensus-conflict">{c}</div>
           ))}
         </div>
       )}
 
       {/* Key Insights */}
-      {report.insights.length > 0 && (
+      {data.insights.length > 0 && (
         <div className="consensus-insights">
           <h3>💡 Key Insights</h3>
           <ul>
-            {report.insights.map((insight, i) => (
+            {data.insights.map((insight, i) => (
               <li key={i}>{insight}</li>
             ))}
           </ul>

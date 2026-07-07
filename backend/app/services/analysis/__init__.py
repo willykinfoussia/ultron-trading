@@ -3,9 +3,11 @@ Analysis Registry - Central registry for all analysis methods.
 """
 
 import logging
+import time
 from typing import Any, Dict, List, Optional, Type
 
 from .base import AnalysisMethod, AnalysisResult
+from .metadata import ANALYSIS_METADATA
 
 logger = logging.getLogger("ultron-trading.analysis")
 
@@ -39,7 +41,6 @@ class AnalysisRegistry:
 
     def get_methods(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
         """List method metadata, optionally filtered by category."""
-        from .metadata import ANALYSIS_METADATA
         results = []
         for mid, method in self._methods.items():
             if category and method.category != category:
@@ -68,36 +69,147 @@ class AnalysisRegistry:
         return {cat: len(methods) for cat, methods in self._categories.items()}
 
     async def run(self, method_id: str, symbol: str, **params) -> AnalysisResult:
-        """Run a specific analysis method."""
+        """
+        Run a specific analysis method.
+        """
         method = self._methods.get(method_id)
         if not method:
             raise ValueError(
                 f"Unknown analysis method: '{method_id}'. "
                 f"Available: {list(self._methods.keys())}"
             )
-        logger.info(f"Running {method_id} for {symbol} with params={params}")
-        return await method.run(symbol, **params)
+        
+        # Get correlation ID
+        try:
+            from app.core.logging_config import get_correlation_id
+            correlation_id = get_correlation_id()
+        except ImportError:
+            correlation_id = "none"
+        
+        logger.info(
+                        f"Running {method_id} for {symbol} with params={params}",
+                        extra={
+                            "method_id": method_id,
+                            "symbol": symbol,
+                            "params": list(params.keys()) if params else [],
+                            "correlation_id": correlation_id,
+                        }
+                    )
+        start_time = time.time()
+        try:
+            result = await method.run(symbol, **params)
+            duration_ms = (time.time() - start_time) * 1000
+            
+            logger.info(
+                f"Completed {method_id} for {symbol}",
+                extra={
+                    "method_id": method_id,
+                    "symbol": symbol,
+                    "duration_ms": round(duration_ms, 2),
+                    "signal": getattr(result, 'signal', None),
+                    "confidence": getattr(result, 'confidence', None),
+                    "correlation_id": correlation_id,
+                }
+            )
+            return result
+        except Exception as e:
+            duration_ms = (time.time() - start_time) * 1000
+            logger.error(
+                f"Error running {method_id} for {symbol}: {e}",
+                extra={
+                    "method_id": method_id,
+                    "symbol": symbol,
+                    "error": str(e),
+                    "error_type": type(e).__name__,
+                    "duration_ms": round(duration_ms, 2),
+                    "correlation_id": correlation_id,
+                },
+                exc_info=True
+            )
+            raise
 
     async def run_category(
         self, category: str, symbol: str, **params
     ) -> List[AnalysisResult]:
-        """Run all methods in a given category."""
+        """
+        Run all methods in a given category.
+        """
         method_ids = self._categories.get(category, [])
         if not method_ids:
             logger.warning(f"No methods registered for category '{category}'")
             return []
 
+        # Get correlation ID
+        try:
+            from app.core.logging_config import get_correlation_id
+            correlation_id = get_correlation_id()
+        except ImportError:
+            correlation_id = "none"
+        
+        logger.info(
+            f"Starting category run for {category}",
+            extra={
+                "category": category,
+                "symbol": symbol,
+                "method_count": len(method_ids),
+                "correlation_id": correlation_id,
+            }
+        )
+        start_time = time.time()
+
         results = []
-        for mid in method_ids:
+        method_start = time.time()  # Initialize at the start
+        for i, mid in enumerate(method_ids):
             try:
+                method_start = time.time()
                 result = await self.run(mid, symbol, **params)
+                method_duration_ms = (time.time() - method_start) * 1000
+                
                 results.append(result)
+                
+                logger.debug(
+                    f"Completed method {i+1}/{len(method_ids)}: {mid}",
+                    extra={
+                        "method_index": i,
+                        "method_id": mid,
+                        "duration_ms": round(method_duration_ms, 2),
+                        "correlation_id": correlation_id,
+                    }
+                )
             except Exception as e:
-                logger.error(f"Error running {mid} for {symbol}: {e}", exc_info=True)
+                method_duration_ms = (time.time() - method_start) * 1000
+                logger.error(
+                    f"Error running {mid} for {symbol}: {e}",
+                    extra={
+                        "method_id": mid,
+                        "symbol": symbol,
+                        "error": str(e),
+                        "error_type": type(e).__name__,
+                        "duration_ms": round(method_duration_ms, 2),
+                        "correlation_id": correlation_id,
+                    },
+                    exc_info=True
+                )
+        total_duration_ms = (time.time() - start_time) * 1000
+        
+        logger.info(
+            f"Completed category run for {category}",
+            extra={
+                "category": category,
+                "symbol": symbol,
+                "method_count": len(method_ids),
+                "successful_count": len(results),
+                "failed_count": len(method_ids) - len(results),
+                "total_duration_ms": round(total_duration_ms, 2),
+                "correlation_id": correlation_id,
+            }
+        )
         return results
 
     async def run_all(self, symbol: str, **params) -> List[AnalysisResult]:
-        """Run all registered methods across all categories."""
+        """
+        Run all registered methods across all categories.
+        """
         results = []
         for category in self._categories:
             category_results = await self.run_category(category, symbol, **params)

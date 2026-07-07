@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getAnalysisMethods, runAllAnalysis } from "../api/analysis";
+import { getAnalysisMethods, runAllAnalysis, getConsensusReport } from "../api/analysis";
 import type { AnalysisMethod, AnalysisResult } from "../api/types";
 import ConsensusReport from "./ConsensusReport";
 import Spinner from "../components/Spinner";
@@ -11,8 +11,12 @@ interface Props {
 }
 
 export default function EmbeddedAnalysis({ symbol, onViewMethodDetail }: Props) {
+  const [results, setResults] = useState<AnalysisResult({ symbol, onViewMethodDetail }: Props) {
   const [results, setResults] = useState<AnalysisResult[]>([]);
   const [methods, setMethods] = useState<AnalysisMethod[]>([]);
+  const [consensus, setConsensus] = useState<any>(null);
+  const [consensusLoading, setConsensusLoading] = useState(false);
+  const [consensusError, setConsensusError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -30,18 +34,25 @@ export default function EmbeddedAnalysis({ symbol, onViewMethodDetail }: Props) 
       }
     })();
     return () => { active = false; };
-  }, [symbol]);
+  }, []);
 
   const runAll = useCallback(async () => {
     setRunning(true);
     setError(null);
+    setConsensusLoading(true);
+    setConsensusError(null);
+    setConsensus(null);
     try {
       const data = await runAllAnalysis(symbol, "all");
       setResults(data);
+      // Also fetch consensus
+      const cons = await getConsensusReport(symbol);
+      setConsensus(cons);
     } catch (err) {
       setError(String(err));
     } finally {
       setRunning(false);
+      setConsensusLoading(false);
     }
   }, [symbol]);
 
@@ -139,7 +150,61 @@ export default function EmbeddedAnalysis({ symbol, onViewMethodDetail }: Props) 
           </motion.div>
         )}
 
-        {results.length > 0 && !running && (
+        {/* Consensus section */}
+        {consensus && !consensusLoading && (
+          <motion.div
+            key="consensus"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <ConsensusReport symbol={symbol} report={consensus} />
+          </motion.div>
+        )}
+
+        {consensusLoading && !consensus && (
+          <motion.div
+            key="consensus-loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              padding: "var(--sp-10)",
+              gap: "var(--sp-3)",
+            }}
+          >
+            <Spinner size="lg" />
+            <p style={{ color: "var(--text-2)", marginTop: 12 }}>
+              Computing consensus for {symbol}...
+            </p>
+          </motion.div>
+        )}
+
+        {consensusError && !consensusLoading && (
+          <motion.div
+            key="consensus-error"
+            className="card"
+            style={{ borderColor: "var(--danger-border)" }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+          >
+            <div className="error-state">
+              <span className="error-state-icon">!</span>
+              <span className="error-state-title">Consensus Error</span>
+              <span className="error-state-desc">{consensusError}</span>
+              <div className="error-state-actions">
+                <button className="btn-retry" onClick={runAll}>Retry</button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Original results table (fallback) */}
+        {results.length > 0 && !running && !consensus && (
           <motion.div
             key="results"
             initial={{ opacity: 0 }}

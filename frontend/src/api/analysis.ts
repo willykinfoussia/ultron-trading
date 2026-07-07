@@ -1,4 +1,5 @@
 import type { AnalysisMethod, AnalysisResult } from './types'
+import type { ConsensusReport } from './types'
 
 const API_BASE = '/api'
 
@@ -50,7 +51,7 @@ export async function runAllAnalysis(
   category?: string,
   params?: Record<string, unknown>
 ): Promise<AnalysisResult[]> {
-  if (category && category !== "all") {
+  if (category && category !== 'all') {
     return fetchJSON<AnalysisResult[]>(
       `${API_BASE}/analysis/${symbol}/run-all`,
       {
@@ -60,13 +61,17 @@ export async function runAllAnalysis(
       }
     )
   }
-  return fetchJSON<AnalysisResult[]>(
-    `${API_BASE}/analysis/${symbol}/all`
-  )
+  return fetchJSON<AnalysisResult[]>(`${API_BASE}/analysis/${symbol}/all`)
 }
 
 export async function getAnalysisSummary(
   symbol: string
 ): Promise<AnalysisResult[]> {
   return fetchJSON<AnalysisResult[]>(`${API_BASE}/analysis/${symbol}/summary`)
+}
+
+export async function getConsensusReport(
+  symbol: string
+): Promise<ConsensusReport> {
+  return fetchJSON<ConsensusReport>(`${API_BASE}/analysis/${symbol}/consensus`)
 }

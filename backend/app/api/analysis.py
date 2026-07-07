@@ -12,6 +12,7 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from pydantic import BaseModel
 
 from app.services.analysis import registry
+from app.services.analysis import consensus
 
 logger = logging.getLogger("ultron-trading.analysis.api")
 
@@ -68,7 +69,7 @@ async def run_analysis(
     method_id: str,
 ):
     """Run a specific analysis method for a symbol.
-    
+
     All query parameters are dynamically forwarded to the analysis method.
     Use GET /api/analysis/ to see available methods and their parameters.
     """
@@ -170,3 +171,15 @@ async def run_summary(symbol: str):
     except Exception as e:
         logger.error(f"Error running summary for {sym}: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Analysis failed: {str(e)}")
+
+
+@router.get("/{symbol}/consensus")
+async def get_consensus(symbol: str):
+    """Run all analysis methods and return an enriched consensus report."""
+    sym = symbol.upper()
+    try:
+        report = await consensus.get_consensus_report(sym)
+        return report
+    except Exception as e:
+        logger.error(f"Error generating consensus for {sym}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Consensus generation failed: {str(e)}")
