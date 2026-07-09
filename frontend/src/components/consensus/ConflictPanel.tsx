@@ -43,7 +43,7 @@ export default function ConflictPanel({ conflicts }: ConflictPanelProps) {
             borderLeft: `4px solid ${SEVERITY_COLOR[conflict.severity]}`,
             borderRadius: 8,
             padding: "10px 12px",
-            background: "var(--card-bg, #fff)",
+            background: "var(--surface-2, #f8fafc)",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>

@@ -39,7 +39,7 @@ export default function InsightPanel({ insights }: InsightPanelProps) {
             borderLeft: `4px solid ${TYPE_COLOR[insight.type] || "#e5e7eb"}`,
             borderRadius: 8,
             padding: "10px 12px",
-            background: "var(--card-bg, #fff)",
+            background: "var(--surface-2, #f8fafc)",
             cursor: "pointer",
           }}
           onClick={() => setExpanded(expanded === i ? null : i)}

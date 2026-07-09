@@ -238,7 +238,7 @@ function RiskMetric({ label, value }: { label: string; value: string }) {
   return (
     <div
       style={{
-        background: "var(--bg-2, #f8fafc)",
+        background: "var(--surface-2, #f1f5f9)",
         borderRadius: 8,
         padding: "10px 12px",
         display: "flex",
