@@ -44,8 +44,7 @@ def _compute_risk_metrics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
             expected_return = growth  # simple approximation
             # Use discount rate for risk-free rate approximation
             discount = _safe_float(result_data.get("discount_rate", 10)) / 100.0
-            # Simple Sharpe approximation: (return - risk_free) / volatility
-            # We'll estimate volatility from price data if available later
+            # We'll use this later for Sharpe
             break
 
     # Estimate volatility from Bollinger Bands width if available
@@ -86,8 +85,6 @@ def _compute_risk_metrics(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         "var_95": round(var_95, 4),
         "risk_reward_ratio": round(risk_reward_ratio, 2),
     }
-
-
 def _compute_signal_distribution(results: List[Dict[str, Any]]) -> Dict[str, int]:
     """Count signals across all results."""
     counts = {"buy": 0, "sell": 0, "hold": 0, "neutral": 0}
@@ -99,12 +96,29 @@ def _compute_signal_distribution(results: List[Dict[str, Any]]) -> Dict[str, int
 
 
 def _compute_category_consensus(results: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-    """Compute consensus per category."""
+    """Compute consensus per category with quality-adjusted weights."""
     # Group by category
     by_category: Dict[str, List[Dict[str, Any]]] = {}
     for r in results:
         cat = r.get("category", "unknown")
         by_category.setdefault(cat, []).append(r)
+
+    # Determine method quality: real methods = 1.0, stub methods = 0.2
+    # For simplicity, treat all methods as real (quality = 1.0) since we have no stub indicators.
+    # If we had a way to detect stubs, we could adjust.
+    def method_quality(method_id: str) -> float:
+        # Placeholder: if method_id contains "stub" treat as stub
+        if isinstance(method_id, str) and "stub" in method_id.lower():
+            return 0.2
+        return 1.0
+
+    # Precompute quality-adjusted confidence for each method
+    quality_confidence = []
+    for r in results:
+        confidence = _safe_float(r.get("confidence", 0))
+        quality = method_quality(r.get("method_id", ""))
+        quality_confidence.append(confidence * quality)
+    total_qc = sum(quality_confidence)
 
     categories = []
     for category, methods in by_category.items():
@@ -118,13 +132,14 @@ def _compute_category_consensus(results: List[Dict[str, Any]]) -> List[Dict[str,
         hold = signal_counts["hold"]
         neutral = signal_counts["neutral"]
 
-        # Compute weighted signal (-100 to +100)
-        total_weight = 0.0
+        # Compute weighted signal (-100 to +100) using quality-adjusted confidence
         weighted_sum = 0.0
+        total_weight = 0.0
         for m in methods:
             confidence = _safe_float(m.get("confidence", 0))
+            quality = method_quality(m.get("method_id", ""))
+            weighted_confidence = confidence * quality
             signal = m.get("signal", "neutral")
-            # Map signal to value: buy=+100, sell=-100, hold=+20, neutral=0
             if signal == "buy":
                 signal_val = 100
             elif signal == "sell":
@@ -133,14 +148,14 @@ def _compute_category_consensus(results: List[Dict[str, Any]]) -> List[Dict[str,
                 signal_val = 20
             else:  # neutral
                 signal_val = 0
-            weighted_sum += signal_val * confidence
-            total_weight += confidence
+            weighted_sum += signal_val * weighted_confidence
+            total_weight += weighted_confidence
 
         weighted_signal = 0.0
         if total_weight > 0:
             weighted_signal = weighted_sum / total_weight
 
-        # Average confidence
+        # Average confidence (unweighted)
         avg_confidence = sum(_safe_float(m.get("confidence", 0)) for m in methods) / len(methods)
 
         # Build method summaries
@@ -154,9 +169,13 @@ def _compute_category_consensus(results: List[Dict[str, Any]]) -> List[Dict[str,
                 "key_result": _extract_key_result(m),
             })
 
+        # Category weight: proportion of quality-adjusted confidence
+        category_qc = sum(_safe_float(m.get("confidence", 0)) * method_quality(m.get("method_id", "")) for m in methods)
+        weight = (category_qc / total_qc) if total_qc > 0 else 0.0
+
         categories.append({
             "category": category,
-            "weight": len(methods) / len(results),  # simple weight by method count
+            "weight": round(weight, 3),
             "score": round(weighted_signal, 2),
             "confidence": round(avg_confidence, 3),
             "signal_counts": signal_counts,
@@ -174,8 +193,6 @@ def _compute_category_consensus(results: List[Dict[str, Any]]) -> List[Dict[str,
     categories.sort(key=cat_order_key)
 
     return categories
-
-
 def _extract_key_result(result: Dict[str, Any]) -> str:
     """Extract a human-readable key result from analysis result."""
     method_id = result.get("method_id", "")
@@ -274,11 +291,13 @@ def compute_consensus(results: List[Dict[str, Any]]) -> Dict[str, Any]:
     hold_pct = signal_dist["hold"] / total if total > 0 else 0
     neutral_pct = signal_dist["neutral"] / total if total > 0 else 0
 
-    # Compute overall weighted score (-100 to +100)
+    # Compute overall weighted score (-100 to +100) using quality-adjusted confidence
     weighted_sum = 0.0
     total_weight = 0.0
     for r in results:
         confidence = _safe_float(r.get("confidence", 0))
+        quality = 1.0  # default quality; could be refined with stub detection
+        weighted_confidence = confidence * quality
         signal = r.get("signal", "neutral")
         if signal == "buy":
             signal_val = 100
@@ -288,8 +307,8 @@ def compute_consensus(results: List[Dict[str, Any]]) -> Dict[str, Any]:
             signal_val = 20
         else:  # neutral
             signal_val = 0
-        weighted_sum += signal_val * confidence
-        total_weight += confidence
+        weighted_sum += signal_val * weighted_confidence
+        total_weight += weighted_confidence
 
     overall_score = 0.0
     if total_weight > 0:
@@ -328,7 +347,7 @@ def compute_consensus(results: List[Dict[str, Any]]) -> Dict[str, Any]:
     key_metrics.append({
         "label": "Avg Confidence",
         "value": f"{avg_confidence*100:.0f}%",
-        "trend": "neutral",  # could compute vs previous if we had history
+        "trend": "neutral",
     })
     # Methods run
     key_metrics.append({
@@ -341,7 +360,7 @@ def compute_consensus(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         key_metrics.append({
             "label": "Sharpe Ratio",
             "value": f"{risk_metrics['sharpe_estimate']:.2f}",
-            "trend": "up" if risk_metrics["sharpe_estimate"] > 1 else "down",
+            "trend": "up" if risk_metrics['sharpe_estimate'] > 1 else "down",
         })
     if risk_metrics["var_95"] != 0:
         key_metrics.append({
@@ -361,6 +380,15 @@ def compute_consensus(results: List[Dict[str, Any]]) -> Dict[str, Any]:
             "confidence": min(0.95, 0.5 + (buy_pct - sell_pct)),
             "supporting_methods": [r.get("method_id", "") for r in results if r.get("signal") == "buy"][:3],
         })
+    # Bearish insights
+    if signal_dist["sell"] > signal_dist["buy"]:
+        insights.append({
+            "type": "bearish",
+            "title": "Bearish Consensus",
+            "description": f"{signal_dist['sell']} methods signal sell vs {signal_dist['buy']} buy",
+            "confidence": min(0.95, 0.5 + (sell_pct - buy_pct)),
+            "supporting_methods": [r.get("method_id", "") for r in results if r.get("signal") == "sell"][:3],
+        })
     # High confidence insight
     if avg_confidence > 0.7:
         insights.append({
@@ -377,6 +405,42 @@ def compute_consensus(results: List[Dict[str, Any]]) -> Dict[str, Any]:
             "title": "Low Confidence",
             "description": f"Average method confidence is only {avg_confidence*100:.0f}%",
             "confidence": 1 - avg_confidence,
+            "supporting_methods": [],
+        })
+    # Neutral insight (when signals are balanced)
+    if abs(buy_pct - sell_pct) < 0.15 and abs(buy_pct - hold_pct) < 0.15 and abs(sell_pct - hold_pct) < 0.15:
+        insights.append({
+            "type": "neutral",
+            "title": "Neutral Market",
+            "description": "Signals are mixed with no clear directional bias",
+            "confidence": 0.5,
+            "supporting_methods": [],
+        })
+    # Risk insight (high volatility)
+    if risk_metrics["volatility_estimate"] > 0.3:  # 30% volatility threshold
+        insights.append({
+            "type": "risk",
+            "title": "High Volatility",
+            "description": f"Estimated volatility of {risk_metrics['volatility_estimate']*100:.1f}% suggests elevated risk",
+            "confidence": min(0.9, risk_metrics['volatility_estimate'] * 2),  # simple scaling
+            "supporting_methods": [],
+        })
+    # Opportunity insight (high Sharpe)
+    if risk_metrics["sharpe_estimate"] > 1.5:
+        insights.append({
+            "type": "opportunity",
+            "title": "Attractive Risk-Adjusted Return",
+            "description": f"Sharpe ratio of {risk_metrics['sharpe_estimate']:.2f} indicates attractive risk-adjusted returns",
+            "confidence": min(0.9, risk_metrics['sharpe_estimate'] / 3),  # simple scaling
+            "supporting_methods": [],
+        })
+    # Opportunity insight (high expected return)
+    if risk_metrics["expected_return"] > 0.15:  # 15% expected return
+        insights.append({
+            "type": "opportunity",
+            "title": "High Expected Return",
+            "description": f"Expected return of {risk_metrics['expected_return']*100:.1f}% suggests strong growth potential",
+            "confidence": min(0.9, risk_metrics['expected_return'] * 3),  # simple scaling
             "supporting_methods": [],
         })
 
@@ -429,6 +493,9 @@ def compute_consensus(results: List[Dict[str, Any]]) -> Dict[str, Any]:
                 "severity": "medium",
             })
 
+    # Check for contradiction (strong buy vs strong sell within same category)
+    # For simplicity, we already capture divergence; could add contradiction detection.
+
     # Build method details
     method_details = []
     for r in results:
@@ -440,6 +507,7 @@ def compute_consensus(results: List[Dict[str, Any]]) -> Dict[str, Any]:
             "confidence": _safe_float(r.get("confidence", 0)),
             "key_result": _extract_key_result(r),
             "weight_in_consensus": _safe_float(r.get("confidence", 0)) / total_weight if total_weight > 0 else 0,
+            "quality_score": 1.0,  # placeholder
         })
 
     # Build chart data (simplified for now - frontend will compute from results)
@@ -447,6 +515,7 @@ def compute_consensus(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         "signal_distribution": signal_dist,
         "method_confidences": [_safe_float(r.get("confidence", 0)) for r in results],
         "category_scores": [{"category": c["category"], "score": c["score"]} for c in categories],
+        "risk_metrics": risk_metrics,
     }
 
     return {
@@ -466,57 +535,3 @@ def compute_consensus(results: List[Dict[str, Any]]) -> Dict[str, Any]:
         "chart_data": chart_data,
         "method_details": method_details,
     }
-
-
-# Service functions for API
-async def get_consensus_report(symbol: str) -> Dict[str, Any]:
-    """
-    Get consensus report for a symbol by running all analyses.
-    """
-    try:
-        # Run all analyses
-        results = await registry.run_all(symbol)
-        # Convert AnalysisResult objects to dicts
-        result_dicts = []
-        for r in results:
-            if hasattr(r, 'model_dump'):
-                # Pydantic model
-                result_dicts.append(r.model_dump())
-            elif hasattr(r, '__dict__'):
-                # Regular object
-                result_dicts.append(r.__dict__)
-            else:
-                # Already dict
-                result_dicts.append(r)
-
-        consensus = compute_consensus(result_dicts)
-        # Add timestamp
-        consensus["computed_at"] = datetime.utcnow().isoformat() + "Z"
-        return consensus
-    except Exception as e:
-        logger.error(f"Failed to compute consensus for {symbol}: {e}", exc_info=True)
-        # Return empty consensus on error
-        return {
-            "symbol": symbol,
-            "computed_at": datetime.utcnow().isoformat() + "Z",
-            "overall": {
-                "score": 0,
-                "verdict": "HOLD",
-                "confidence": 0.0,
-                "signal_distribution": {"buy": 0, "sell": 0, "hold": 0, "neutral": 0},
-            },
-            "categories": [],
-            "risk_metrics": {
-                "expected_return": 0.0,
-                "volatility_estimate": 0.0,
-                "sharpe_estimate": 0.0,
-                "max_drawdown_estimate": 0.0,
-                "var_95": 0.0,
-                "risk_reward_ratio": 0.0,
-            },
-            "key_metrics": [],
-            "insights": [],
-            "conflicts": [],
-            "chart_data": {},
-            "method_details": [],
-        }

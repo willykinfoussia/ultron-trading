@@ -8,6 +8,8 @@ app/api/market.py
 app/api/search.py
 app/api/stocks.py
 app/core/__init__.py
+app/core/logging_config.py
+app/core/middleware.py
 app/services/__init__.py
 app/services/company_service.py
 app/services/market_service.py
@@ -15,9 +17,14 @@ app/services/search_service.py
 app/services/analysis/__init__.py
 app/services/analysis/base.py
 app/services/analysis/fundamental.py
+app/services/analysis/metadata.py
 app/services/analysis/ml.py
+app/services/analysis/news_fetcher.py
+app/services/analysis/quantitative.py
 app/services/analysis/sentiment.py
+app/services/analysis/sentiment_scorer.py
 app/services/analysis/technical.py
+app/services/analysis/utils.py
 tests/test_analysis.py
 tests/test_charts.py
 tests/test_company.py
