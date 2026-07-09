@@ -237,13 +237,487 @@ def _extract_key_result(result: Dict[str, Any]) -> str:
         else:
             return str(val)
 
-    # Fallback: show first few fields
-    if res:
-        items = list(res.items())[:2]
-        return ", ".join(f"{k}={v}" for k, v in items)
-    return "N/A"
 
-
+def _generate_method_explanation(method_id: str, result: Dict[str, Any], signal: str, confidence: float) -> str:
+    """Generate a human-readable explanation for a single method's result."""
+    res = result.get("result", {})
+    method_name = result.get("method_name", method_id)
+    
+    # Extract the key value for explanation
+    key_fields = {
+        "rsi": "rsi",
+        "macd": "macd",
+        "bollinger": "bandwidth",
+        "sma": "sma",
+        "ema": "ema",
+        "pe_ratio": "pe_ratio",
+        "roe": "roe",
+        "debt_to_equity": "debt_to_equity",
+        "profit_margin": "profit_margin",
+        "dcf_valuation": "fair_value",
+        "comps_analysis": "implied_value",
+        "markowitz": "sharpe_ratio",
+        "capm": "alpha",
+        "var": "value_at_risk",
+        "news_sentiment": "sentiment_score",
+    }
+    
+    field = key_fields.get(method_id)
+    value_str = ""
+    value_num = None
+    if field and field in res:
+        val = res[field]
+        if isinstance(val, (int, float)):
+            value_num = float(val)
+            # Format value for display
+            if field in ["rsi", "pe_ratio", "roe"]:
+                value_str = f"{value_num:.1f}"
+            elif field in ["bandwidth", "sharpe_ratio", "alpha"]:
+                value_str = f"{value_num:.2f}"
+            elif field in ["fair_value", "implied_value"]:
+                value_str = f"${value_num:.2f}"
+            elif field == "value_at_risk":
+                value_str = f"${value_num:,.0f}"
+            elif field == "sentiment_score":
+                value_str = f"{value_num:+.2f}"
+            else:
+                value_str = str(val)
+        else:
+            value_str = str(val)
+    else:
+        # Fallback: show first field
+        if res:
+            k, v = next(iter(res.items()))
+            value_str = f"{k}={v}"
+        else:
+            value_str = "N/A"
+    
+    # Generate explanation based on method_id
+    if method_id == "rsi":
+        if value_num is not None:
+            if value_num < 30:
+                condition = "oversold"
+                direction = "bullish"
+            elif value_num > 70:
+                condition = "overbought"
+                direction = "bearish"
+            else:
+                condition = "neutral"
+                direction = "neutral"
+            return f"RSI at {value_str} indicates {condition} conditions → {direction} signal"
+        else:
+            return f"RSI at {value_str} → {signal} signal"
+    
+    elif method_id == "macd":
+        if value_num is not None:
+            if value_num > 0:
+                condition = "bullish momentum"
+                direction = "bullish"
+            elif value_num < 0:
+                condition = "bearish momentum"
+                direction = "bearish"
+            else:
+                condition = "neutral momentum"
+                direction = "neutral"
+            return f"MACD at {value_str} indicates {condition} → {direction} signal"
+        else:
+            return f"MACD at {value_str} → {signal} signal"
+    
+    elif method_id == "bollinger":
+        if value_num is not None:
+            if value_num < 20:
+                condition = "low volatility, bands contracted"
+                direction = "neutral"
+            elif value_num > 60:
+                condition = "high volatility, bands expanded"
+                direction = "neutral"
+            else:
+                condition = "moderate volatility"
+                direction = "neutral"
+            return f"Bollinger Bands width at {value_str}% indicates {condition} → {direction} signal"
+        else:
+            return f"Bollinger Bands width at {value_str}% → {signal} signal"
+    
+    elif method_id in ["sma", "ema"]:
+        if value_num is not None:
+            # For moving averages, we need the price to compare, but we don't have it here.
+            # So we just state the value and the signal.
+            ma_name = "SMA" if method_id == "sma" else "EMA"
+            return f"{ma_name} at {value_str} → {signal} signal"
+        else:
+            ma_name = "SMA" if method_id == "sma" else "EMA"
+            return f"{ma_name} at {value_str} → {signal} signal"
+    
+    elif method_id == "pe_ratio":
+        if value_num is not None:
+            if value_num < 15:
+                valuation = "undervalued"
+                direction = "bullish"
+            elif value_num > 25:
+                valuation = "overvalued"
+                direction = "bearish"
+            else:
+                valuation = "fairly valued"
+                direction = "neutral"
+            return f"P/E Ratio at {value_str} suggests stock is {valuation} → {direction} signal"
+        else:
+            return f"P/E Ratio at {value_str} → {signal} signal"
+    
+    elif method_id == "roe":
+        if value_num is not None:
+            if value_num > 15:
+                performance = "strong"
+                direction = "bullish"
+            elif value_num < 5:
+                performance = "weak"
+                direction = "bearish"
+            else:
+                performance = "moderate"
+                direction = "neutral"
+            return f"ROE at {value_str}% indicates {performance} profitability → {direction} signal"
+        else:
+            return f"ROE at {value_str}% → {signal} signal"
+    
+    elif method_id == "debt_to_equity":
+        if value_num is not None:
+            if value_num < 0.5:
+                leverage = "low"
+                direction = "bullish"
+            elif value_num > 1.0:
+                leverage = "high"
+                direction = "bearish"
+            else:
+                leverage = "moderate"
+                direction = "neutral"
+            return f"Debt-to-Equity ratio at {value_str} indicates {leverage} leverage → {direction} signal"
+        else:
+            return f"Debt-to-Equity ratio at {value_str} → {signal} signal"
+    
+    elif method_id == "profit_margin":
+        if value_num is not None:
+            if value_num > 20:
+                margin = "high"
+                direction = "bullish"
+            elif value_num < 5:
+                margin = "low"
+                direction = "bearish"
+            else:
+                margin = "moderate"
+                direction = "neutral"
+            return f"Profit Margin at {value_str}% indicates {margin} profitability → {direction} signal"
+        else:
+            return f"Profit Margin at {value_str}% → {signal} signal"
+    
+    elif method_id == "dcf_valuation":
+        if value_num is not None:
+            # We don't have current price, so just state the fair value
+            return f"DCF Fair Value at {value_str} → {signal} signal"
+        else:
+            return f"DCF Fair Value at {value_str} → {signal} signal"
+    
+    elif method_id == "comps_analysis":
+        if value_num is not None:
+            return f"Comparables Analysis Implied Value at {value_str} → {signal} signal"
+        else:
+            return f"Comparables Analysis Implied Value at {value_str} → {signal} signal"
+    
+    elif method_id == "markowitz":
+        if value_num is not None:
+            if value_num > 1.0:
+                performance = "excellent risk-adjusted return"
+                direction = "bullish"
+            elif value_num > 0.5:
+                performance = "good risk-adjusted return"
+                direction = "bullish"
+            elif value_num > 0:
+                performance = "positive risk-adjusted return"
+                direction = "neutral"
+            else:
+                performance = "poor risk-adjusted return"
+                direction = "bearish"
+            return f"Markowitz Sharpe Ratio at {value_str} indicates {performance} → {direction} signal"
+        else:
+            return f"Markowitz Sharpe Ratio at {value_str} → {signal} signal"
+    
+    elif method_id == "capm":
+        if value_num is not None:
+            if value_num > 0.02:
+                performance = "outperforming expected return"
+                direction = "bullish"
+            elif value_num < -0.02:
+                performance = "underperforming expected return"
+                direction = "bearish"
+            else:
+                performance = "in line with expected return"
+                direction = "neutral"
+            return f"CAPM Alpha at {value_str:.2f} indicates {performance} → {direction} signal"
+        else:
+            return f"CAPM Alpha at {value_str} → {signal} signal"
+    
+    elif method_id == "var":
+        if value_num is not None:
+            return f"Value at Risk (VaR) at {value_str} indicates potential loss → {signal} signal"
+        else:
+            return f"Value at Risk (VaR) at {value_str} → {signal} signal"
+    
+    elif method_id == "news_sentiment":
+        if value_num is not None:
+            if value_num > 0.2:
+                sentiment = "positive"
+                direction = "bullish"
+            elif value_num < -0.2:
+                sentiment = "negative"
+                direction = "bearish"
+            else:
+                sentiment = "neutral"
+                direction = "neutral"
+            return f"News Sentiment at {value_str} indicates {sentiment} sentiment → {direction} signal"
+        else:
+            return f"News Sentiment at {value_str} → {signal} signal"
+    
+    else:
+        # Fallback for any other method_id
+        return f"{method_id} at {value_str} → {signal} signal"
+def _generate_method_explanation(method_id: str, result: Dict[str, Any], signal: str, confidence: float) -> str:
+    """Generate a human-readable explanation for a single method's result."""
+    res = result.get("result", {})
+    method_name = result.get("method_name", method_id)
+    
+    # Extract the key value for explanation
+    key_fields = {
+        "rsi": "rsi",
+        "macd": "macd",
+        "bollinger": "bandwidth",
+        "sma": "sma",
+        "ema": "ema",
+        "pe_ratio": "pe_ratio",
+        "roe": "roe",
+        "debt_to_equity": "debt_to_equity",
+        "profit_margin": "profit_margin",
+        "dcf_valuation": "fair_value",
+        "comps_analysis": "implied_value",
+        "markowitz": "sharpe_ratio",
+        "capm": "alpha",
+        "var": "value_at_risk",
+        "news_sentiment": "sentiment_score",
+    }
+    
+    field = key_fields.get(method_id)
+    value_str = ""
+    value_num = None
+    if field and field in res:
+        val = res[field]
+        if isinstance(val, (int, float)):
+            value_num = float(val)
+            # Format value for display
+            if field in ["rsi", "pe_ratio", "roe"]:
+                value_str = f"{value_num:.1f}"
+            elif field in ["bandwidth", "sharpe_ratio", "alpha"]:
+                value_str = f"{value_num:.2f}"
+            elif field in ["fair_value", "implied_value"]:
+                value_str = f"${value_num:.2f}"
+            elif field == "value_at_risk":
+                value_str = f"${value_num:,.0f}"
+            elif field == "sentiment_score":
+                value_str = f"{value_num:+.2f}"
+            else:
+                value_str = str(val)
+        else:
+            value_str = str(val)
+    else:
+        # Fallback: show first field
+        if res:
+            k, v = next(iter(res.items()))
+            value_str = f"{k}={v}"
+        else:
+            value_str = "N/A"
+    
+    # Generate explanation based on method_id
+    if method_id == "rsi":
+        if value_num is not None:
+            if value_num < 30:
+                condition = "oversold"
+                direction = "bullish"
+            elif value_num > 70:
+                condition = "overbought"
+                direction = "bearish"
+            else:
+                condition = "neutral"
+                direction = "neutral"
+            return f"RSI at {value_str} indicates {condition} conditions → {direction} signal"
+        else:
+            return f"RSI at {value_str} → {signal} signal"
+    
+    elif method_id == "macd":
+        if value_num is not None:
+            if value_num > 0:
+                condition = "bullish momentum"
+                direction = "bullish"
+            elif value_num < 0:
+                condition = "bearish momentum"
+                direction = "bearish"
+            else:
+                condition = "neutral momentum"
+                direction = "neutral"
+            return f"MACD at {value_str} indicates {condition} → {direction} signal"
+        else:
+            return f"MACD at {value_str} → {signal} signal"
+    
+    elif method_id == "bollinger":
+        if value_num is not None:
+            if value_num < 20:
+                condition = "low volatility, bands contracted"
+                direction = "neutral"
+            elif value_num > 60:
+                condition = "high volatility, bands expanded"
+                direction = "neutral"
+            else:
+                condition = "moderate volatility"
+                direction = "neutral"
+            return f"Bollinger Bands width at {value_str}% indicates {condition} → {direction} signal"
+        else:
+            return f"Bollinger Bands width at {value_str}% → {signal} signal"
+    
+    elif method_id in ["sma", "ema"]:
+        if value_num is not None:
+            # For moving averages, we need the price to compare, but we don't have it here.
+            # So we just state the value and the signal.
+            ma_name = "SMA" if method_id == "sma" else "EMA"
+            return f"{ma_name} at {value_str} → {signal} signal"
+        else:
+            ma_name = "SMA" if method_id == "sma" else "EMA"
+            return f"{ma_name} at {value_str} → {signal} signal"
+    
+    elif method_id == "pe_ratio":
+        if value_num is not None:
+            if value_num < 15:
+                valuation = "undervalued"
+                direction = "bullish"
+            elif value_num > 25:
+                valuation = "overvalued"
+                direction = "bearish"
+            else:
+                valuation = "fairly valued"
+                direction = "neutral"
+            return f"P/E Ratio at {value_str} suggests stock is {valuation} → {direction} signal"
+        else:
+            return f"P/E Ratio at {value_str} → {signal} signal"
+    
+    elif method_id == "roe":
+        if value_num is not None:
+            if value_num > 15:
+                performance = "strong"
+                direction = "bullish"
+            elif value_num < 5:
+                performance = "weak"
+                direction = "bearish"
+            else:
+                performance = "moderate"
+                direction = "neutral"
+            return f"ROE at {value_str}% indicates {performance} profitability → {direction} signal"
+        else:
+            return f"ROE at {value_str}% → {signal} signal"
+    
+    elif method_id == "debt_to_equity":
+        if value_num is not None:
+            if value_num < 0.5:
+                leverage = "low"
+                direction = "bullish"
+            elif value_num > 1.0:
+                leverage = "high"
+                direction = "bearish"
+            else:
+                leverage = "moderate"
+                direction = "neutral"
+            return f"Debt-to-Equity ratio at {value_str} indicates {leverage} leverage → {direction} signal"
+        else:
+            return f"Debt-to-Equity ratio at {value_str} → {signal} signal"
+    
+    elif method_id == "profit_margin":
+        if value_num is not None:
+            if value_num > 20:
+                margin = "high"
+                direction = "bullish"
+            elif value_num < 5:
+                margin = "low"
+                direction = "bearish"
+            else:
+                margin = "moderate"
+                direction = "neutral"
+            return f"Profit Margin at {value_str}% indicates {margin} profitability → {direction} signal"
+        else:
+            return f"Profit Margin at {value_str}% → {signal} signal"
+    
+    elif method_id == "dcf_valuation":
+        if value_num is not None:
+            # We don't have current price, so just state the fair value
+            return f"DCF Fair Value at {value_str} → {signal} signal"
+        else:
+            return f"DCF Fair Value at {value_str} → {signal} signal"
+    
+    elif method_id == "comps_analysis":
+        if value_num is not None:
+            return f"Comparables Analysis Implied Value at {value_str} → {signal} signal"
+        else:
+            return f"Comparables Analysis Implied Value at {value_str} → {signal} signal"
+    
+    elif method_id == "markowitz":
+        if value_num is not None:
+            if value_num > 1.0:
+                performance = "excellent risk-adjusted return"
+                direction = "bullish"
+            elif value_num > 0.5:
+                performance = "good risk-adjusted return"
+                direction = "bullish"
+            elif value_num > 0:
+                performance = "positive risk-adjusted return"
+                direction = "neutral"
+            else:
+                performance = "poor risk-adjusted return"
+                direction = "bearish"
+            return f"Markowitz Sharpe Ratio at {value_str} indicates {performance} → {direction} signal"
+        else:
+            return f"Markowitz Sharpe Ratio at {value_str} → {signal} signal"
+    
+    elif method_id == "capm":
+        if value_num is not None:
+            if value_num > 0.02:
+                performance = "outperforming expected return"
+                direction = "bullish"
+            elif value_num < -0.02:
+                performance = "underperforming expected return"
+                direction = "bearish"
+            else:
+                performance = "in line with expected return"
+                direction = "neutral"
+            return f"CAPM Alpha at {value_str:.2f} indicates {performance} → {direction} signal"
+        else:
+            return f"CAPM Alpha at {value_str} → {signal} signal"
+    
+    elif method_id == "var":
+        if value_num is not None:
+            return f"Value at Risk (VaR) at {value_str} indicates potential loss → {signal} signal"
+        else:
+            return f"Value at Risk (VaR) at {value_str} → {signal} signal"
+    
+    elif method_id == "news_sentiment":
+        if value_num is not None:
+            if value_num > 0.2:
+                sentiment = "positive"
+                direction = "bullish"
+            elif value_num < -0.2:
+                sentiment = "negative"
+                direction = "bearish"
+            else:
+                sentiment = "neutral"
+                direction = "neutral"
+            return f"News Sentiment at {value_str} indicates {sentiment} sentiment → {direction} signal"
+        else:
+            return f"News Sentiment at {value_str} → {signal} signal"
+    
+    else:
+        # Fallback for any other method_id
+        return f"{method_id} at {value_str} → {signal} signal"
 def compute_consensus(results: List[Dict[str, Any]]) -> Dict[str, Any]:
     """
     Compute enriched consensus report from analysis results.
@@ -508,6 +982,7 @@ def compute_consensus(results: List[Dict[str, Any]]) -> Dict[str, Any]:
             "key_result": _extract_key_result(r),
             "weight_in_consensus": _safe_float(r.get("confidence", 0)) / total_weight if total_weight > 0 else 0,
             "quality_score": 1.0,  # placeholder
+            "explanation": _generate_method_explanation(r.get("method_id", ""), r, r.get("signal", "neutral"), _safe_float(r.get("confidence", 0))),
         })
 
     # Build chart data (simplified for now - frontend will compute from results)
