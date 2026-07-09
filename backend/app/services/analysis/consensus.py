@@ -450,7 +450,7 @@ def _generate_method_explanation(method_id: str, result: Dict[str, Any], signal:
             else:
                 performance = "in line with expected return"
                 direction = "neutral"
-            return f"CAPM Alpha at {value_str:.2f} indicates {performance} → {direction} signal"
+            return f"CAPM Alpha at {value_str} indicates {performance} → {direction} signal"
         else:
             return f"CAPM Alpha at {value_str} → {signal} signal"
     
@@ -690,7 +690,7 @@ def _generate_method_explanation(method_id: str, result: Dict[str, Any], signal:
             else:
                 performance = "in line with expected return"
                 direction = "neutral"
-            return f"CAPM Alpha at {value_str:.2f} indicates {performance} → {direction} signal"
+            return f"CAPM Alpha at {value_str} indicates {performance} → {direction} signal"
         else:
             return f"CAPM Alpha at {value_str} → {signal} signal"
     

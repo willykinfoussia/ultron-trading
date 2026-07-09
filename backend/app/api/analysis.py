@@ -178,7 +178,14 @@ async def get_consensus(symbol: str):
     """Run all analysis methods and return an enriched consensus report."""
     sym = symbol.upper()
     try:
-        report = await consensus.get_consensus_report(sym)
+        # Run all analysis methods
+        results = await registry.run_all(sym)
+        # Compute enriched consensus report
+        report = consensus.compute_consensus([r.model_dump() for r in results])
+        # Add metadata
+        from datetime import datetime
+        report["symbol"] = sym
+        report["computed_at"] = datetime.utcnow().isoformat() + "Z"
         return report
     except Exception as e:
         logger.error(f"Error generating consensus for {sym}: {e}", exc_info=True)
