@@ -16,6 +16,12 @@ const TREND_COLOR: Record<string, string> = {
   neutral: "#94a3b8",
 };
 
+const BACKGROUND_TINT: Record<string, string> = {
+  up: "rgba(16,185,129,0.12)",
+  down: "rgba(239,68,68,0.12)",
+  neutral: "var(--surface-2)",
+};
+
 export default function KPIGrid({ kpis }: KPIGridProps) {
   if (!kpis || kpis.length === 0) return null;
 
@@ -34,8 +40,8 @@ export default function KPIGrid({ kpis }: KPIGridProps) {
           className="kpi-card"
           title={kpi.tooltip}
           style={{
-            background: "var(--card-bg, #fff)",
-            border: "1px solid var(--border, #e5e7eb)",
+            background: BACKGROUND_TINT[kpi.trend ?? "neutral"],
+            border: `1px solid ${TREND_COLOR[kpi.trend ?? "neutral"]}`,
             borderRadius: 12,
             padding: "var(--sp-3, 12px)",
             display: "flex",
