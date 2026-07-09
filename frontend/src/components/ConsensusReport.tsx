@@ -1,109 +1,23 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
-import type { AnalysisResult } from "../api/types";
-import type { ConsensusReport as BackendConsensusReport } from "../api/types";
+import type { AnalysisResult, ConsensusReport as BackendConsensusReport } from "../api/types";
+
+import { Gauge } from "./Gauge";
+import SignalPie from "./consensus/SignalPie";
+import CategoryBars from "./consensus/CategoryBars";
+import ConfidenceHistogram from "./consensus/ConfidenceHistogram";
+import RiskRewardScatter, { type RiskRewardPoint } from "./consensus/RiskRewardScatter";
+import KPIGrid from "./consensus/KPIGrid";
+import InsightPanel from "./consensus/InsightPanel";
+import ConflictPanel from "./consensus/ConflictPanel";
+import MethodTable from "./consensus/MethodTable";
+
+import "../styles/consensusPrint.css";
 
 interface ConsensusReportProps {
   symbol?: string;
   results?: AnalysisResult[];
   report?: BackendConsensusReport;
-}
-
-interface CategorySummary {
-  category: string;
-  buyCount: number;
-  sellCount: number;
-  holdCount: number;
-  neutralCount: number;
-  avgConfidence: number;
-  weightedSignal: number;
-  methods: AnalysisResult[];
-}
-
-// Fallback computation (unchanged)
-function computeConsensus(results: AnalysisResult[]) {
-  const byCategory = new Map<string, AnalysisResult[]>();
-  for (const r of results) {
-    const list = byCategory.get(r.category) || [];
-    list.push(r);
-    byCategory.set(r.category, list);
-  }
-
-  const categories: CategorySummary[] = [];
-  let totalBuy = 0, totalSell = 0, totalHold = 0, totalNeutral = 0;
-  let globalWeightedSignal = 0;
-  let totalWeight = 0;
-
-  for (const [category, methods] of byCategory) {
-    let buy = 0, sell = 0, hold = 0, neutral = 0;
-    let catWeighted = 0, catWeight = 0;
-
-    for (const m of methods) {
-      const weight = m.confidence;
-      switch (m.signal) {
-        case "buy": buy++; totalBuy++; catWeighted += weight * 100; catWeight += weight; break;
-        case "sell": sell++; totalSell++; catWeighted += weight * -100; catWeight += weight; break;
-        case "hold": hold++; totalHold++; catWeighted += weight * 20; catWeight += weight; break;
-        case "neutral": neutral++; totalNeutral++; break;
-      }
-    }
-
-    const avgConf = methods.length > 0 ? methods.reduce((s, m) => s + m.confidence, 0) / methods.length : 0;
-    const weighted = catWeight > 0 ? catWeighted / catWeight : 0;
-
-    categories.push({
-      category, buyCount: buy, sellCount: sell, holdCount: hold, neutralCount: neutral,
-      avgConfidence: avgConf, weightedSignal: weighted, methods,
-    });
-
-    globalWeightedSignal += weighted * catWeight;
-    totalWeight += catWeight;
-  }
-
-  const overallScore = totalWeight > 0 ? globalWeightedSignal / totalWeight : 0;
-
-  let verdict: "STRONG_BUY" | "BUY" | "HOLD" | "SELL" | "STRONG_SELL";
-  if (overallScore >= 60) verdict = "STRONG_BUY";
-  else if (overallScore >= 25) verdict = "BUY";
-  else if (overallScore >= -25) verdict = "HOLD";
-  else if (overallScore >= -60) verdict = "SELL";
-  else verdict = "STRONG_SELL";
-
-  const conflicts: string[] = [];
-  const techCat = categories.find(c => c.category === "technical");
-  const fundCat = categories.find(c => c.category === "fundamental");
-  const sentCat = categories.find(c => c.category === "sentiment");
-
-  if (techCat && fundCat) {
-    if (techCat.weightedSignal > 30 && fundCat.weightedSignal < -30)
-      conflicts.push("⚡ Technical signals bullish but fundamentals bearish — trend may be unsustainable");
-    if (techCat.weightedSignal < -30 && fundCat.weightedSignal > 30)
-      conflicts.push("💰 Fundamentals strong but technicals weak — possible buying opportunity on dip");
-  }
-  if (sentCat && fundCat) {
-    if (sentCat.weightedSignal > 40 && fundCat.weightedSignal < -20)
-      conflicts.push("📰 Market sentiment extremely positive despite weak fundamentals — possible euphoria");
-  }
-
-  const insights: string[] = [];
-  const sortedByConfidence = [...results].sort((a, b) => b.confidence - a.confidence);
-  const topBuy = sortedByConfidence.filter(r => r.signal === "buy").slice(0, 3);
-  const topSell = sortedByConfidence.filter(r => r.signal === "sell").slice(0, 3);
-
-  if (topBuy.length > 0)
-    insights.push(`Top buy signals: ${topBuy.map(m => m.method_name).join(", ")}`);
-  if (topSell.length > 0)
-    insights.push(`Top sell signals: ${topSell.map(m => m.method_name).join(", ")}`);
-
-  const avgConf = results.length > 0 ? results.reduce((s, r) => s + r.confidence, 0) / results.length : 0;
-  if (avgConf > 0.7) insights.push(`High average confidence (${Math.round(avgConf * 100)}%) — strong conviction`);
-  if (avgConf < 0.3) insights.push(`Low average confidence (${Math.round(avgConf * 100)}%) — mixed or uncertain signals`);
-
-  // Sort categories by importance (technical, fundamental, sentiment, ml)
-  const catOrder = ["technical", "fundamental", "sentiment", "ml"];
-  categories.sort((a, b) => catOrder.indexOf(a.category) - catOrder.indexOf(b.category));
-
-  return { categories, overallScore, verdict, conflicts, insights, totalMethods: results.length, avgConfidence: avgConf };
 }
 
 const VERDICT_COLORS: Record<string, string> = {
@@ -115,74 +29,56 @@ const VERDICT_COLORS: Record<string, string> = {
 };
 
 const VERDICT_LABELS: Record<string, string> = {
-  STRONG_BUY: "🟢 STRONG BUY",
-  BUY: "🟢 BUY",
-  HOLD: "🟡 HOLD",
-  SELL: "🔴 SELL",
-  STRONG_SELL: "🔴 STRONG SELL",
+  STRONG_BUY: "STRONG BUY",
+  BUY: "BUY",
+  HOLD: "HOLD",
+  SELL: "SELL",
+  STRONG_SELL: "STRONG SELL",
 };
 
-const CATEGORY_LABELS: Record<string, string> = {
-  technical: "📊 Technical",
-  fundamental: "💰 Fundamental",
-  sentiment: "📰 Sentiment",
-  ml: "🤖 Machine Learning",
-  quant: "📐 Quantitative",
+const CAT_LABELS: Record<string, string> = {
+  technical: "Technical",
+  fundamental: "Fundamental",
+  sentiment: "Sentiment",
+  ml: "Machine Learning",
+  quant: "Quantitative",
 };
 
-export default function ConsensusReport({ symbol, results, report }: ConsensusReportProps) {
-  // Determine which data to use
+function signalToScore(signal: string): number {
+  switch (signal) {
+    case "buy": return 1;
+    case "sell": return -1;
+    case "hold": return 0.2;
+    default: return 0;
+  }
+}
+
+export default function ConsensusReport({ report }: ConsensusReportProps) {
   const data = useMemo(() => {
     if (report) {
-      // Transform backend report to shape expected by the rest of component
-      // We'll map backend fields to the same shape as computeConsensus output
-      const backend = report;
-      // Build categories in the same format as CategorySummary
-      const catSummaries: CategorySummary[] = backend.categories.map(cat => ({
-        category: cat.category,
-        buyCount: cat.signal_counts.buy,
-        sellCount: cat.signal_counts.sell,
-        holdCount: cat.signal_counts.hold,
-        neutralCount: cat.signal_counts.neutral,
-        avgConfidence: cat.confidence,
-        weightedSignal: cat.score,
-        methods: cat.methods.map(m => ({
-          method_id: m.method_id,
-          method_name: m.method_name,
-          category: m.category,
-          symbol: symbol || "",
-          result: {}, // not needed for display
-          signal: m.signal,
-          confidence: m.confidence,
-          explanation: "", // not needed
-          chart_data: null,
-          computed_at: "",
-        } as AnalysisResult))
-      }));
-      return {
-        categories: catSummaries,
-        overallScore: backend.overall.score,
-        verdict: backend.overall.verdict,
-        conflicts: backend.conflicts.map(c => c.description),
-        insights: backend.insights.map(i => i.description),
-        totalMethods: backend.method_details.length,
-        avgConfidence: backend.overall.confidence,
-      };
-    } else if (results) {
-      return computeConsensus(results);
-    } else {
-      // empty
-      return {
-        categories: [],
-        overallScore: 0,
-        verdict: "HOLD",
-        conflicts: [],
-        insights: [],
-        totalMethods: 0,
-        avgConfidence: 0,
-      };
+      return report;
     }
-  }, [report, results]);
+    // Minimal fallback if only results provided (should not happen with new flow)
+    return null;
+  }, [report]);
+
+  if (!data) {
+    return (
+      <motion.div className="consensus-report" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <p style={{ color: "var(--text-2)" }}>No consensus data available.</p>
+      </motion.div>
+    );
+  }
+
+  const riskPoints: RiskRewardPoint[] = (data.method_details || []).map((m) => ({
+    name: m.method_name,
+    category: m.category,
+    risk: 1 - m.confidence, // low confidence = higher uncertainty/risk
+    reward: signalToScore(m.signal),
+    weight: m.confidence,
+  }));
+
+  const confidences = data.chart_data?.method_confidences || data.method_details.map((m) => m.confidence);
 
   return (
     <motion.div
@@ -191,92 +87,136 @@ export default function ConsensusReport({ symbol, results, report }: ConsensusRe
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Verdict Header */}
-      <div className="consensus-verdict" style={{ borderColor: VERDICT_COLORS[data.verdict] }}>
-        <div className="consensus-verdict-header">
-          <h2 style={{ color: VERDICT_COLORS[data.verdict], marginBottom: 0 }}>
-            {VERDICT_LABELS[data.verdict]}
-          </h2>
-          <span className="consensus-score">
-            Score: {Math.round(data.overallScore)}
-          </span>
+      {/* Verdict Header with Gauge */}
+      <div className="consensus-verdict" style={{ borderColor: VERDICT_COLORS[data.overall.verdict] }}>
+        <div style={{ display: "flex", gap: "var(--sp-6, 24px)", alignItems: "center", flexWrap: "wrap" }}>
+          <Gauge score={data.overall.score} verdict={data.overall.verdict} />
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <h2 style={{ color: VERDICT_COLORS[data.overall.verdict], margin: 0, fontSize: 28 }}>
+              {VERDICT_LABELS[data.overall.verdict]}
+            </h2>
+            <p style={{ color: "var(--text-2)", margin: "4px 0" }}>
+              Consensus Score: <strong>{Math.round(data.overall.score)}</strong> / 100
+              {" · "}
+              Confidence: <strong>{Math.round(data.overall.confidence * 100)}%</strong>
+            </p>
+            {data.computed_at && (
+              <p style={{ color: "var(--text-2)", fontSize: 12, margin: 0 }}>
+                Computed: {new Date(data.computed_at).toLocaleString()}
+              </p>
+            )}
+          </div>
         </div>
-        <div className="consensus-meter">
-          <div className="consensus-meter-fill"
-            style={{
-              width: `${Math.min(Math.abs(data.overallScore), 100)}%`,
-              backgroundColor: VERDICT_COLORS[data.verdict],
-              marginLeft: data.overallScore < 0 ? `${50 - Math.abs(data.overallScore) / 2}%` : "50%",
-            }}
+      </div>
+
+      {/* KPI Grid */}
+      {data.key_metrics && data.key_metrics.length > 0 && (
+        <KPIGrid kpis={data.key_metrics} />
+      )}
+
+      {/* Charts Grid */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          gap: "var(--sp-4, 16px)",
+          margin: "var(--sp-4, 16px) 0",
+        }}
+      >
+        {/* Signal Distribution Pie */}
+        <div className="consensus-chart-card">
+          <h3 className="consensus-chart-title">Signal Distribution</h3>
+          <SignalPie distribution={data.overall.signal_distribution} />
+        </div>
+
+        {/* Category Scores Bars */}
+        <div className="consensus-chart-card">
+          <h3 className="consensus-chart-title">Category Scores</h3>
+          <CategoryBars
+            categories={data.categories.map((c) => ({
+              category: c.category,
+              score: c.score,
+              confidence: c.confidence,
+            }))}
           />
-          <div className="consensus-meter-center" />
         </div>
-        <div className="consensus-meter-labels">
-          <span>← Sell</span>
-          <span>Neutral</span>
-          <span>Buy →</span>
+
+        {/* Confidence Histogram */}
+        <div className="consensus-chart-card">
+          <h3 className="consensus-chart-title">Confidence Distribution</h3>
+          <ConfidenceHistogram confidences={confidences} />
+        </div>
+
+        {/* Risk / Reward Scatter */}
+        <div className="consensus-chart-card">
+          <h3 className="consensus-chart-title">Risk / Reward Map</h3>
+          <RiskRewardScatter points={riskPoints} />
         </div>
       </div>
 
-      {/* Summary Stats */}
-      <div className="consensus-stats">
-        <div className="consensus-stat">
-          <span className="consensus-stat-value">{data.totalMethods}</span>
-          <span className="consensus-stat-label">Methods</span>
+      {/* Insights & Conflicts */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          gap: "var(--sp-4, 16px)",
+          margin: "var(--sp-4, 16px) 0",
+        }}
+      >
+        <div className="consensus-chart-card">
+          <h3 className="consensus-chart-title">Key Insights</h3>
+          <InsightPanel insights={data.insights} />
         </div>
-        <div className="consensus-stat">
-          <span className="consensus-stat-value" style={{ color: "#10b981" }}>
-            {Math.round(data.overallScore > 0 ? data.overallScore : 0)} Buy
-          </span>
-          <span className="consensus-stat-label">Buy</span>
-        </div>
-        <div className="consensus-stat">
-          <span className="consensus-stat-value" style={{ color: "#ef4444" }}>
-            {Math.round(data.overallScore < 0 ? -data.overallScore : 0)} Sell
-          </span>
-          <span className="consensus-stat-label">Sell</span>
-        </div>
-        <div className="consensus-stat">
-          <span className="consensus-stat-value" style={{ color: "#fbbf24" }}>
-            {data.totalMethods - (data.overallScore > 0 ? Math.round(data.overallScore) : 0) - (data.overallScore < 0 ? Math.round(-data.overallScore) : 0)} Hold/Neutral
-          </span>
-          <span className="consensus-stat-label">Hold</span>
+        <div className="consensus-chart-card">
+          <h3 className="consensus-chart-title">Conflicts & Divergences</h3>
+          <ConflictPanel conflicts={data.conflicts} />
         </div>
       </div>
 
-      {/* Per-Category Breakdown */}
-      <div className="consensus-categories">
-        <h3>Category Breakdown</h3>
-        {data.categories.map(cat => (
+      {/* Risk Metrics */}
+      {data.risk_metrics && (
+        <div className="consensus-chart-card" style={{ margin: "var(--sp-4, 16px) 0" }}>
+          <h3 className="consensus-chart-title">Risk Metrics</h3>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+              gap: "var(--sp-3, 12px)",
+            }}
+          >
+            <RiskMetric label="Expected Return" value={`${(data.risk_metrics.expected_return * 100).toFixed(1)}%`} />
+            <RiskMetric label="Volatility" value={`${(data.risk_metrics.volatility_estimate * 100).toFixed(1)}%`} />
+            <RiskMetric label="Sharpe Ratio" value={data.risk_metrics.sharpe_estimate.toFixed(2)} />
+            <RiskMetric label="Max Drawdown" value={`${(data.risk_metrics.max_drawdown_estimate * 100).toFixed(1)}%`} />
+            <RiskMetric label="VaR 95%" value={`${(data.risk_metrics.var_95 * 100).toFixed(1)}%`} />
+            <RiskMetric label="Risk/Reward" value={data.risk_metrics.risk_reward_ratio.toFixed(2)} />
+          </div>
+        </div>
+      )}
+
+      {/* Category Breakdown */}
+      <div className="consensus-chart-card" style={{ margin: "var(--sp-4, 16px) 0" }}>
+        <h3 className="consensus-chart-title">Category Breakdown</h3>
+        {data.categories.map((cat) => (
           <div key={cat.category} className="consensus-category">
             <div className="consensus-category-header">
               <span className="consensus-category-name">
-                {CATEGORY_LABELS[cat.category] || cat.category}
+                {CAT_LABELS[cat.category] || cat.category}
               </span>
-              <span className="consensus-category-signal"
-                style={{ color: cat.weightedSignal > 20 ? "#10b981" : cat.weightedSignal < -20 ? "#ef4444" : "#fbbf24" }}
-              >
-                {cat.weightedSignal > 20 ? "▲ Bullish" : cat.weightedSignal < -20 ? "▼ Bearish" : "● Neutral"}
-                {" "}({Math.round(cat.weightedSignal)})
-              </span>
-            </div>
-            <div className="consensus-category-bar">
-              <div
+              <span
+                className="consensus-category-signal"
                 style={{
-                  width: `${Math.max(Math.abs(cat.weightedSignal), 2)}%`,
-                  backgroundColor: cat.weightedSignal >= 0 ? "#10b981" : "#ef4444",
-                  marginLeft: cat.weightedSignal < 0 ? `${50 - Math.abs(cat.weightedSignal) / 2}%` : "50%",
-                  height: "100%",
-                  borderRadius: "4px",
-                  transition: "width 0.3s ease",
-                  minWidth: "4px",
+                  color:
+                    cat.score > 20 ? "#10b981" : cat.score < -20 ? "#ef4444" : "#fbbf24",
                 }}
-              />
-              <div style={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: "2px", background: "var(--border)", }} />
+              >
+                {cat.score > 20 ? "▲ Bullish" : cat.score < -20 ? "▼ Bearish" : "● Neutral"}
+                {" "}({Math.round(cat.score)})
+              </span>
             </div>
             <div className="consensus-category-methods">
-              {cat.methods.map(m => (
-                <span key={m.method_id} className={`consensus-method-tag ${m.signal}`} title={m.explanation}>
+              {cat.methods.map((m) => (
+                <span key={m.method_id} className={`consensus-method-tag ${m.signal}`} title={m.key_result}>
                   {m.method_name} · {Math.round(m.confidence * 100)}%
                 </span>
               ))}
@@ -285,27 +225,29 @@ export default function ConsensusReport({ symbol, results, report }: ConsensusRe
         ))}
       </div>
 
-      {/* Conflicts */}
-      {data.conflicts.length > 0 && (
-        <div className="consensus-conflicts">
-          <h3>⚠️ Conflicts Detected</h3>
-          {data.conflicts.map((c, i) => (
-            <div key={i} className="consensus-conflict">{c}</div>
-          ))}
-        </div>
-      )}
-
-      {/* Key Insights */}
-      {data.insights.length > 0 && (
-        <div className="consensus-insights">
-          <h3>💡 Key Insights</h3>
-          <ul>
-            {data.insights.map((insight, i) => (
-              <li key={i}>{insight}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {/* Method Detail Table */}
+      <div className="consensus-chart-card" style={{ margin: "var(--sp-4, 16px) 0" }}>
+        <h3 className="consensus-chart-title">All Methods ({data.method_details.length})</h3>
+        <MethodTable methods={data.method_details} />
+      </div>
     </motion.div>
+  );
+}
+
+function RiskMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div
+      style={{
+        background: "var(--bg-2, #f8fafc)",
+        borderRadius: 8,
+        padding: "10px 12px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
+      <span style={{ fontSize: 12, color: "var(--text-2)" }}>{label}</span>
+      <span style={{ fontSize: 18, fontWeight: 700 }}>{value}</span>
+    </div>
   );
 }

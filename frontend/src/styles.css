@@ -6940,6 +6940,23 @@ textarea.editor {
   margin-bottom: 0;
 }
 
+/* === Consensus Charts (Recharts) === */
+.consensus-chart-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: var(--sp-4);
+}
+
+.consensus-chart-title {
+  margin: 0 0 var(--sp-3) 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-1);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: var(--sp-2);
+}
+
 @media (max-width: 768px) {
   .consensus-stats {
     grid-template-columns: repeat(2, 1fr);

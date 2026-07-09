@@ -1,0 +1,73 @@
+@media print {
+  /* Hide non-essential UI elements when printing */
+  .no-print,
+  button,
+  .toolbar,
+  .controls,
+  .interactive-element,
+  .dropdown,
+  .modal,
+  .toast,
+  .notification,
+  .sidebar-action,
+  .header-action {
+    display: none !important;
+  }
+
+  /* Ensure the consensus report does not break across pages */
+  .consensus-report {
+    page-break-inside: avoid;
+    margin: 0;
+    break-inside: avoid; /* CSS3 */
+  }
+
+  /* Set appropriate margins for print */
+  @page {
+    margin: 1cm;
+  }
+
+  /* Adjust layout for better print formatting */
+  .consensus-report {
+    font-size: 12pt;
+    line-height: 1.4;
+    color: #000; /* Ensure text is black for printing */
+    background: white !important;
+  }
+
+  /* Adjust colors to be print-friendly (ensure contrast) */
+  .consensus-verdict {
+    border-color: #000 !important;
+  }
+  .consensus-verdict h2 {
+    color: #000 !important;
+  }
+  .consensus-score {
+    color: #000 !important;
+  }
+
+  /* Meter bars - use grayscale */
+  .consensus-meter-fill {
+    background-color: #666 !important;
+  }
+
+  /* Stats labels and values */
+  .consensus-stat-value,
+  .consensus-stat-label {
+    color: #000 !important;
+  }
+
+  /* Ensure any charts or SVGs render properly (if present) */
+  svg,
+  canvas {
+    color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Hide any background images or colors that might not print well */
+  * {
+    background-color: white !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+}

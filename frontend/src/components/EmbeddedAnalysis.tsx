@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getAnalysisMethods, runAllAnalysis, getConsensusReport } from "../api/analysis";
+import { getAnalysisMethods, runAllAnalysis, getConsensusReport, exportConsensusPDF, exportConsensusCSV } from "../api/analysis";
 import type { AnalysisMethod, AnalysisResult } from "../api/types";
 import ConsensusReport from "./ConsensusReport";
 import Spinner from "../components/Spinner";
@@ -11,7 +11,6 @@ interface Props {
 }
 
 export default function EmbeddedAnalysis({ symbol, onViewMethodDetail }: Props) {
-  const [results, setResults] = useState<AnalysisResult({ symbol, onViewMethodDetail }: Props) {
   const [results, setResults] = useState<AnalysisResult[]>([]);
   const [methods, setMethods] = useState<AnalysisMethod[]>([]);
   const [consensus, setConsensus] = useState<any>(null);
@@ -20,6 +19,8 @@ export default function EmbeddedAnalysis({ symbol, onViewMethodDetail }: Props) 
   const [error, setError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [pdfExportLoading, setPdfExportLoading] = useState(false);
+  const [csvExportLoading, setCsvExportLoading] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -56,6 +57,42 @@ export default function EmbeddedAnalysis({ symbol, onViewMethodDetail }: Props) 
     }
   }, [symbol]);
 
+  const handleExportPDF = useCallback(async () => {
+    setPdfExportLoading(true);
+    try {
+      const blob = await exportConsensusPDF(symbol);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      a.href = url;
+      a.download = `${symbol}_consensus_${timestamp}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setPdfExportLoading(false);
+    }
+  }, [symbol]);
+
+  const handleExportCSV = useCallback(async () => {
+    setCsvExportLoading(true);
+    try {
+      const blob = await exportConsensusCSV(symbol);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      a.href = url;
+      a.download = `${symbol}_consensus_${timestamp}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      setCsvExportLoading(false);
+    }
+  }, [symbol]);
+
   return (
     <div className="embedded-analysis">
       <div className="embedded-analysis-header">
@@ -65,21 +102,59 @@ export default function EmbeddedAnalysis({ symbol, onViewMethodDetail }: Props) 
             {methods.length} methods available across {new Set(methods.map(m => m.category)).size} categories
           </p>
         </div>
-        <motion.button
-          className="btn-primary"
-          onClick={runAll}
-          disabled={running || loading}
-          whileTap={{ scale: 0.97 }}
-        >
-          {running ? (
-            <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <Spinner size="sm" />
-              {" "}Running...
-            </span>
-          ) : (
-            "Run All Analysis"
-          )}
-        </motion.button>
+        <div className="button-group">
+          <motion.button
+            className="btn-primary"
+            onClick={runAll}
+            disabled={running || loading}
+            whileTap={{ scale: 0.97 }}
+          >
+            {running ? (
+              <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <Spinner size="sm" />
+                {" "}Running...
+              </span>
+            ) : (
+              "Run All Analysis"
+            )}
+          </motion.button>
+          <motion.button
+            className="btn-secondary"
+            onClick={handleExportPDF}
+            disabled={!consensus || pdfExportLoading || running || loading}
+            whileTap={{ scale: 0.97 }}
+            title="Export consensus as PDF report"
+          >
+            {pdfExportLoading ? (
+              <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <Spinner size="sm" />
+                {" "}Exporting...
+              </span>
+            ) : (
+              <>
+                <span>📄</span> Export PDF
+              </>
+            )}
+          </motion.button>
+          <motion.button
+            className="btn-secondary"
+            onClick={handleExportCSV}
+            disabled={!consensus || csvExportLoading || running || loading}
+            whileTap={{ scale: 0.97 }}
+            title="Export consensus as CSV data"
+          >
+            {csvExportLoading ? (
+              <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <Spinner size="sm" />
+                {" "}Exporting...
+              </span>
+            ) : (
+              <>
+                <span>📊</span> Export CSV
+              </>
+            )}
+          </motion.button>
+        </div>
       </div>
 
       <div className="analysis-methods-grid">

@@ -75,3 +75,25 @@ export async function getConsensusReport(
 ): Promise<ConsensusReport> {
   return fetchJSON<ConsensusReport>(`${API_BASE}/analysis/${symbol}/consensus`)
 }
+
+export async function exportConsensusPDF(
+  symbol: string
+): Promise<Blob> {
+  const res = await fetch(`${API_BASE}/analysis/${symbol}/consensus/export/pdf`)
+  if (!res.ok) {
+    const body = await res.text()
+    throw new Error(`HTTP ${res.status}: ${body}`)
+  }
+  return await res.blob()
+}
+
+export async function exportConsensusCSV(
+  symbol: string
+): Promise<Blob> {
+  const res = await fetch(`${API_BASE}/analysis/${symbol}/consensus/export/csv`)
+  if (!res.ok) {
+    const body = await res.text()
+    throw new Error(`HTTP ${res.status}: ${body}`)
+  }
+  return await res.blob()
+}
