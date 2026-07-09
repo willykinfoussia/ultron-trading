@@ -1,6 +1,6 @@
 [project]
 name = "ultron-trading-backend"
-version = "0.13.27"
+version = "0.14.0"
 description = "Backend API for Ultron Trading"
 readme = "README.md"
 requires-python = ">=3.11"
