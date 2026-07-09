@@ -229,6 +229,7 @@ export interface MethodDetail {
   signal: string
   confidence: number
   key_result: string
+  explanation: string
   weight_in_consensus: number
   chart_data_preview?: unknown
 }
@@ -247,4 +248,5 @@ export interface MethodSummary {
   signal: string
   confidence: number
   key_result: string
+  explanation: string
 }
