@@ -174,7 +174,7 @@ export default function AIReport({ report }: { report: AIReportType }) {
         border: `2px solid ${color}`,
         borderRadius: 12,
         padding: "var(--sp-4, 16px)",
-        background: "var(--card, #fff)",
+        background: "var(--surface-2, #f1f5f9)",
         marginTop: "var(--sp-4, 16px)",
       }}
     >
