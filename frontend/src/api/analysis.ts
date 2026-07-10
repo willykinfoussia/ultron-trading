@@ -1,5 +1,5 @@
 import type { AnalysisMethod, AnalysisResult } from './types'
-import type { ConsensusReport } from './types'
+import type { ConsensusReport, AIReport } from './types'
 
 const API_BASE = '/api'
 
@@ -71,9 +71,15 @@ export async function getAnalysisSummary(
 }
 
 export async function getConsensusReport(
-  symbol: string
+  symbol: string,
 ): Promise<ConsensusReport> {
-  return fetchJSON<ConsensusReport>(`${API_BASE}/analysis/${symbol}/consensus`)
+  return fetchJSON<ConsensusReport>(`${API_BASE}/analysis/${symbol}/consensus`);
+}
+
+export async function getConsensusAIReport(
+  symbol: string,
+): Promise<AIReport> {
+  return fetchJSON<AIReport>(`${API_BASE}/analysis/${symbol}/consensus/ai`);
 }
 
 export async function exportConsensusPDF(

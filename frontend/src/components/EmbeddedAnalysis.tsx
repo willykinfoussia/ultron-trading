@@ -1,8 +1,10 @@
 import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { getAnalysisMethods, runAllAnalysis, getConsensusReport, exportConsensusPDF, exportConsensusCSV } from "../api/analysis";
+import { getAnalysisMethods, runAllAnalysis, getConsensusReport, getConsensusAIReport, exportConsensusPDF, exportConsensusCSV } from "../api/analysis";
 import type { AnalysisMethod, AnalysisResult } from "../api/types";
+import type { AIReport as BackendAIReport } from "../api/types";
 import ConsensusReport from "./ConsensusReport";
+import AIReport from "./AIReport";
 import Spinner from "../components/Spinner";
 
 interface Props {
@@ -15,6 +17,8 @@ export default function EmbeddedAnalysis({ symbol, onViewMethodDetail }: Props) 
   const [methods, setMethods] = useState<AnalysisMethod[]>([]);
   const [consensus, setConsensus] = useState<any>(null);
   const [consensusLoading, setConsensusLoading] = useState(false);
+  const [aiReport, setAiReport] = useState<BackendAIReport | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
   const [consensusError, setConsensusError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
@@ -43,12 +47,23 @@ export default function EmbeddedAnalysis({ symbol, onViewMethodDetail }: Props) 
     setConsensusLoading(true);
     setConsensusError(null);
     setConsensus(null);
+    setAiReport(null);
+    setAiLoading(true);
     try {
       const data = await runAllAnalysis(symbol, "all");
       setResults(data);
       // Also fetch consensus
       const cons = await getConsensusReport(symbol);
       setConsensus(cons);
+      // Fetch AI report from Hermes
+      try {
+        const ai = await getConsensusAIReport(symbol);
+        setAiReport(ai);
+      } catch (aiErr) {
+        console.error("AI report failed:", aiErr);
+      } finally {
+        setAiLoading(false);
+      }
     } catch (err) {
       setError(String(err));
     } finally {
@@ -234,6 +249,36 @@ export default function EmbeddedAnalysis({ symbol, onViewMethodDetail }: Props) 
             exit={{ opacity: 0 }}
           >
             <ConsensusReport symbol={symbol} report={consensus} />
+          </motion.div>
+        )}
+
+        {/* AI Report section (Hermes) */}
+        {aiReport && !aiLoading && (
+          <motion.div
+            key="ai-report"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <AIReport report={aiReport} />
+          </motion.div>
+        )}
+
+        {aiLoading && consensus && !consensusLoading && (
+          <motion.div
+            key="ai-loading"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              padding: "var(--sp-6)",
+              gap: "var(--sp-3)",
+            }}
+          >
+            <Spinner size="md" />
+            <p style={{ color: "var(--text-2)", fontSize: 13 }}>Hermes is analyzing the consensus...</p>
           </motion.div>
         )}
 

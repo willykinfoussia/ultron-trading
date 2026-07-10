@@ -242,11 +242,39 @@ export interface ConsensusChartData {
 }
 
 export interface MethodSummary {
-  method_id: string
-  method_name: string
-  category: string
-  signal: string
-  confidence: number
-  key_result: string
-  explanation: string
+  method_id: string;
+  method_name: string;
+  category: string;
+  signal: string;
+  confidence: number;
+  key_result: string;
+  explanation: string;
+}
+
+// AI Dynamic Report (Hermes) types
+export type AIBlockType = "text" | "indicator" | "chart" | "risk_gauge" | "table";
+export type AIStatus = "positive" | "negative" | "neutral";
+
+export interface AIBlock {
+  type: AIBlockType;
+  title?: string;
+  content?: string;
+  label?: string;
+  value?: string;
+  status?: AIStatus;
+  chart_type?: "bar" | "pie" | "line";
+  data?: { name: string; value: number }[];
+  score?: number;
+  headers?: string[];
+  rows?: string[][];
+}
+
+export interface AIReport {
+  verdict: "STRONG_BUY" | "BUY" | "HOLD" | "SELL" | "STRONG_SELL";
+  confidence: number;
+  summary: string;
+  buy_thesis: string;
+  sell_thesis: string;
+  blocks: AIBlock[];
+  source?: string;
 }

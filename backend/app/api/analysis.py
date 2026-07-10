@@ -190,3 +190,18 @@ async def get_consensus(symbol: str):
     except Exception as e:
         logger.error(f"Error generating consensus for {sym}: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Consensus generation failed: {str(e)}")
+
+
+@router.get("/{symbol}/consensus/ai")
+async def get_consensus_ai(symbol: str):
+    """Run all analysis + consensus, then ask Hermes for a dynamic AI investment report."""
+    sym = symbol.upper()
+    try:
+        results = await registry.run_all(sym)
+        report = consensus.compute_consensus([r.model_dump() for r in results])
+        from app.services.analysis import llm_consensus
+        ai_report = await llm_consensus.generate_ai_report(sym, report)
+        return ai_report
+    except Exception as e:
+        logger.error(f"Error generating AI consensus for {sym}: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"AI consensus generation failed: {str(e)}")
